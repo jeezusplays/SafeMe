@@ -3,7 +3,7 @@
 SafeMe is a natural disaster relief app that aims to provide real-time updates on individuals dealing with disasters such as: earthquakes, cyclones, floods, volcanoes, droughts and forest fires. 
 
 This application is targeted towards two types of users – Public and Government. Each user type has access to different features that best suit their usage needs. For Public users, they are able to:
-* Create and join a family – A group of people that can track each other in real-time
+* Create and join a family – <i>A group of people that can track each other in real-time</i>
 * Receive a danger notification when in the risk of being in danger
 * Announce to family when no longer in risk of being in danger
 * Receive alerts of other family members when they are in the risk of being in danger
