@@ -51,7 +51,7 @@ These are other fellow team members who contributed to this project!
 * [Liow Hong Xiang](https://www.linkedin.com/in/liowhongxiang/)<br>
 * Aaron Wong<br>
 * John Choong<br>
-* Anthony Ho<br>
+* [Anthony Ho](https://www.linkedin.com/in/anthony-ho-uxdesign/)<br>
 
 ## Acknowledgements
 Team: Joey Tan, Hong Xiang, Samuel Chung, Aaron Wong, John Choong, Anthony Ho
