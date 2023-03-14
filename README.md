@@ -86,3 +86,15 @@ These are other fellow team members who contributed to this project!
 
 ## Acknowledgements
 Team: Joey Tan, Hong Xiang, Samuel Chung, Aaron Wong, John Choong, Anthony Ho
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+<!-- 
+[homepage-screenshot]: src/assets/product.png
+[general-screenshot]: src/assets/general_stats.png
+[regional-screenshot]: src/assets/regional_stats.png -->
+
+[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
+[Vue-url]: https://vuejs.org/
