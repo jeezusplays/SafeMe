@@ -27,7 +27,38 @@ This are the APIs used to provide SafeMe with data on natural disasters.
 * [GDACS API](https://www.gdacs.org/)
 
 ## Getting Started
+To get a local copy up and running follow these simple steps.
 
+### Prerequisites
+
+You will need the following software installed in your machine.
+* npm
+  ```sh
+  npm install -g npm
+  ```
+
+### Installation
+
+_Instructions on how to install this respository onto your local machine._
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/samchung95/SafeMe
+   ```
+<!-- 2. Create a Firebase Project and add service account key json to api folder
+3. Change service account key json to "serviceAccountKey.json" -->
+2. Install NPM packages
+   ```sh
+   npm install
+   ```
+3. Run vue
+   ```sh
+   npm run serve
+   ```
+4. Go to your local host
+   ```sh
+   http://localhost:8080 or https://localhost:8081
+   ```
 
 ## Usage
 
