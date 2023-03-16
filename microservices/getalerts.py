@@ -1,10 +1,10 @@
 from pprint import pprint
 from gdacs.api import GDACSAPIReader
 from datetime import datetime, timedelta
+from time import sleep
 
 import json
 import dateparser
-
 
 def get_alert():
     client = GDACSAPIReader()
@@ -48,3 +48,14 @@ def get_alert():
             events[_name] = [event]
     
     return events
+
+def main():
+    while True:
+        alert = get_alert()
+
+        # Send alert to amqp
+        
+        sleep(10)
+    
+if __name__ == "__main__":
+    main()
