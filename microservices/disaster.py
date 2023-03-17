@@ -1,9 +1,9 @@
 # Flask application that query database
-# Create disaster
-# [POST] /disaster/new
 
-# Update user status
-# [PUT] /disaster/update/user/{userID}
+# Create disaster (add disaster to disaster table)
 
-# Get user status
-# [GET] /affected/{disasterID}
+# Add affected users (add users to affected_user table)
+
+# Update user status (update user from affected_user table by userID)
+
+# Get user status  (select * from affected_users table)

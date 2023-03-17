@@ -1,17 +1,10 @@
 # Flask applicaiton to quary db
 
-# Get user
-# [GET] /user/{userID}
+# Get user (select one where userID == userID)
 
-# Update user
-# [PUT] /user/update/{userID}
+# Add location (add location to location table)
 
-# Add location
-# [POST] /location
+# Get all user latest location (select last location where userID == userID)
 
-# Get all user latest location
-# [GET] /location/latest
-
-# Get family
-# [GET] /user/family/{familyID}
+# Get family (select * from users where familyID == familyID)
 

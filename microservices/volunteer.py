@@ -1,11 +1,7 @@
-# Create volunteer event
-# [POST] /volunteer/event/create
+# Create volunteer event (create volunteer event)
 
-# Add volunteer
-# [POST] /volunteer/event/adduser/{userID}
+# Add volunteer (add user to volunteer table)
 
-# Get all volunteers (For UI)
-# [GET] /volunteer/event/users/{veventID}
+# Get all volunteers (For UI) (select * from volunteers table)
 
-# Get all volunteer event data (For UI)
-# [GET] /volunteer/event
+# Get all volunteer event data (For UI) (select * from volunteer event)
