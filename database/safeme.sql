@@ -86,7 +86,7 @@ CREATE TABLE volunteer
     -- volunteerID int not null,
     volunteerEventID int not null,
     userID int not null,
-    userName varchar(30) not null,
+    userName varchar(60) not null,
     contact int not null,
     `timestamp` date not null,
     constraint volunteer_pk primary key (volunteerEventID, userID),
