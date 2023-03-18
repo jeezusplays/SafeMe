@@ -34,3 +34,14 @@ CREATE TABLE location
     constraint location_fk foreign key (userID) references user(userID)
 );
 
+-- Table: Event Log
+CREATE TABLE eventLog
+(
+    logID int not null auto_increment,
+    `event` varchar(100) not null, 
+    `type` varchar(100) not null,
+    userID int not null,
+    constraint eventLog_pk primary key (logID)
+);
+
+
