@@ -65,7 +65,7 @@ CREATE TABLE affectedUsers
     userID int not null,
     userName varchar(60) not null,
     `status` varchar(60) not null,
-    contact int not null, -- assume not country code
+    contact int not null, -- assume no country code
     constraint affectedUsers_pk primary key (affectedUsersID)
 );
 
