@@ -57,4 +57,16 @@ CREATE TABLE disaster
     constraint disaster_pk primary key (disasterID)
 );
 
+-- Table: Affected Users
+CREATE TABLE affectedUsers
+(
+    affectedUsersID int not null auto_increment,
+    disasterID int not null,
+    userID int not null,
+    userName varchar(60) not null,
+    `status` varchar(60) not null,
+    contact int not null, -- assume not country code
+    constraint affectedUsers_pk primary key (affectedUsersID)
+);
+
 
