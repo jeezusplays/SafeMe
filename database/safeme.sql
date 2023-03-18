@@ -44,4 +44,17 @@ CREATE TABLE eventLog
     constraint eventLog_pk primary key (logID)
 );
 
+-- Table: Disaster
+CREATE TABLE disaster
+(
+    disasterID int not null auto_increment,
+    disasterName varchar(60) not null,
+    country varchar(60) not null,
+    city varchar(60) not null,
+    lat decimal(8,6) not null,
+    `long` decimal(8,6) not null,
+    `level` varchar(10) not null, -- red, amber, green
+    constraint disaster_pk primary key (disasterID)
+);
+
 
