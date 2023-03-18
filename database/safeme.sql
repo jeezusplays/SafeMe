@@ -20,3 +20,17 @@ CREATE TABLE user
   constraint user_pk primary key (userID)
 );
 
+-- Table: Location
+CREATE TABLE location
+(
+    locationID int not null auto_increment,
+    userID int not null,
+    country varchar(60) not null,
+    city varchar(60) not null,
+    lat decimal(8,6) not null,
+    `long` decimal(8,6) not null,
+    `timestamp` date not null,
+    constraint location_pk primary key (locationID),
+    constraint location_fk foreign key (userID) references user(userID)
+);
+
