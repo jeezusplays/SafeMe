@@ -80,3 +80,17 @@ CREATE TABLE volunteerEvent
     constraint volunteerEvent_pk primary key (volunteerEventID)
 );
 
+-- Table: Volunteer
+CREATE TABLE volunteer
+(
+    -- volunteerID int not null,
+    volunteerEventID int not null,
+    userID int not null,
+    userName varchar(30) not null,
+    contact int not null,
+    `timestamp` date not null,
+    constraint volunteer_pk primary key (volunteerEventID, userID),
+    -- constraint volunteer_pk primary key (volunteerID),
+    constraint volunteer_fk1 foreign key (volunteerEventID) references volunteerEvent(volunteerEventID),
+    constraint volunteer_fk2 foreign key (userID) references user(userID)
+);
