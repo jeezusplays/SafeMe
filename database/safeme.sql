@@ -69,4 +69,14 @@ CREATE TABLE affectedUsers
     constraint affectedUsers_pk primary key (affectedUsersID)
 );
 
+-- Table: Volunteer Event
+CREATE TABLE volunteerEvent
+(
+    volunteerEventID int not null auto_increment,
+    volunteerEventName varchar(60) not null,
+    institute varchar(60) not null,
+    disasterID int not null,
+    -- userID int not null,
+    constraint volunteerEvent_pk primary key (volunteerEventID)
+);
 
