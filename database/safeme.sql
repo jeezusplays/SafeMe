@@ -5,7 +5,6 @@ DROP DATABASE IF EXISTS safeme;
 
 CREATE DATABASE safeme; -- DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci 
 USE safeme;
-DROP TABLE IF EXISTS user;
 
 -- Table: User
 CREATE TABLE user
@@ -23,16 +22,16 @@ CREATE TABLE user
 -- Insert 10 rows into the user table from top 10 natural disaster countries in 2021
 INSERT INTO user (userID, userName, familyID, age, country, email, contact)
 VALUES
-  (1, 'John', 1, 30, 'United States', 'joeytanbiz@outlook.com', 1234567890),
-  (2, 'Jane', 1, 25, 'Indonesia', 'jane@yahoo.com', 2345678901),
-  (3, 'Bob', 1, 35, 'India', 'bob@hotmail.com', 3456789012),
-  (4, 'Alice', 1, 28, 'China', 'alice@aol.com', 4567890123),
-  (5, 'Michael', 1, 42, 'Philippines', 'michael@outlook.com', 5678901234),
-  (6, 'Maria', 1, 31, 'Colombia', 'maria@gmail.com', 6789012345),
-  (7, 'Juan', 1, 37, 'Mexico', 'juan@yahoo.com', 7890123456),
-  (8, 'Luis', 1, 26, 'Peru', 'luis@hotmail.com', 8901234567),
-  (9, 'Sophie', 1, 29, 'France', 'sophie@outlook.com', 9012345678),
-  (10, 'Mohd', 1, 33, 'Malaysia', 'hx24000@gmail.com', 0123456789),
+  (1, 'John', 1, 30, 'United States', 'joeytanbiz@outlook.com', 8888888),
+  (2, 'Jane', 1, 25, 'Indonesia', 'jane@yahoo.com', 8888888),
+  (3, 'Bob', 1, 35, 'India', 'bob@hotmail.com', 8888888),
+  (4, 'Alice', 1, 28, 'China', 'alice@aol.com', 8888888),
+  (5, 'Michael', 1, 42, 'Philippines', 'michael@outlook.com', 8888888),
+  (6, 'Maria', 1, 31, 'Colombia', 'maria@gmail.com', 8888888),
+  (7, 'Juan', 1, 37, 'Mexico', 'juan@yahoo.com', 8888888),
+  (8, 'Luis', 1, 26, 'Peru', 'luis@hotmail.com', 8888888),
+  (9, 'Sophie', 1, 29, 'France', 'sophie@outlook.com', 8888888),
+  (10, 'Mohd', 1, 33, 'Malaysia', 'hx24000@gmail.com', 8888888),
   (11, 'US Government', 999, 99, 'United States', 'joey.tan.2021@scis.smu.edu.sg', 911);
 
 -- Table: Location
@@ -42,8 +41,8 @@ CREATE TABLE location
     userID int not null,
     country varchar(60) not null,
     city varchar(60) not null,
-    lat decimal(8,6) not null,
-    `long` decimal(8,6) not null,
+    lat decimal(8,3) not null,
+    `long` decimal(8,3) not null,
     `timestamp` date not null,
     constraint location_pk primary key (locationID),
     constraint location_fk foreign key (userID) references user(userID)
@@ -52,16 +51,16 @@ CREATE TABLE location
 -- Insert 10 rows into the location table, referencing user table
 INSERT INTO location (userID, country, city, lat, `long`, `timestamp`)
 VALUES
-  (1, 'United States', 'New York', 40.7128, -74.0060, '2021-01-01'),
-  (2, 'Indonesia', 'Jakarta', -6.2146, 106.8451, '2021-01-02'),
-  (3, 'India', 'Mumbai', 19.0760, 72.8777, '2021-01-03'),
-  (4, 'China', 'Beijing', 39.9042, 116.4074, '2021-01-04'),
-  (5, 'Philippines', 'Manila', 14.5995, 120.9842, '2021-01-05'),
-  (6, 'Colombia', 'Bogota', 4.7109, -74.0721, '2021-01-06'),
-  (7, 'Mexico', 'Mexico City', 19.4326, -99.1332, '2021-01-07'),
-  (8, 'Peru', 'Lima', -12.0464, -77.0428, '2021-01-08'),
-  (9, 'France', 'Paris', 48.8566, 2.3522, '2021-01-09'),
-  (10, 'Malaysia', 'Kuala Lumpur', 3.1390, 101.6869, '2021-01-10');
+  (1, 'United States', 'New York', 40.713, -74.006, '2021-01-01'),
+  (2, 'Indonesia', 'Jakarta', -6.215, 106.845, '2021-01-02'),
+  (3, 'India', 'Mumbai', 19.076, 72.878, '2021-01-03'),
+  (4, 'China', 'Beijing', 39.904, 116.407, '2021-01-04'),
+  (5, 'Philippines', 'Manila', 14.600, 120.984, '2021-01-05'),
+  (6, 'Colombia', 'Bogota', 4.711, -74.072, '2021-01-06'),
+  (7, 'Mexico', 'Mexico City', 19.433, -99.133, '2021-01-07'),
+  (8, 'Peru', 'Lima', -12.046, -77.043, '2021-01-08'),
+  (9, 'France', 'Paris', 48.857, 2.352, '2021-01-09'),
+  (10, 'Malaysia', 'Kuala Lumpur', 3.139, 101.687, '2021-01-10');
 
 -- Table: Event Log
 CREATE TABLE eventLog
@@ -89,29 +88,29 @@ CREATE TABLE disaster
     disasterName varchar(60) not null,
     country varchar(60) not null,
     city varchar(60) not null,
-    lat decimal(8,6) not null,
-    `long` decimal(8,6) not null,
-    `disasterSeverityLevel` varchar(10) not null, -- red, amber, green
+    lat decimal(8,3) not null,
+    `long` decimal(8,3) not null,
+    disasterSeverityLevel varchar(10) not null, -- red, amber, green
     constraint disaster_pk primary key (disasterID)
 );
 
 -- Insert 10 rows into the disaster tables in 2021
 INSERT INTO disaster (disasterID, disasterName, country, city, lat, `long`, disasterSeverityLevel) VALUES
-(1, 'Hurricane Ida 2021-08-29 12:00:00', 'United States', 'Louisiana', 29.9511, -90.0715, 'red'),
-(2, 'Wildfires in California 2021-09-07 15:30:00', 'United States', 'California', 36.7783, -119.4179, 'red'),
-(3, 'Floods in Europe 2021-07-12 08:00:00', 'Germany', 'Cologne', 50.9375, 6.9603, 'red'),
-(4, 'Tropical Cyclone Seroja 2021-04-05 18:00:00', 'Indonesia', 'East Nusa Tenggara', -8.5840, 121.1422, 'red'),
-(5, 'Floods in China 2021-07-20 06:00:00', 'China', 'Zhengzhou', 34.7466, 113.6253, 'red'),
-(6, 'Typhoon Chanthu 2021-09-12 02:00:00', 'China', 'Shanghai', 31.2304, 121.4737, 'red'),
-(7, 'Earthquake in Haiti 2021-08-14 08:30:00', 'Haiti', 'Les Cayes', 18.2000, -73.7500, 'red'),
-(8, 'Tornadoes in Alabama 2021-03-25 12:00:00', 'United States', 'Alabama', 32.3182, -86.9023, 'red'),
-(9, 'Heatwave in Italy 2021-08-06 14:00:00', 'Italy', 'Sicily', 37.5997, 14.0154, 'red'),
-(10, 'Flash floods in Arizona 2021-07-14 10:00:00', 'United States', 'Arizona', 34.0489, -111.0937, 'red'),
-(11, 'Volcanic eruption in Iceland 2021-03-19 19:00:00', 'Iceland', 'Reykjavik', 64.1466, -21.9426, 'red'),
-(12, 'Landslide in India 2021-08-02 05:30:00', 'India', 'Himachal Pradesh', 31.1048, 77.1734, 'red'),
-(13, 'Tornadoes in Texas 2021-05-03 09:00:00', 'United States', 'Texas', 31.9686, -99.9018, 'red'),
-(14, 'Drought in Brazil 2021-08-23 16:00:00', 'Brazil', 'Minas Gerais', -18.5122, -44.5550, 'red'),
-(15, 'Flooding in Bangladesh 2021-08-08 11:00:00', 'Bangladesh', 'Dhaka', 23.8103, 90.4125, 'red');
+(1, 'Hurricane Ida 2021-08-29 12:00:00', 'United States', 'Louisiana', 29.951, -90.072, 'red'),
+(2, 'Wildfires in California 2021-09-07 15:30:00', 'United States', 'California', 36.778, -119.418, 'red'),
+(3, 'Floods in Europe 2021-07-12 08:00:00', 'Germany', 'Cologne', 50.938, 6.960, 'red'),
+(4, 'Tropical Cyclone Seroja 2021-04-05 18:00:00', 'Indonesia', 'East Nusa Tenggara', -8.584, 121.142, 'red'),
+(5, 'Floods in China 2021-07-20 06:00:00', 'China', 'Zhengzhou', 34.747, 113.625, 'red'),
+(6, 'Typhoon Chanthu 2021-09-12 02:00:00', 'China', 'Shanghai', 31.230, 121.474, 'red'),
+(7, 'Earthquake in Haiti 2021-08-14 08:30:00', 'Haiti', 'Les Cayes', 18.200, -73.750, 'red'),
+(8, 'Tornadoes in Alabama 2021-03-25 12:00:00', 'United States', 'Alabama', 32.318, -86.902, 'red'),
+(9, 'Heatwave in Italy 2021-08-06 14:00:00', 'Italy', 'Sicily', 37.600, 14.015, 'red'),
+(10, 'Flash floods in Arizona 2021-07-14 10:00:00', 'United States', 'Arizona', 34.049, -111.094, 'red'),
+(11, 'Volcanic eruption in Iceland 2021-03-19 19:00:00', 'Iceland', 'Reykjavik', 64.147, -21.943, 'red'),
+(12, 'Landslide in India 2021-08-02 05:30:00', 'India', 'Himachal Pradesh', 31.105, 77.173, 'red'),
+(13, 'Tornadoes in Texas 2021-05-03 09:00:00', 'United States', 'Texas', 31.969, -99.902, 'red'),
+(14, 'Drought in Brazil 2021-08-23 16:00:00', 'Brazil', 'Minas Gerais', -18.512, -44.555, 'red'),
+(15, 'Flooding in Bangladesh 2021-08-08 11:00:00', 'Bangladesh', 'Dhaka', 23.810, 90.413, 'red');
 
 -- Table: Affected Users
 CREATE TABLE affectedUsers
@@ -128,16 +127,16 @@ CREATE TABLE affectedUsers
 -- Insert 10 rows into the affectedUsers table, referencing disaster and user table
 INSERT INTO affectedUsers (affectedUsersID, disasterID, userID, userName, status, contact)
 VALUES
-(1, 1, 1, 'John', 'safe', 1234567890),
-(2, 1, 2, 'Jane', 'injured', 2345678901),
-(3, 1, 3, 'Bob', 'safe', 3456789012),
-(4, 1, 4, 'Alice', 'injured', 4567890123),
-(5, 2, 5, 'Michael', 'safe', 5678901234),
-(6, 2, 6, 'Maria', 'injured', 6789012345),
-(7, 2, 7, 'Juan', 'safe', 7890123456),
-(8, 3, 8, 'Luis', 'injured', 8901234567),
-(9, 3, 9, 'Sophie', 'safe', 9012345678),
-(10, 3, 10, 'Mohd', 'injured', 0123456789);
+(1, 1, 1, 'John', 'safe', 8888888),
+(2, 1, 2, 'Jane', 'injured', 8888888),
+(3, 1, 3, 'Bob', 'safe', 8888888),
+(4, 1, 4, 'Alice', 'injured', 8888888),
+(5, 2, 5, 'Michael', 'safe', 8888888),
+(6, 2, 6, 'Maria', 'injured', 8888888),
+(7, 2, 7, 'Juan', 'safe', 8888888),
+(8, 3, 8, 'Luis', 'injured', 8888888),
+(9, 3, 9, 'Sophie', 'safe', 8888888),
+(10, 3, 10, 'Mohd', 'injured', 8888888);
 
 -- Table: Volunteer Event
 CREATE TABLE volunteerEvent
@@ -182,13 +181,13 @@ CREATE TABLE volunteer
 -- Insert 10 rows into the volunteer table, referencing the volunteerEvent table
 INSERT INTO volunteer (volunteerEventID, userID, userName, contact, `timestamp`)
 VALUES
-    (1, 1, 'John', '1234567890', '2021-03-15'),
-    (1, 2, 'Jane', '2345678901', '2021-03-15'),
-    (1, 3, 'Bob', '3456789012', '2021-03-15'),
-    (2, 4, 'Alice', '4567890123', '2021-04-20'),
-    (2, 5, 'Michael', '5678901234', '2021-04-20'),
-    (2, 6, 'Maria', '6789012345', '2021-04-20'),
-    (3, 7, 'Juan', '7890123456', '2021-05-10'),
-    (3, 8, 'Luis', '8901234567', '2021-05-10'),
-    (4, 9, 'Sophie', '9012345678', '2021-06-05'),
-    (5, 10, 'Mohd', '0123456789', '2021-07-01');
+    (1, 1, 'John', 8888888, '2021-03-15'),
+    (1, 2, 'Jane', 8888888, '2021-03-15'),
+    (1, 3, 'Bob', 8888888, '2021-03-15'),
+    (2, 4, 'Alice', 8888888, '2021-04-20'),
+    (2, 5, 'Michael', 8888888, '2021-04-20'),
+    (2, 6, 'Maria', 8888888, '2021-04-20'),
+    (3, 7, 'Juan', 8888888, '2021-05-10'),
+    (3, 8, 'Luis', 8888888, '2021-05-10'),
+    (4, 9, 'Sophie', 8888888, '2021-06-05'),
+    (5, 10, 'Mohd', 8888888, '2021-07-01');
