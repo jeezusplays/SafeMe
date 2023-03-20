@@ -58,8 +58,8 @@ class Location(db.Model):
     userID = db.Column(db.Integer, nullable=False)
     country = db.Column(db.String(64), nullable=False)
     city = db.Column(db.String(64), nullable=False)
-    lat = db.Column(db.Float, nullable=False)
-    long = db.Column(db.Float, nullable=False)
+    lat = db.Column(db.Float(precision=3), nullable=False)
+    long = db.Column(db.Float(precision=3), nullable=False)
     timestamp = db.Column(db.Date, nullable=False) # May need to change to DateTime
 
     def __init__(self, locationID, userID, country, city, lat, long, timestamp):
@@ -134,14 +134,13 @@ def get_all_users_latest_location():
         return jsonify({"code": 404, "message": "There are no users"}), 404
 
 # Get family (Select * from users where familyID == familyID)
-@app.route("/user/family/familyID", methods=['GET'])
-def get_family():
-    data = request.get_json()
-    family = User.query.filter_by(familyID=data['familyID']).all()
+@app.route("/user/family/<int:familyID>", methods=['GET'])
+def get_family(familyID):
+    users = User.query.filter_by(familyID=familyID).all()
     result = []
     # Check if length of users is 0
-    if len(family) != 0:
-        for user in family:
+    if len(users) != 0:
+        for user in users:
             result.append(user.json())
         return jsonify({"code": 200, "data": result})
     else:
