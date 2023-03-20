@@ -7,8 +7,11 @@ import json
 import dateparser
 import pika
 
+HOST = ''
+PORT = ''
+
 # Connect to RabbitMQ server
-CONNECTION = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+CONNECTION = pika.BlockingConnection(pika.ConnectionParameters(host=HOST, port=PORT))
 
 def get_alert():
     client = GDACSAPIReader()
@@ -55,7 +58,6 @@ def get_alert():
 
 def publish(msg,route):
 
-    
     channel = CONNECTION.channel()
 
     # Declare a queue named 'hello'
@@ -66,7 +68,6 @@ def publish(msg,route):
     channel.close()
 
 def main():
-
     while True:
         alert = get_alert()
         publish(json.dumps(alert),'*.alert')
