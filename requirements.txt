@@ -1,2 +1,6 @@
 dateparser==1.1.7
 gdacs_api==2.0.0
+Flask==2.2.2
+Flask-cors==3.0.10
+Flask-SQLAlchemy==3.0.2
+mysql-connector-python==8.0.32
