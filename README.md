@@ -33,8 +33,9 @@ Other Assumptions:
 ## Built With
 This section lists any major frameworks/libraries used to develop SafeMe.
 
-<!-- [Vue.js](https://vuejs.org/) -->
-* [![Vue][Vue.js]][Vue-url]
+<!-- [![Vue][Vue.js]][Vue-url]  -->
+* [Vue.js](https://vuejs.org/)
+* [Python](https://www.python.org/)
 
 This are the APIs used to provide SafeMe with data on natural disasters.
 * [GDACS API](https://www.gdacs.org/)
