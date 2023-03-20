@@ -60,7 +60,7 @@ class Location(db.Model):
     city = db.Column(db.String(64), nullable=False)
     lat = db.Column(db.Float, nullable=False)
     long = db.Column(db.Float, nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False)
+    timestamp = db.Column(db.Date, nullable=False) # May need to change to DateTime
 
     def __init__(self, locationID, userID, country, city, lat, long, timestamp):
         self.locationID = locationID
@@ -109,7 +109,7 @@ def get_user(userID):
         return jsonify({"code": 404, "message": "User not found"}), 404
 
 # Add location (Add user's location information through userID to location table)
-@app.route("/location/<int:userID>", methods=['POST'])
+@app.route("/location/", methods=['POST'])
 def add_location():
     data = request.get_json()
     location = Location(data['locationID'], data['userID'], data['country'], data['city'], data['lat'], data['long'], data['timestamp'])
@@ -134,7 +134,7 @@ def get_all_users_latest_location():
         return jsonify({"code": 404, "message": "There are no users"}), 404
 
 # Get family (Select * from users where familyID == familyID)
-@app.route("/user/familyID", methods=['GET'])
+@app.route("/user/family/familyID", methods=['GET'])
 def get_family():
     data = request.get_json()
     family = User.query.filter_by(familyID=data['familyID']).all()
@@ -147,5 +147,6 @@ def get_family():
     else:
         return jsonify({"code": 404, "message": "There are no users"}), 404
 
+# Allows the service to be accessible from any other in the network
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
