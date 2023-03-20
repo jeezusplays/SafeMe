@@ -1,12 +1,13 @@
 # Flask application to query db
 import os
+from os import environ
+
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
-from datetime import datetime
-import json
-from os import environ
+# from datetime import datetime
+# import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/safeme'
