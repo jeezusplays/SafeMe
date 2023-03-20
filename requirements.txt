@@ -1,2 +1,3 @@
 dateparser==1.1.7
 gdacs_api==2.0.0
+pika==1.3.1
