@@ -1,10 +1,19 @@
-# Flask applicaiton to quary db
+# Flask application to query db
+import os
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
-# Get user (select one where userID == userID)
+from datetime import datetime
+import json
+from os import environ
 
-# Add location (add location to location table)
 
-# Get all user latest location (select last location where userID == userID)
+# Get user (Select one where userID == userID)
 
-# Get family (select * from users where familyID == familyID)
+# Add location (Sdd location to location table)
+
+# Get all user latest location (Select last location where userID == userID)
+
+# Get family (Select * from users where familyID == familyID)
 
