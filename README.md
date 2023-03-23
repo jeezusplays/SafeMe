@@ -31,11 +31,14 @@ Other Assumptions:
 * For the purpose of demonstration, users are in a family. 
 
 ## Built With
+### Major Frameworks / Libraries
 This section lists any major frameworks/libraries used to develop SafeMe.
 
-<!-- [Vue.js](https://vuejs.org/) -->
-* [![Vue][Vue.js]][Vue-url]
+<!-- [![Vue][Vue.js]][Vue-url]  -->
+* [Vue.js](https://vuejs.org/)
+* [Python](https://www.python.org/)
 
+### APIs
 This are the APIs used to provide SafeMe with data on natural disasters.
 * [GDACS API](https://www.gdacs.org/)
 
@@ -49,7 +52,6 @@ You will need the following software installed in your machine.
   ```sh
   npm install -g npm
   ```
-
 ### Installation
 
 _Instructions on how to install this respository onto your local machine._
@@ -72,6 +74,26 @@ _Instructions on how to install this respository onto your local machine._
    ```sh
    http://localhost:8080 or https://localhost:8081
    ```
+
+<!-- 
+## Project Setup
+
+```sh
+npm install
+```
+
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
+```
+
+### Compile and Minify for Production
+
+```sh
+npm run build
+```
+ -->
 
 ## Usage
 
