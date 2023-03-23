@@ -52,7 +52,6 @@ You will need the following software installed in your machine.
   ```sh
   npm install -g npm
   ```
-
 ### Installation
 
 _Instructions on how to install this respository onto your local machine._
@@ -75,6 +74,26 @@ _Instructions on how to install this respository onto your local machine._
    ```sh
    http://localhost:8080 or https://localhost:8081
    ```
+
+<!-- 
+## Project Setup
+
+```sh
+npm install
+```
+
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
+```
+
+### Compile and Minify for Production
+
+```sh
+npm run build
+```
+ -->
 
 ## Usage
 
