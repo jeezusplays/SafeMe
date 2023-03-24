@@ -1,4 +1,4 @@
-# Flask applicaiton
+# Flask application
 
 # Get user
 # [GET] /user/{userID}
