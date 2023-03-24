@@ -68,7 +68,7 @@ _Instructions on how to install this respository onto your local machine._
    ```
 3. Run vue
    ```sh
-   npm run serve
+   npm run dev
    ```
 4. Go to your local host
    ```sh
