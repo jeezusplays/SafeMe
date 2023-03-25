@@ -1,3 +1,29 @@
+# Set up amqp exchange with queues
+# GDAC alert
+# gdac.alert
+
+# Log alert
+# log.alert
+
+# Localised alert
+# {country}.{city}.alert
+
+# Update user status
+# [PUT] /disaster/update/user/{userID}
+
+# Email user status
+# [AMQP] {userID}.status
+
+# Family member status
+# [AMQP] {userID}.{familyID}.status
+
+# Log event
+# [AMQP] log.event
+
+# Localised alert
+# {country}.{city}.alert
+
+# Lab 6 Set up amqp exchange with queues
 import pika
 
 # These module-level variables are initialized whenever a new instance of python interpreter imports the module;
@@ -5,7 +31,7 @@ import pika
 
 hostname = "localhost" # default hostname
 port = 5672 # default port
-# Note: the default port for AMQP is 5672, but the default port for RabbitMQ is 15672
+# connect to the broker and set up a communication channel in the connection
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(
         host=hostname, port=port,
