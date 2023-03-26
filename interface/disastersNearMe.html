@@ -18,15 +18,11 @@
     <!-- Axios -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-    <!-- Dummy Data -->
-    <script src="mockdata.js"></script>
-
     <!-- Datatables JS scripts -->
     <script defer src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script defer src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script defer src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script defer src="script.js"></script>
-
 
 </head>
 
@@ -35,46 +31,60 @@
         <!-- <h1>{{ header }}</h1>
         <p>{{ message }}</p> -->
 
+        <!-- Modal to check in on a disaster stricken user wihtin 10km of disaster -->
+        <div v-if="userStatus != 'Okay'" class="modal" tabindex="-1" id="checkInModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Please report your safety</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p>We noticed that you are located near a disaster, how are you?</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mildly Injured</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Severely Injured</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- NAVBAR-->
         <nav class="navbar navbar-light navbar-expand-lg bg-body-secondary" style="background-color: #e3f2fd;">
             <div class="container-fluid">
             <!-- Shows account type -->
-              <a v-if="isPublic" class="navbar-brand" href="#">SafeMe (Public)</a>
-              <a v-else class="navbar-brand" href="#">SafeMe (Government)</a>
+              <a class="navbar-brand" href="#">SafeMe (Public)</a>
+
 
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
 
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul v-if="isPublic" class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <!-- Navbar tabs for Public UI -->
                   <li class="nav-item">
-                    <a v-if="isDisaster" class="nav-link active" aria-current="page" href="#">Disasters Near Me</a>
-                    <a v-else class="nav-link active" aria-current="page" href="#">Disasters Near Me</a>
+                    <a class="nav-link active" aria-current="page" href="#">Disasters Near Me</a>
+                    <!-- <a v-else class="nav-link" aria-current="page" href="#">Disasters Near Me</a> -->
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">My Family</a>
+                    <a class="nav-link" href="myFamily.html">My Family</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Volunteer to Help</a>
+                    <a class="nav-link" href="volunteerPublic.html">Volunteer to Help</a>
                   </li>
                 </ul>
 
                 <!-- Navbar tabs for Gvmt UI -->
-                <ul v-else class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+                <!-- <ul v-else class="navbar-nav me-auto mb-2 mb-lg-0"></ul> -->
                 <!-- Switches between account types -->
                 <button @click="toggleAcc" class="btn btn-outline-primary" type="submit">Switch Account Type</button>
               </div>
             </div>
           </nav>
 
-        <!-- <div class="grid gap-3 my-4">
-            <div class="p-2 g-col-6">Grid item 1</div>
-            <div class="p-2 g-col-6">Grid item 2</div>
-            <div class="p-2 g-col-6">Grid item 3</div>
-            <div class="p-2 g-col-6">Grid item 4</div>
-        </div> -->
         <div class="container my-5">
           <!-- Table styling -->
           <table id="example" class="table table-striped my-auto" style="width:100%">
@@ -130,12 +140,9 @@
             data() {
                 return {
                     header: 'Public UI',
-                    isPublic: true,
-                    isDisasters: true,
-                    myFamily: false,
-                    isVolunteers: false,
+                    // Danger threshold
                     dangerVal: 10,
-                    // currLocation: 
+
                     // Dummy data
                     mockData: [
                     {
@@ -178,108 +185,26 @@
                       incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
                       danger: 'Pending',
                     },
-                    {
-                      key: '5',
-                      country: 'Korea',
-                      type: 'Fire',
-                      distance: 600,
-                      incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                      danger: 'Pending',
-                    },{
-                      key: '5',
-                      country: 'Korea',
-                      type: 'Fire',
-                      distance: 40,
-                      incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                      danger: 'Pending',
-                    },{
-                      key: '5',
-                      country: 'Korea',
-                      type: 'Fire',
-                      distance: 25,
-                      incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                      danger: 'Pending',
-                    },{
-                      key: '5',
-                      country: 'Korea',
-                      type: 'Fire',
-                      distance: 25,
-                      incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                      danger: 'Pending',
-                    },{
-                      key: '5',
-                      country: 'Korea',
-                      type: 'Fire',
-                      distance: 25,
-                      incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                      danger: 'Pending',
-                    },{
-                      key: '5',
-                      country: 'Korea',
-                      type: 'Fire',
-                      distance: 25,
-                      incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                      danger: 'Pending',
-                    },{
-                      key: '5',
-                      country: 'Korea',
-                      type: 'Fire',
-                      distance: 25,
-                      incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                      danger: 'Pending',
-                    },{
-                      key: '5',
-                      country: 'Korea',
-                      type: 'Fire',
-                      distance: 25,
-                      incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                      danger: 'Pending',
-                    },{
-                      key: '5',
-                      country: 'Korea',
-                      type: 'Fire',
-                      distance: 25,
-                      incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                      danger: 'Pending',
-                    },{
-                      key: '5',
-                      country: 'Korea',
-                      type: 'Fire',
-                      distance: 25,
-                      incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                      danger: 'Pending',
-                    },{
-                      key: '5',
-                      country: 'Korea',
-                      type: 'Fire',
-                      distance: 25,
-                      incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                      danger: 'Pending',
-                    },{
-                      key: '5',
-                      country: 'Korea',
-                      type: 'Fire',
-                      distance: 25,
-                      incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                      danger: 'Pending',
-                    },
+                    
                   ]
                 }
             },
 
-            methods:{
-                // Changes the account type
-                toggleAcc(){
-                    this.isPublic = !this.isPublic
-                },
-
-                // Checks if user is within 10km of disaster
-                checkSafety(distance){
-                  if (distance <= this.dangerVal){
-
-                  }
+            computed:{
+              // Checks the distance between user and nearest disaster
+              distanceFromNearestDisaster(){
+                //assuming calculations from microservice will return an integer here. For now make this number above 10 to see how modal will not appear
+                return 5
+              },
+              
+              // Computes user status depending on distance form disaster (modal is triggered at 10 and below)
+              userStatus(){
+                if (this.distanceFromNearestDisaster <= this.dangerVal){
+                  return 'Pending'
                 }
-            }
+                return 'Okay'
+              },
+            },
         })
 
         
