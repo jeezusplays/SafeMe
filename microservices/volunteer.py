@@ -18,7 +18,7 @@ CORS(app)
 
 # Volunteer class with volunteerEventID, userID, userName, contact, timestamp with no ORM
 class Volunteer(db.Model):
-    __tablename__ = 'volunteers'
+    __tablename__ = 'volunteer'
 
     volunteerEventID = db.Column(db.Integer, primary_key=True)
     userID = db.Column(db.Integer, nullable=False)
