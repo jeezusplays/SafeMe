@@ -37,9 +37,12 @@ This section lists any major frameworks/libraries used to develop SafeMe.
 <!-- [![Vue][Vue.js]][Vue-url]  -->
 * [Vue.js](https://vuejs.org/)
 * [Python](https://www.python.org/)
+* [Flask](https://flask.palletsprojects.com/en/2.2.x/)
+* [AMQP](https://www.amqp.org/)
 
 ### APIs
 This are the APIs used to provide SafeMe with data on natural disasters.
+* [Kong API Gateway](https://docs.konghq.com/gateway/latest/)
 * [GDACS API](https://www.gdacs.org/)
 
 ## Getting Started
