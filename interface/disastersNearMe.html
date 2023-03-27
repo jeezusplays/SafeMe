@@ -28,10 +28,8 @@
 
 <body>
     <div id="app">
-        <!-- <h1>{{ header }}</h1>
-        <p>{{ message }}</p> -->
 
-        <!-- Modal to check in on a disaster stricken user wihtin 10km of disaster -->
+        <!-- MODAL to check in on a disaster stricken user wihtin 10km of disaster -->
         <div v-if="userStatus != 'Okay'" class="modal" tabindex="-1" id="checkInModal">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -43,13 +41,31 @@
                 <p>We noticed that you are located near a disaster, how are you?</p>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mildly Injured</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Severely Injured</button>
+                <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal">Okay</button>
+                <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal">Mildly Injured</button>
+                <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal">Severely Injured</button>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- SUBMISSION TOAST -->
+        <!-- <button type="button" class="btn btn-primary myBtn">Show live toast</button>
+        <button type="button" class="btn btn-primary" id="liveToastBtn">Show live toast</button>
+
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+          <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+              <img src="..." class="rounded me-2" alt="...">
+              <strong class="me-auto">Bootstrap</strong>
+              <small>11 mins ago</small>
+              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+              Hello, world! This is a toast message.
+            </div>
+          </div>
+        </div> -->
 
         <!-- NAVBAR-->
         <nav class="navbar navbar-light navbar-expand-lg bg-body-secondary" style="background-color: #e3f2fd;">
@@ -86,7 +102,7 @@
           </nav>
 
         <div class="container my-5">
-          <!-- Table styling -->
+          <!-- DISASTER TABLE -->
           <table id="example" class="table table-striped my-auto" style="width:100%">
             <thead>
                 <tr>
@@ -141,7 +157,7 @@
                 return {
                     header: 'Public UI',
                     // Danger threshold
-                    dangerVal: 10,
+                    dangerThreshold: 10,
 
                     // Dummy data
                     mockData: [
@@ -194,12 +210,12 @@
               // Checks the distance between user and nearest disaster
               distanceFromNearestDisaster(){
                 //assuming calculations from microservice will return an integer here. For now make this number above 10 to see how modal will not appear
-                return 5
+                return 11
               },
               
               // Computes user status depending on distance form disaster (modal is triggered at 10 and below)
               userStatus(){
-                if (this.distanceFromNearestDisaster <= this.dangerVal){
+                if (this.distanceFromNearestDisaster <= this.dangerThreshold){
                   return 'Pending'
                 }
                 return 'Okay'
