@@ -3,7 +3,7 @@ $(document).ready(function () {
     $('#example').DataTable();
 });
 
-//Adds event listeners to 'Disasters Near Me' modals to trigger toasts
+//Adds event listener to  buttons in 'Disasters Near Me' modal to trigger toasts
 const statusToasts = [
     {
         buttonID: 'liveToastBtn1',
@@ -19,7 +19,6 @@ const statusToasts = [
     },
 ]
 for (let status of statusToasts){
-    console.log('HI')
     const toastTrigger = document.getElementById(status.buttonID)
     const toastLiveExample = document.getElementById(status.toastID)
     if (toastTrigger) {
