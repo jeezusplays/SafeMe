@@ -70,21 +70,21 @@
                             <div class="card-body">
                                 <h4 class="card-title">{{member.name}}</h4>
                                 <ul class="card-text" style="list-style: none">
-                                    <li>User ID:<br> {{member.userID}}</li>
-                                    <li>Name:<br> {{member.email}}</li>
+                                    <li>User ID: {{member.userID}}</li>
+                                    <li>Name: {{member.email}}</li>
                                     <li>
-                                        <strong v-if="member.status == 'Mildly Injured'" class="text-warning">Status:<br> {{member.status}}</strong>
+                                        Status: 
+                                        <strong v-if="member.status == 'Mildly Injured'" class="text-warning">{{member.status}}</strong>
 
-                                        <strong v-else-if="member.status == 'Pending'" class="text-secondary">Status:<br> {{member.status}}</strong>
+                                        <strong v-else-if="member.status == 'Pending'" class="text-secondary">{{member.status}}</strong>
 
-                                        <strong v-else-if="member.status == 'Okay'" class="text-success">Status:<br> {{member.status}}</strong>
+                                        <strong v-else-if="member.status == 'Okay'" class="text-success">{{member.status}}</strong>
 
                                         <strong v-else class="text-danger">Status:<br> {{member.status}}</strong>
                                     </li>
-                                    <li>Last known country/city:<br> {{member.lastKnownCity}}</li>
+                                    <li>Last Known Location: {{member.lastKnownCity}}</li>
                                 </ul>
                                 <button v-if="member.status == 'Okay'" type="button" class="btn btn-secondary" disabled>Escalate to government</button>
-
                                 <button v-else type="button" class="btn btn-primary">Escalate to government</button>
                             </div>
                         </div>
