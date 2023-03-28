@@ -5,6 +5,13 @@ from time import sleep
 
 import json
 import dateparser
+import pika
+
+HOST = ''
+PORT = ''
+
+# Connect to RabbitMQ server
+CONNECTION = pika.BlockingConnection(pika.ConnectionParameters(host=HOST, port=PORT))
 
 def get_alert():
     client = GDACSAPIReader()
@@ -49,12 +56,21 @@ def get_alert():
     
     return events
 
+def publish(msg,route):
+
+    channel = CONNECTION.channel()
+
+    # Declare a queue named 'hello'
+    channel.exchange_declare(exchange='alerts', exchange_type='topic')
+    # Publish a message to the alert queue
+    channel.basic_publish(exchange='alerts', routing_key=route, body=msg)
+    # close connection
+    channel.close()
+
 def main():
     while True:
         alert = get_alert()
-
-        # Send alert to amqp
-        
+        publish(json.dumps(alert),'*.alert')
         sleep(10)
     
 if __name__ == "__main__":

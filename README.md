@@ -35,6 +35,9 @@ Other Assumptions:
 This section lists any major frameworks/libraries used to develop SafeMe.
 
 <!-- [![Vue][Vue.js]][Vue-url]  -->
+* HTML
+* Bootstrap
+* CSS
 * [Vue.js](https://vuejs.org/)
 * [Python](https://www.python.org/)
 * [Flask](https://flask.palletsprojects.com/en/2.2.x/)
@@ -78,28 +81,7 @@ _Instructions on how to install this respository onto your local machine._
    http://localhost:8080 or https://localhost:8081
    ```
 
-<!-- 
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
- -->
-
 ## Usage
-
 
 ## Contributing
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -133,6 +115,3 @@ Team: Joey Tan, Hong Xiang, Samuel Chung, Aaron Wong, John Choong, Anthony Ho
 [homepage-screenshot]: src/assets/product.png
 [general-screenshot]: src/assets/general_stats.png
 [regional-screenshot]: src/assets/regional_stats.png -->
-
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
