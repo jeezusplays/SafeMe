@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Public UI</title>
+    <title>My Family</title>
     <script src="https://unpkg.com/vue@next"></script>
     <!-- <link rel="stylesheet" href="css/style.css"> -->
 
@@ -27,8 +27,72 @@
 
 <body>
     <div id="app">
-        <h1>Family Page</h1>
-        <p>{{ message }}</p>
+                <!-- NAVBAR--> 
+                <nav class="navbar navbar-light navbar-expand-lg bg-body-secondary" style="background-color: #e3f2fd;">
+                    <div class="container-fluid">
+                    <!-- Shows account type -->
+                      <a class="navbar-brand" href="#">SafeMe (Public)</a>
+        
+        
+                      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                      </button>
+        
+                      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <!-- Navbar tabs for Public UI -->
+                          <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="disastersNearMe.html">Disasters Near Me</a>
+                            <!-- <a v-else class="nav-link" aria-current="page" href="#">Disasters Near Me</a> -->
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link active" href="myFamily.html">My Family</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" href="volunteerPublic.html">Volunteer to Help</a>
+                          </li>
+                        </ul>
+        
+                        <!-- Navbar tabs for Gvmt UI -->
+                        <!-- <ul v-else class="navbar-nav me-auto mb-2 mb-lg-0"></ul> -->
+                        <!-- Switches between account types -->
+                        <button class="btn btn-outline-primary" type="submit">Switch Account Type</button>
+                      </div>
+                    </div>
+                </nav>
+
+                <!-- Card Group -->
+                <div class="container">
+                    <div class="card-group my-5">
+
+                        <div v-for="member in this.family" class="card">
+                            <img class="card-img-top" src="photos/you.png" alt="Card image cap">
+                            <div class="card-body">
+                                <h4 class="card-title">{{member.name}}</h4>
+                                <ul class="card-text" style="list-style: none">
+                                    <li>User ID:<br> {{member.userID}}</li>
+                                    <li>Name:<br> {{member.email}}</li>
+                                    <li>
+                                        <strong v-if="member.status == 'Mildly Injured'" class="text-warning">Status:<br> {{member.status}}</strong>
+
+                                        <strong v-else-if="member.status == 'Pending'" class="text-secondary">Status:<br> {{member.status}}</strong>
+
+                                        <strong v-else-if="member.status == 'Okay'" class="text-success">Status:<br> {{member.status}}</strong>
+
+                                        <strong v-else class="text-danger">Status:<br> {{member.status}}</strong>
+                                    </li>
+                                    <li>Last known country/city:<br> {{member.lastKnownCity}}</li>
+                                </ul>
+                                <button v-if="member.status == 'Okay'" type="button" class="btn btn-secondary" disabled>Escalate to government</button>
+
+                                <button v-else type="button" class="btn btn-primary">Escalate to government</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+              </div>
     </div>
 
     <!-- Bootstrap Bundle -->
@@ -44,11 +108,63 @@
         crossorigin="anonymous"></script> -->
     <script>
         const app = Vue.createApp({
-            data() {
+            data(){
                 return {
-                    message: 'Hello Vue!'
-                    
+                    family:[
+                        {
+                            userID: '001',
+                            name: 'A',
+                            status: 'Unresponsive',
+                            photo: 'photos/personA.png',
+                            email: 'a@email.com',
+                            lastKnownCity: 'Turkey, Hatay'
+                        },
+
+                        {
+                            userID: '002',
+                            name: 'B',
+                            status: 'Mildly Injured',
+                            photo: 'photos/personB.png',
+                            email: 'b@email.com',
+                            lastKnownCity: 'Turkey, Hatay'
+                        },
+
+                        {
+                            userID: '003',
+                            name: 'C',
+                            status: 'Severely Injured',
+                            photo: 'photos/personC.png',
+                            email: 'a@email.com',
+                            lastKnownCity: 'Malaysia, Johor Bahru'
+                        },
+
+                        {
+                            userID: '004',
+                            name: 'E',
+                            status: 'Pending',
+                            photo: 'photos/persone.png',
+                            email: 'e@email.com',
+                            lastKnownCity: 'Malaysia, Johor Bahru'
+                        },
+
+                        {
+                            userID: '005',
+                            name: 'You',
+                            status: 'Okay',
+                            photo: 'photos/you.png',
+                            email: 'f@email.com',
+                            lastKnownCity: 'Singapore, Singapore'
+                        },
+
+                    ]
                 }
+            },
+
+            methods:{
+                //get family photo
+                // getPhoto(member){
+                //     return member.photo
+                // }
             }
         })
         app.mount('#app')

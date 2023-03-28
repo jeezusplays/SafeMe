@@ -29,7 +29,7 @@
 <body>
     <div id="app">
 
-        <!-- MODAL to check in on a disaster stricken user wihtin 10km of disaster -->
+        <!-- MODAL to check in on a disaster stricken user within 10km of disaster -->
         <div v-if="userStatus != 'Okay'" class="modal" tabindex="-1" id="checkInModal">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -42,33 +42,29 @@
                   <p><u>What is your current status?</u></p>              
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal">Okay</button>
-                <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal">Mildly Injured</button>
-                <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal">Severely Injured</button>
+                <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal" id="liveToastBtn1">Okay</button>
+                <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal" id="liveToastBtn2">Mildly Injured</button>
+                <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal" id="liveToastBtn3">Severely Injured</button>
               </div>
             </div>
           </div>
         </div>
 
         <!-- SUBMISSION TOAST -->
-        <!-- <button type="button" class="btn btn-primary myBtn">Show live toast</button>
-        <button type="button" class="btn btn-primary" id="liveToastBtn">Show live toast</button>
-
-        <div class="toast-container position-fixed bottom-0 end-0 p-3">
-          <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div v-for="status in statusArr" class="toast-container position-fixed bottom-0 end-0 p-3">
+          <div :id=status class="toast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
-              <img src="..." class="rounded me-2" alt="...">
-              <strong class="me-auto">Bootstrap</strong>
-              <small>11 mins ago</small>
+              <strong class="me-auto">Your response has been recorded</strong>
+              <small>Just now</small>
               <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="toast-body">
-              Hello, world! This is a toast message.
+              We have informed the government and your family on your status!
             </div>
           </div>
-        </div> -->
+        </div>
 
-        <!-- NAVBAR-->
+        <!-- NAVBAR--> 
         <nav class="navbar navbar-light navbar-expand-lg bg-body-secondary" style="background-color: #e3f2fd;">
             <div class="container-fluid">
             <!-- Shows account type -->
@@ -83,7 +79,7 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <!-- Navbar tabs for Public UI -->
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Disasters Near Me</a>
+                    <a class="nav-link active" aria-current="page" href="disastersNearMe.html">Disasters Near Me</a>
                     <!-- <a v-else class="nav-link" aria-current="page" href="#">Disasters Near Me</a> -->
                   </li>
                   <li class="nav-item">
@@ -97,13 +93,13 @@
                 <!-- Navbar tabs for Gvmt UI -->
                 <!-- <ul v-else class="navbar-nav me-auto mb-2 mb-lg-0"></ul> -->
                 <!-- Switches between account types -->
-                <button @click="toggleAcc" class="btn btn-outline-primary" type="submit">Switch Account Type</button>
+                <button class="btn btn-outline-primary" type="submit">Switch Account Type</button>
               </div>
             </div>
           </nav>
 
-        <div class="container my-5">
-          <!-- DISASTER TABLE -->
+        <!-- DISASTER TABLE -->
+          <div class="container my-5">
           <table id="example" class="table table-striped my-auto" style="width:100%">
             <thead>
                 <tr>
@@ -146,12 +142,14 @@
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
     <!-- Popper and JS (Unmute if needed for dropdowns, popovers, or tooltips) -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
         integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
         integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
-        crossorigin="anonymous"></script> -->
+        crossorigin="anonymous"></script>
+
+    <!-- Vue App -->
     <script>
         const app = Vue.createApp({
             data() {
@@ -159,6 +157,13 @@
                     header: 'Disasters Near Me',
                     // Danger threshold
                     dangerThreshold: 10,
+
+                    //Available statuses for dynamic toasts
+                    statusArr: [
+                      'okay',
+                      'mildlyInjured',
+                      'severelyInjured'
+                    ],
 
                     // Dummy data
                     mockData: [
@@ -202,7 +207,7 @@
                       incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
                       danger: 'Pending',
                     },
-                    
+
                   ]
                 }
             },
@@ -211,7 +216,7 @@
               // Checks the distance between user and nearest disaster
               distanceFromNearestDisaster(){
                 //assuming calculations from microservice will return an integer here. For now make this number above 10 to see how modal will not appear
-                return 11
+                return 4
               },
               
               // Computes user status depending on distance form disaster (modal is triggered at 10 and below)
@@ -221,6 +226,25 @@
                 }
                 return 'Okay'
               },
+            },
+
+            methods:{
+              // status
+              getStatus(status){
+                return status
+              },
+
+              // showToast(btnID, toastID){
+              //   var toastTrigger = document.getElementById(btnID)
+              //   var toastLiveExample = document.getElementById(toastID)
+              //   if (toastTrigger) {
+              //       toastTrigger.addEventListener('click', () => {
+              //       // const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+              //       var toastBootstrap = new bootstrap.Toast(toastLiveExample)
+              //       toastBootstrap.show()
+              //       })
+              //   }
+              // },
             },
         })
 

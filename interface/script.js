@@ -3,20 +3,39 @@ $(document).ready(function () {
     $('#example').DataTable();
 });
 
-//Show modal on load
+//Adds event listener to  buttons in 'Disasters Near Me' modal to trigger toasts
+const statusToasts = [
+    {
+        buttonID: 'liveToastBtn1',
+        toastID: 'okay'
+    },
+    {
+        buttonID: 'liveToastBtn2',
+        toastID: 'mildlyInjured'
+    },
+    {
+        buttonID: 'liveToastBtn3',
+        toastID: 'severelyInjured'
+    },
+]
+for (let status of statusToasts){
+    const toastTrigger = document.getElementById(status.buttonID)
+    const toastLiveExample = document.getElementById(status.toastID)
+    if (toastTrigger) {
+        toastTrigger.addEventListener('click', () => {
+            const toastBootstrap = new bootstrap.Toast(toastLiveExample)
+            toastBootstrap.show()
+        })
+    }
+}
+
+
+
+
+
+//Show modal on load (for some reason if i put this at the top, it will casue other scripts to fail to run)
 const checkInModal = new bootstrap.Modal('#checkInModal')
 window.addEventListener('DOMContentLoaded', () => {
     checkInModal.show()
 })
 
-//Get check-in modal buttons to show success toast
-// const toastTrigger = document.getElementById('liveToastBtn')
-// // const toastTrigger = document.getElementsByClassName('myBtn')[0]
-// const toastLiveExample = document.getElementById('liveToast')
-
-// if (toastTrigger) {
-//   const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-//   toastTrigger.addEventListener('click', () => {
-//     toastBootstrap.show()
-//   })
-// }
