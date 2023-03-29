@@ -29,9 +29,7 @@ for (let status of statusToasts){
     }
 }
 
-
 //Adds event listener to buttons in 'Family' cards to trigger toasts upon escalation
-
 const reportToasts = [
     {
         buttonID: '001',
@@ -54,7 +52,6 @@ const reportToasts = [
         toastID: 'You'
     },
 ]
-
 for (let report of reportToasts){
     const toastTrigger = document.getElementById(report.buttonID)
     const toastLiveExample = document.getElementById(report.toastID)
@@ -66,11 +63,7 @@ for (let report of reportToasts){
     }
 }
 
-
-
-
-
-//Show modal on load (for some reason if i put this at the top, it will casue other scripts to fail to run)
+//Show modal on load (for some reason if i put this at the top, it will cause other scripts to fail to run)
 const checkInModal = new bootstrap.Modal('#checkInModal')
 window.addEventListener('DOMContentLoaded', () => {
     checkInModal.show()
