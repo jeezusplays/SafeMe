@@ -30,6 +30,43 @@ for (let status of statusToasts){
 }
 
 
+//Adds event listener to buttons in 'Family' cards to trigger toasts upon escalation
+
+const reportToasts = [
+    {
+        buttonID: '001',
+        toastID: 'A'
+    },
+    {
+        buttonID: '002',
+        toastID: 'B'
+    },
+    {
+        buttonID: '003',
+        toastID: 'C'
+    },
+    {
+        buttonID: '004',
+        toastID: 'E'
+    },
+    {
+        buttonID: '005',
+        toastID: 'You'
+    },
+]
+
+for (let report of reportToasts){
+    const toastTrigger = document.getElementById(report.buttonID)
+    const toastLiveExample = document.getElementById(report.toastID)
+    if (toastTrigger) {
+        toastTrigger.addEventListener('click', () => {
+            const toastBootstrap = new bootstrap.Toast(toastLiveExample)
+            toastBootstrap.show()
+        })
+    }
+}
+
+
 
 
 
