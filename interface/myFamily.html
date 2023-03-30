@@ -65,7 +65,7 @@
                 <div class="container">
                     <div class="card-group my-5">
 
-                        <div v-for="member in this.family" class="card">
+                        <div v-for="(member,index) in this.family" class="card">
                             <img class="card-img-top" src="photos/you.png" alt="Card image cap">
                             <div class="card-body">
                                 <h4 class="card-title">{{member.name}}</h4>
@@ -84,9 +84,9 @@
                                     </li>
                                     <li>Last Known Location: {{member.lastKnownCity}}</li>
                                 </ul>
-                                <button v-if="member.status == 'Okay'" type="button" class="btn btn-secondary" disabled>Escalate to government</button>
 
-                                <button v-else type="button" :id="member.userID" class="btn btn-primary">Escalate to government</button>
+                                <button type="button" class="btn btn-primary" :id="member.userID"  :disabled="isDisabled(index)" @click="disableOnClick(index)">Escalate to government</button>
+
                             </div>
                         </div>
                     </div>
@@ -132,7 +132,7 @@
                             status: 'Unresponsive',
                             photo: 'photos/personA.png',
                             email: 'a@email.com',
-                            lastKnownCity: 'Turkey, Hatay'
+                            lastKnownCity: 'Turkey, Hatay',
                         },
 
                         {
@@ -141,7 +141,7 @@
                             status: 'Mildly Injured',
                             photo: 'photos/personB.png',
                             email: 'b@email.com',
-                            lastKnownCity: 'Turkey, Hatay'
+                            lastKnownCity: 'Turkey, Hatay',
                         },
 
                         {
@@ -150,7 +150,7 @@
                             status: 'Severely Injured',
                             photo: 'photos/personC.png',
                             email: 'a@email.com',
-                            lastKnownCity: 'Malaysia, Johor Bahru'
+                            lastKnownCity: 'Malaysia, Johor Bahru',
                         },
 
                         {
@@ -159,7 +159,7 @@
                             status: 'Pending',
                             photo: 'photos/persone.png',
                             email: 'e@email.com',
-                            lastKnownCity: 'Malaysia, Johor Bahru'
+                            lastKnownCity: 'Malaysia, Johor Bahru',
                         },
 
                         {
@@ -168,10 +168,28 @@
                             status: 'Okay',
                             photo: 'photos/you.png',
                             email: 'f@email.com',
-                            lastKnownCity: 'Singapore, Singapore'
+                            lastKnownCity: 'Singapore, Singapore',
                         },
 
                     ]
+                }
+            },
+
+            // Attempt to disable button on-click
+            computed:{
+                //an array of booleans that will be used in disable() method to disable buttons on click
+                isReportedArr(){
+                    var reportsArr = Array()
+                    for (member of this.family){
+                        //if user is okay, button should be disabled by default
+                        if (member.status != 'Okay'){
+                            reportsArr.push(false)
+                        }
+                        else{
+                            reportsArr.push(true)
+                        }
+                    }
+                    return reportsArr
                 }
             },
 
@@ -179,6 +197,19 @@
                 //get family photo
                 // getPhoto(member){
                 //     return member.photo
+                // }
+
+                //disables button onclick
+                isDisabled(index){
+                    return this.isReportedArr[index]
+                },
+
+                //disables escalate button onclick
+                // disableOnClick(index){
+                //     if (this.isReportedArr[index] == false){
+                //         this.isReportedArr[index] = true
+                //         this.isDisabled(index)
+                //     }
                 // }
             }
         })
