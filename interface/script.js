@@ -65,7 +65,7 @@ for (let report of reportToasts){
 
 
 //Adds event listener to buttons in 'Family' cards to trigger toasts upon escalation
-// const volunteerToasts = [
+// const volunteerPublicToasts = [
 //     {
 //         buttonID: '1',
 //         toastID: 'a'

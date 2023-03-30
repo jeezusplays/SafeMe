@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Title</title>
+    <title>Disasters in Country</title>
     <script src="https://unpkg.com/vue@next"></script>
     <!-- <link rel="stylesheet" href="css/style.css"> -->
 
@@ -14,14 +14,139 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
+    <!-- Datatables for table styling -->
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
     <!-- Axios -->
     <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+
+    <!-- Datatables JS scripts -->
+    <script defer src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script defer src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script defer src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script defer src="script.js"></script>
 </head>
 
 <body>
     <div id="app">
-        <h1>Header</h1>
-        <p>{{ message }}</p>
+        
+            <!-- NAVBAR--> 
+            <nav class="navbar navbar-light navbar-expand-lg bg-body-secondary" style="background-color: #e3f2fd;">
+                <div class="container-fluid">
+                <!-- Shows account type -->
+                    <a class="navbar-brand" href="#">SafeMe (Government)</a>
+    
+    
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                    </button>
+    
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    
+                    <!-- Navbar tabs for Gvmt UI -->
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+                    <!-- Switches between account types -->
+                    <button class="btn btn-outline-primary" onclick="location.href='disastersNearMe.html'">Switch Account Type</button>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- BREADCRUMBS IF ON CASUALTY PAGE--> 
+            <div v-if="isCasualtyPage" class="container my-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a href="#">Home</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">View Casualties</li>
+                    </ol>
+                  </nav>
+            </div>
+
+            <!-- DISASTER TABLE FOR HOME -->
+            <div v-if="isHome" class="container my-5">
+                <table id="example" class="table table-striped my-auto" style="width:100%">
+                  <thead>
+                      <tr>
+                          <th>Country/City</th>
+                          <th>Disaster Type</th>
+                          <th>Distance Away</th>
+                          <th>Time of Incident</th>
+                          <th>Danger Status</th>
+                          <th>Actions</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr v-for="(disaster, index) in this.mockData">
+                          <td>{{disaster.country}}</td>
+                          <td>{{disaster.type}}</td>
+                          <td>{{disaster.distance}} km</td>
+                          <td>{{disaster.incidence}}</td>
+                          <!-- Checks for danger status and renders the colour status -->
+                          <td v-if="disaster.danger == 'Low Risk'">
+                            <span class="badge text-bg-success">{{disaster.danger}}</span>
+                          </td>
+                          <td v-else-if="disaster.danger == 'Moderate Risk'">
+                            <span class="badge text-bg-warning">{{disaster.danger}}</span>
+                          </td>
+                          <td v-else-if="disaster.danger == 'Pending'">
+                            <span class="badge text-bg-secondary">{{disaster.danger}}</span>
+                          </td>
+                          <td v-else>
+                            <span class="badge text-bg-danger">{{disaster.danger}}</span>
+                          </td>
+                          <td>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-link" @click="toCasualtyPage()">View Casualties</button>
+                                <button type="button" class="btn btn-link">Request Volunteers</button>
+                              </div>
+                          </td>
+                      </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            <!-- DISASTER TABLE FOR CASUALTIES -->
+            <div v-if="isCasualtyPage" class="container my-5">
+                <table id="example" class="table table-striped my-auto" style="width:100%">
+                  <thead>
+                      <tr>
+                          <th>Country/City</th>
+                          <th>Disaster Type</th>
+                          <th>Distance Away</th>
+                          <th>Time of Incident</th>
+                          <th>Danger Status</th>
+                          <th>Actions</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr v-for="(disaster, index) in this.mockData">
+                          <td>{{disaster.country}}</td>
+                          <td>{{disaster.type}}</td>
+                          <td>{{disaster.distance}} km</td>
+                          <td>{{disaster.incidence}}</td>
+                          <!-- Checks for danger status and renders the colour status -->
+                          <td v-if="disaster.danger == 'Low Risk'">
+                            <span class="badge text-bg-success">{{disaster.danger}}</span>
+                          </td>
+                          <td v-else-if="disaster.danger == 'Moderate Risk'">
+                            <span class="badge text-bg-warning">{{disaster.danger}}</span>
+                          </td>
+                          <td v-else-if="disaster.danger == 'Pending'">
+                            <span class="badge text-bg-secondary">{{disaster.danger}}</span>
+                          </td>
+                          <td v-else>
+                            <span class="badge text-bg-danger">{{disaster.danger}}</span>
+                          </td>
+                          <td>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-link" :disabled="disaster.isVolunteered" @click="volunteered(index)">View Casualties</button>
+                                <button type="button" class="btn btn-link" :disabled="disaster.isVolunteered" @click="volunteered(index)">Request Volunteers</button>
+                              </div>
+                          </td>
+                      </tr>
+                  </tbody>
+                </table>
+            </div>
+    
     </div>
 
     <!-- Bootstrap Bundle -->
@@ -39,8 +164,178 @@
         const app = Vue.createApp({
             data() {
                 return {
-                    message: 'Hello Vue!'
+
+                    //renders page depending on whether it is home, vol or casualties
+                    isHome: true,
+                    isVolunteerPage: false,
+                    isCasualtyPage: false,
+
+                    mockData: [
+                        {
+                        key: '1',
+                        country: 'Turkey, Hatay',
+                        type: 'Earthquake',
+                        distance: 1,
+                        incidence: "Thu, 23 Feb 2023 20:20:21 GMT",
+                        danger: 'Low Risk',
+                        openVolunteers: false,
+                        volunteers: [],
+                        isSelected: false,
+                        casualties:[
+                                {
+                                userID: '001',
+                                name: 'A',
+                                status: 'Unresponsive',
+                                email: 'a@email.com',
+                                lastUpdate: 'Thu, 23 Feb 2023 00:54:02 GMT',
+                                },
+
+                                {
+                                userID: '002',
+                                name: 'B',
+                                status: 'Mildly Injured',
+                                email: 'b@email.com',
+                                lastUpdate: 'Thu, 23 Feb 2023 00:54:02 GMT',
+                                },
+
+                                {
+                                userID: '003',
+                                name: 'C',
+                                status: 'Severely Injured',
+                                email: 'a@email.com',
+                                lastUpdate: 'Thu, 23 Feb 2023 00:54:02 GMT',
+                                },
+
+                                {
+                                userID: '004',
+                                name: 'E',
+                                status: 'Pending',
+                                email: 'e@email.com',
+                                lastUpdate: 'Thu, 23 Feb 2023 00:54:02 GMT',
+                                },
+
+                                {
+                                userID: '005',
+                                name: 'You',
+                                status: 'Okay',
+                                email: 'f@email.com',
+                                lastUpdate: 'Thu, 23 Feb 2023 00:54:02 GMT',
+                                },
+                            ]
+                        },
+
+                        {
+                        key: '2',
+                        country: 'Turkey, Istanbul',
+                        type: 'Earthquake',
+                        distance: 15,
+                        incidence: "Thu, 23 Feb 2023 10:39:01 GMT",
+                        danger: 'High Risk',
+                        isVolunteered: false,
+                        isSelected: false
+                        },
+                        {
+                        key: '3',
+                        country: 'Turkey, Izmur',
+                        type: 'Tsunami',
+                        distance: 20,
+                        incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
+                        danger: 'Moderate Risk',
+                        isVolunteered: false,
+                        isSelected: false
+                        },
+                        {
+                        key: '4',
+                        country: 'Turkey, Trabzon',
+                        type: 'Fire',
+                        distance: 12,
+                        incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
+                        danger: 'Low Risk',
+                        isVolunteered: false,
+                        isSelected: false
+                        },
+                        {
+                        key: '5',
+                        country: 'Turkey, Bursa',
+                        type: 'Fire',
+                        distance: 100,
+                        incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
+                        danger: 'Low Risk',
+                        isVolunteered: false,
+                        isSelected: false
+                        },
+                  ]
                     
+                }
+            },
+
+            method:{
+                // renders home page
+                toHome(){
+                    this.isHome = true
+                    this.isCasualtyPage = false
+                    this.isVolunteerPage = false
+                },
+
+                // renders casualty page
+                toCasualtyPage(){
+                    this.isHome = false
+                    this.isCasualtyPage = true
+                    this.isVolunteerPage = false
+                    console.log(this.isHome)
+                    console.log(this.isCasualtyPage)
+                },
+
+                //dynamically changes volunteer state on click
+                selectDisaster(index){
+                    this.mockData[index].isSelected = true
+                    console.log(this.mockData[index].isSelected)
+                },
+
+                
+
+                // renders volunteer page
+                // toVolunteer(){
+                //     this.isHome = false
+                //     this.isCasualtyPage = false
+                //     this.isVolunteerPage = true
+                // },
+
+                //computes the casualty status distribution, returns an object
+                calulateDistribution(casualtyList){       
+                    var distributions = {
+                        numOkay: 0,
+                        numMildlyInjured: 0,
+                        numPending: 0,      
+                        //others include severely injured and unresponsive
+                        numOthers: 0
+                    }
+
+                    let total = casualtyList.length                   
+
+                    for (casualty of casualtyList){
+                        if (casualty.danger == 'Okay'){
+                            distributions.numOkay ++
+                        }
+
+                        else if (casualty.danger == 'Mildly Injured'){
+                            distributions.numMildlyInjured ++
+                        }
+
+                        else if (casualty.danger == 'Pending'){
+                            distributions.numPending ++
+                        }
+
+                        else{
+                            distributions.numOthers ++
+                        }
+                    }
+
+                    for (dist in distributions){
+                        let finalDistribution = (dist / total * 100).toFixed(2)
+                        distributions.dist = finalDistribution
+                    }
+                    return distributions
                 }
             }
         })

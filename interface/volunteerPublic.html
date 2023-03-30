@@ -31,7 +31,7 @@
                 <nav class="navbar navbar-light navbar-expand-lg bg-body-secondary" style="background-color: #e3f2fd;">
                     <div class="container-fluid">
                     <!-- Shows account type -->
-                      <a class="navbar-brand" href="#">SafeMe (Public)</a>
+                      <a class="navbar-brand" href="disastersNearMe.html">SafeMe (Public)</a>
         
         
                       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,11 +52,8 @@
                             <a class="nav-link active" href="volunteerPublic.html">Volunteer to Help</a>
                           </li>
                         </ul>
-        
-                        <!-- Navbar tabs for Gvmt UI -->
-                        <!-- <ul v-else class="navbar-nav me-auto mb-2 mb-lg-0"></ul> -->
-                        <!-- Switches between account types -->
-                        <button class="btn btn-outline-primary" type="submit">Switch Account Type</button>
+
+                        <button class="btn btn-outline-primary" onclick="location.href='countryDisasters.html'">Switch Account Type</button>
                       </div>
                     </div>
                   </nav>
@@ -186,7 +183,6 @@
             methods:{
               //dynamically changes volunteer state on click
               volunteered(index){
-                console.log(this.mockData[index].isVolunteered)
                 this.mockData[index].isVolunteered = true
               }
             }
