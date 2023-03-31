@@ -95,7 +95,7 @@
                           </td>
                           <td>
                             <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-link" @click="toCasualtyPage()">View Casualties</button>
+                                <button type="button" class="btn btn-link" @click="toCasualtyPage">View Casualties</button>
                                 <button type="button" class="btn btn-link">Request Volunteers</button>
                               </div>
                           </td>
@@ -167,7 +167,6 @@
 
                     //renders page depending on whether it is home, vol or casualties
                     isHome: true,
-                    isVolunteerPage: false,
                     isCasualtyPage: false,
 
                     mockData: [
@@ -274,14 +273,12 @@
                 toHome(){
                     this.isHome = true
                     this.isCasualtyPage = false
-                    this.isVolunteerPage = false
                 },
 
                 // renders casualty page
                 toCasualtyPage(){
                     this.isHome = false
                     this.isCasualtyPage = true
-                    this.isVolunteerPage = false
                     console.log(this.isHome)
                     console.log(this.isCasualtyPage)
                 },
