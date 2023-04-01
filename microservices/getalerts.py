@@ -2,6 +2,7 @@ from pprint import pprint
 from gdacs.api import GDACSAPIReader
 from datetime import datetime, timedelta
 from time import sleep
+from amqp_helper import Rabbitmq
 
 import json
 import dateparser
@@ -68,9 +69,17 @@ def publish(msg,route):
     channel.close()
 
 def main():
+    rabbitmq = Rabbitmq()
     while True:
         alert = get_alert()
+<<<<<<< Updated upstream
         publish(json.dumps(alert),'*.alert')
+=======
+
+        rabbitmq.publish_message(json.dumps(alert),'gdac.alert')
+        # Send alert to amqp
+        
+>>>>>>> Stashed changes
         sleep(10)
     
 if __name__ == "__main__":
