@@ -62,29 +62,50 @@
                   </nav>
             </div>
 
-            <!-- DISASTER TABLE FOR HOME -->
-            <table id="example" class="table table-striped my-auto" style="width:100%">
-              <thead>
-                  <tr>
-                      <th>User ID</th>
-                      <th>Name</th>
-                      <th>Country, City</th>
-                      <th>Actions</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr v-for="(volunteer, index) in this.volunteers">
-                    
-                      <td>{{volunteer.userID}}</td>
-                      <td>{{volunteer.name}}</td>
-                      <td>{{volunteer.country}}</td>
-                      <td>
-                        <button type="button" class="btn btn-link" :disabled="volunteer.isCalled" @click="volunteered(index)">Call Up Volunteer</button>
-                      </td>
-                  </tr>
-              </tbody>
-            </table>
-        </div>
+            <!-- VOLUNTEER EVENT HEADER VIEW MODE --> 
+            <div v-if="!inEditMode" class="d-flex flex-row align-items-center gap-3">
+                <div class="pr-3 pr-3 me-auto">
+                    <h3  class="my-4">{{volunteerEventName}}</h3> 
+                </div>
+                <div class="">
+                    <button type="button" class="btn btn-primary" @click="this.swichModes">Edit Volunteer Event Name</button>
+                </div>
+            </div>
+
+            <!-- VOLUNTEER EVENT HEADER EDIT MODE --> 
+            <div v-else class="d-flex flex-row align-items-center gap-3">
+                <div class="pr-3 pr-3 me-auto">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Enter new volunteer event name</span>
+                        <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" v-model="this.volunteerEventName">
+                    </div> 
+                </div>
+                <div class="">
+                    <button type="button" class="btn btn-primary" @click="this.swichModes">Save Changes</button>
+                </div>
+            </div>
+        <!-- DISASTER TABLE FOR VOLUNTEERS -->
+        <table id="example" class="table table-striped my-auto" style="width:100%">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Country, City</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(volunteer, index) in this.volunteers">
+                  
+                    <td>{{volunteer.userID}}</td>
+                    <td>{{volunteer.name}}</td>
+                    <td>{{volunteer.country}}</td>
+                    <td>
+                      <button type="button" class="btn btn-link" :disabled="volunteer.isCalled" @click="volunteered(index)">Call Up Volunteer</button>
+                    </td>
+                </tr>
+            </tbody>
+          </table>
     </div>
 
     <!-- Bootstrap Bundle -->
@@ -129,14 +150,22 @@
                             country: 'Singapore, Singapore',
                             isCalled: true
                         },
-                    ]
+                    ],
+                    volunteerEventName: 'Disaster',
+                    inEditMode: true,
                 }
             },
 
             methods:{
+                //disables the 'call up' button upon click
                 volunteered(index){
                 this.volunteers[index].isCalled = true
-              }
+                },
+
+                // toggles between edit mode and view mode
+                swichModes(){
+                    this.inEditMode = !this.inEditMode
+                },
             }
         })
         app.mount('#app')
