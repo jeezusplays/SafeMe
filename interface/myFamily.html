@@ -74,13 +74,13 @@
                                     <li>Name: {{member.email}}</li>
                                     <li>
                                         Status: 
-                                        <strong v-if="member.status == 'Mildly Injured'" class="text-warning">{{member.status}}</strong>
+                                        <strong v-if="member.status == 'Mildly Injured'" class="text-warning"><br>{{member.status}}</strong>
 
-                                        <strong v-else-if="member.status == 'Pending'" class="text-secondary">{{member.status}}</strong>
+                                        <strong v-else-if="member.status == 'Pending'" class="text-secondary"><br>{{member.status}}</strong>
 
-                                        <strong v-else-if="member.status == 'Okay'" class="text-success">{{member.status}}</strong>
+                                        <strong v-else-if="member.status == 'Okay'" class="text-success"><br>{{member.status}}</strong>
 
-                                        <strong v-else class="text-danger">Status:<br> {{member.status}}</strong>
+                                        <strong v-else class="text-danger"><br>{{member.status}}</strong>
                                     </li>
                                     <li>Last Known Location: {{member.lastKnownCity}}</li>
                                 </ul>
