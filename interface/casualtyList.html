@@ -90,7 +90,7 @@
                             <span class="badge bg-secondary translate-middle p-1 border border-light rounded-circle">
                                 <span class="visually-hidden"></span>
                             </span>
-                            Mildly Injured - {{statusDistribution.numMildlyInjured}}%
+                            Pending - {{statusDistribution.numPending}}%
                         </div>
 
                         <!-- UNRESPONSIVE/ SEVERELY INJURED BADGE -->
@@ -158,7 +158,7 @@
                         {
                             userID: '001',
                             name: 'A',
-                            status: 'Unresponsive',
+                            status: 'Pending',
                             lastUpdate: 'Thu, 23 Feb 2023 20:20:21 GMT',
                             email: 'a@email.com',
                             lastKnownCity: 'Turkey, Hatay',
@@ -232,14 +232,12 @@
                             distributions.numOthers ++
                         }
                     }
+                    console.log(distributions)
 
                     for (const status in distributions){
-                        console.log(`${status}: ${distributions[status]}`)
                         var currNum = distributions[status]
-                        console.log(currNum)
-                        var distribution = (currNum / total * 100).toFixed(2)
+                        var distribution = Number((currNum / total * 100).toFixed(2))
                         distributions[status] = distribution
-                        console.log(distributions)
                     }
                     return distributions
                 }
