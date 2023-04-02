@@ -1,3 +1,5 @@
+from pika.exchange_type import ExchangeType
+
 import pika
 import json
 import threading
@@ -70,7 +72,7 @@ class Rabbitmq():
         self.channel = channel
 
         # Declare the exchange
-        self.channel.exchange_declare(exchange=self.exchange, exchange_type='topic')
+        self.channel.exchange_declare(exchange=self.exchange, exchange_type=ExchangeType.topic)
         return self.connection, self.channel
     
     def _close(self):
