@@ -125,9 +125,9 @@ class Rabbitmq():
         self.channel.basic_publish(exchange=self.exchange, routing_key=key, body=msg)
         self._close()
 
-    def publish_messages(self,msgs,key):
+    def publish_fanout_message(self,msg,keys):
         self._connect()
-        for msg in msgs:
+        for key in keys:
             self.channel.basic_publish(exchange=self.exchange, routing_key=key, body=msg)
         self._close()
 
