@@ -2,16 +2,12 @@ from pprint import pprint
 from gdacs.api import GDACSAPIReader
 from datetime import datetime, timedelta
 from time import sleep
+from amqp_helper import Rabbitmq
 
 import json
 import dateparser
 import pika
 
-HOST = ''
-PORT = ''
-
-# Connect to RabbitMQ server
-CONNECTION = pika.BlockingConnection(pika.ConnectionParameters(host=HOST, port=PORT))
 
 def get_alert():
     client = GDACSAPIReader()
@@ -56,21 +52,11 @@ def get_alert():
     
     return events
 
-def publish(msg,route):
-
-    channel = CONNECTION.channel()
-
-    # Declare a queue named 'hello'
-    channel.exchange_declare(exchange='alerts', exchange_type='topic')
-    # Publish a message to the alert queue
-    channel.basic_publish(exchange='alerts', routing_key=route, body=msg)
-    # close connection
-    channel.close()
-
 def main():
+    rabbitmq = Rabbitmq()
     while True:
         alert = get_alert()
-        publish(json.dumps(alert),'*.alert')
+        rabbitmq.publish_message(json.dumps(alert),'*.alert')
         sleep(10)
     
 if __name__ == "__main__":
