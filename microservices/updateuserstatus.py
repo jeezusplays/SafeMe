@@ -56,10 +56,10 @@ def send_user_status():
             print("Received user status: ", user_status)
 
             # Add userid from userstatus json to disaster_URL
-            disaster_URL = "http://localhost:5002/affecteduser"
+            disaster_URL = disaster_URL + str(user_status["userID"])
 
             # Invoke disaster microservice to update user status
-            print("----- Invoking disaster microservice to update user status: -----")
+            print("--- Invoking disaster microservice to update user status: ---")
             result = invoke_http(disaster_URL, method = "POST", json=user_status)
             print("Result: ", result)
             
@@ -88,7 +88,7 @@ Assumptions made: Alerts Websocket can extract userID from user_status json and 
 '''
 # Update user status - send request
 # [PUT] /disaster/update/user/{userID}
-@app.route("/disaster/update/user", methods=['PUT'])
+@app.route("/disaster/update/user/<int:userID>", methods=['PUT'])
 def update_user_status_request():
     # Get user status from request
     if request.is_json:
@@ -97,8 +97,8 @@ def update_user_status_request():
             print("Received user status: ", user_status)
 
             # Update user status in disaster db
-            print("----- Invoking disaster microservice to update user status: -----")
-            disaster_URL = "http://localhost:5002/disaster/update/user/" + str(user_status["userID"])
+            print("--- Invoking disaster microservice to update user status: ---")
+            disaster_URL = disaster_URL + str(user_status["userID"])
             result = invoke_http(disaster_URL, method = "PUT", json=user_status)
             print("Result: ", result)
             
