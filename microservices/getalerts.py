@@ -7,15 +7,14 @@ from datetime import datetime
 
 import json
 import dateparser
-import pika
 
 
 def get_alert():
     client = GDACSAPIReader()
     events = client.latest_events()
     events_dict = events.dict()
-    # pprint(events_dict)
-    events = {}
+
+    events = []
     for i in events_dict['features']:
 
         _from = dateparser.parse(i['properties']['fromdate'].replace('T',' '))
@@ -47,13 +46,7 @@ def get_alert():
             'alertscore':_alertscore
         }
 
-        if _isToday:
-            pprint(event)
-        if events.get(_name,False):
-            if _name in events:
-                events[_name].append(event)
-        else:
-            events[_name] = [event]
+        events.append(event)
     
     return events
 
@@ -63,8 +56,9 @@ def main():
     while True:
         alerts = get_alert()
         new_alerts = [alert for alert in alerts if alert not in alert_list]
-        alert_list+=new_alerts
-        rabbitmq.publish_message(json.dumps(new_alerts),'*.alert')
+        if len(new_alerts)>0:
+            alert_list+=new_alerts
+            rabbitmq.publish_message(json.dumps(new_alerts),'gdac.alert')
         sleep(10)
     
 if __name__ == "__main__":
