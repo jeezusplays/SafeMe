@@ -14,10 +14,14 @@ def createDisasterWithUsers(alerts):
             affected_userIds = affectedUsers(usersLoc,alert)
             disaster = createDisaster(alert)
             affected_users = getUsersById(affected_userIds)
-            disasterId = disaster.get('disasterID',0)
-            result = addAffectedUsers(affected_users,disasterId)
-            if result.get("code",400) != 200:
-                raise Exception('error createDisaster')
+            for affected_user in affected_users:
+                disasterId = disaster.get('disasterID',0)
+
+                result = addAffectedUser(affected_user,disasterId)
+                if result.get("code",400) != 200:
+                    raise Exception('error createDisaster')
+                rabbitmq.publish_message(json.dumps(alert),f'user.{affected_user["userID"]}.alert')
+
         except Exception as e:
             print(e)
             raise e
@@ -27,8 +31,6 @@ def alertCallback(ch, method, properties, body):
     data = json.loads(body)
     pprint(data)
     createDisasterWithUsers(data)
-    ########################### TODO SEND NOTIFICATION TO AMQP ###############################
-
 
 def distanceFrom(lat1,lon1,lat2,lon2)->float:
     '''
@@ -75,7 +77,7 @@ def getUsersById(userIds):
             raise e
     return users
 
-def addAffectedUsers(user, disasterId):
+def addAffectedUser(user, disasterId):
     affectedUser = {
         "disasterID":disasterId,
         "userID":user["userID"],
@@ -126,11 +128,12 @@ def affectedUsers(usersLoc,alert:dict):
     return userIds
 
 def main():
+    global rabbitmq
     rabbitmq = Rabbitmq()
     rabbitmq.subscribe('gdacalert',alertCallback)
 
 # Send localised alerts
-# [AMQP] {country}.{city}.alert
+# [AMQP] user.{userID}.alert
 
 # Get all user latest location - send request
 # [GET] /location/latest
