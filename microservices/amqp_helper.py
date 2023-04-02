@@ -87,7 +87,7 @@ class Rabbitmq():
 
             return has_queue
 
-    def add_queue(self, queues:list(tuple)):
+    def add_queue(self, queues:list[tuple]):
         self._connect()
 
         # Declare and bind the topic queues
