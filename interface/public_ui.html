@@ -1,12 +1,10 @@
-<!-- This is the template for all HTML screens -->
-
 <!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Volunteer</title>
+    <title>Public UI</title>
     <script src="https://unpkg.com/vue@next"></script>
     <!-- <link rel="stylesheet" href="css/style.css"> -->
 
@@ -20,26 +18,8 @@
 
 <body>
     <div id="app">
-            <!-- NAVBAR--> 
-            <nav class="navbar navbar-light navbar-expand-lg bg-body-secondary" style="background-color: #e3f2fd;">
-                <div class="container-fluid">
-                <!-- Shows account type -->
-                    <a class="navbar-brand" href="#">SafeMe (Public)</a>
-    
-    
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                    </button>
-    
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    
-                    <!-- Navbar tabs for Gvmt UI -->
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
-                    <!-- Switches between account types -->
-                    <button class="btn btn-outline-primary" onclick="location.href='disastersNearMe.html'">Switch Account Type</button>
-                    </div>
-                </div>
-                </nav>
+        <h1>Public UI</h1>
+        <p>{{ message }}</p>
     </div>
 
     <!-- Bootstrap Bundle -->
@@ -58,7 +38,6 @@
             data() {
                 return {
                     message: 'Hello Vue!'
-                    
                 }
             }
         })

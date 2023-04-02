@@ -34,10 +34,9 @@ Other Assumptions:
 ### Major Frameworks / Libraries
 This section lists any major frameworks/libraries used to develop SafeMe.
 
-<!-- [![Vue][Vue.js]][Vue-url]  -->
-* HTML
-* Bootstrap
-* CSS
+* [HTML](https://www.w3schools.com/html/)
+* [Bootstrap](https://getbootstrap.com/)
+* [CSS](https://www.w3schools.com/css/)
 * [Vue.js](https://vuejs.org/)
 * [Python](https://www.python.org/)
 * [Flask](https://flask.palletsprojects.com/en/2.2.x/)
@@ -52,12 +51,21 @@ This are the APIs used to provide SafeMe with data on natural disasters.
 To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
+To get started and use the **Send Email Microservice**, you will need to follow the instructions on creating a [Google App Password](https://support.google.com/accounts/answer/185833?visit_id=638159212202344047-122164626).
 
-You will need the following software installed in your machine.
+You will also need the following software installed in your machine.
+* [Visual Studio Code](https://code.visualstudio.com/)
+* [Docker](https://www.docker.com/)
+* [Postman](https://www.postman.com/) <i>(for testing)</i>
+* [Python](https://www.python.org/)
+* [Node.js](https://nodejs.org/en/)
+* [npm](https://www.npmjs.com/)
+
+<!-- To run this project locally on your machine, follow the following steps.
 * npm
   ```sh
   npm install -g npm
-  ```
+  ``` -->
 ### Installation
 
 _Instructions on how to install this respository onto your local machine._
@@ -96,22 +104,52 @@ Don't forget to give the project a star! Thanks again!
 5. Open a Pull Request
 
 ## Contact
-These are other fellow team members who contributed to this project!
-* [Tan Zuyi Joey](https://linkedin.com/in/joey-tan-zuyi)<br>
-* [Samuel Chung](https://www.linkedin.com/in/samuel-chung-339688154/)<br>
-* [Liow Hong Xiang](https://www.linkedin.com/in/liowhongxiang/)<br>
-* Aaron Wong<br>
-* John Choong<br>
-* [Anthony Ho](https://www.linkedin.com/in/anthony-ho-uxdesign/)<br>
+Feel free to contact and connect!
+<table>
+   <tr>
+      <th></th>
+      <th>Name</th>
+      <th>Main Role</th>
+      <th>LinkedIn</th>
+   </tr>
+   <tr>
+      <td align="center">
+         <a href="https://linkedin.com/in/joey-tan-zuyi"><img src="https://avatars.githubusercontent.com/u/68149788?v=4" width="100px;" alt=""/></a>
+      </td>
+      <td>Joey Tan</td>
+      <td>Project Manager</td>
+      <td><a href="https://linkedin.com/in/joey-tan-zuyi">LinkedIn</a></td>
+   </tr>
+   <tr>
+      <td align="center">
+         <a href="https://www.linkedin.com/in/samuel-chung-339688154/"><img src="https://avatars.githubusercontent.com/u/41113285?v=4" width="100px;" alt=""/></a>
+      </td>
+      <td>Samuel Chung</td>
+      <td>Software Engineer</td>
+      <td><a href="https://www.linkedin.com/in/samuel-chung-339688154/">LinkedIn</a></td>
+   </tr>
+   <tr>
+      <td align="center">
+         <a href="https://www.linkedin.com/in/liowhongxiang/"><img src="https://avatars.githubusercontent.com/u/111420736?v=4" width="100px;" alt=""/></a>
+      </td>
+      <td>Liow Hong Xiang</td>
+      <td>Software Engineer</td>
+      <td><a href="https://www.linkedin.com/in/liowhongxiang/">LinkedIn</a></td>
+   </tr>
+   <tr>
+      <td align="center">
+         <a href="https://www.linkedin.com/in/anthony-ho-uxdesign/"><img src="https://avatars.githubusercontent.com/u/111410622?v=4" width="100px;" alt=""/></a>
+      </td>
+      <td>Anthony Ho</td>
+      <td>UX Designer</td>
+      <td><a href="https://www.linkedin.com/in/anthony-ho-uxdesign/">LinkedIn</a></td>
+</table>
 
 ## Acknowledgements
-Team: Joey Tan, Hong Xiang, Samuel Chung, Aaron Wong, John Choong, Anthony Ho
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-<!-- 
-[homepage-screenshot]: src/assets/product.png
-[general-screenshot]: src/assets/general_stats.png
-[regional-screenshot]: src/assets/regional_stats.png -->
+These are other fellow team members who contributed to this project!
+* [Tan Zuyi Joey](https://linkedin.com/in/joey-tan-zuyi)
+* [Samuel Chung](https://www.linkedin.com/in/samuel-chung-339688154/)
+* [Liow Hong Xiang](https://www.linkedin.com/in/liowhongxiang/)
+* [Anthony Ho](https://www.linkedin.com/in/anthony-ho-uxdesign/)
+* Aaron Wong
+* John Choong
