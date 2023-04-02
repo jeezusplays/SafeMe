@@ -1,31 +1,19 @@
 # Flask application to query db
 import os, sys
-import requests
-from os import environ
-from invokes import invoke_http
-
-from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
-
-'''
-AMQP Setup required for sending family member status, not operational yet until AMQP is fully configured
-
-#from {pythonfile/service} import {function}
-#import #{amqp_setup}
-'''
-
 import pika
 import json
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/safeme'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-CORS(app)
+from invokes import invoke_http
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
-# Placeholder for disaster microservice URL - May need reassignment later for port number
-disaster_URL = "http://localhost:5002/disaster/update/user/"
+'''
+AMQP Setup required for sending volunteer data, not operational yet until AMQP is fully configured
+#import #{amqp_setup}
+'''
+
+app = Flask(__name__)
+CORS(app)
 
 # Update user status in disaster db through invoking disaster.py microservice
 # Send status to disaster microservice disaster.py
