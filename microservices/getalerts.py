@@ -61,7 +61,7 @@ def main():
     rabbitmq = Rabbitmq()
     while True:
         alert = get_alert()
-        rabbitmq.publish_message(json.dumps(alert),'*.alert')
+        rabbitmq.publish_message(json.dumps(alert),'gdac.alert')
         sleep(10)
     
 if __name__ == "__main__":
