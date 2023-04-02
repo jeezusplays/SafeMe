@@ -2,22 +2,18 @@ from pprint import pprint
 from gdacs.api import GDACSAPIReader
 from datetime import datetime, timedelta
 from time import sleep
+from amqp_helper import Rabbitmq
 
 import json
 import dateparser
 import pika
 
-HOST = ''
-PORT = ''
-
-# Connect to RabbitMQ server
-CONNECTION = pika.BlockingConnection(pika.ConnectionParameters(host=HOST, port=PORT))
 
 def get_alert():
     client = GDACSAPIReader()
     events = client.latest_events()
-
     events_dict = events.dict()
+    # pprint(events_dict)
     events = {}
     for i in events_dict['features']:
 
@@ -32,6 +28,8 @@ def get_alert():
         _country_short = i['properties']['iso3']
         _isHappening = _from <= _now <= _to
         _isToday = _from.date() == _now.date()-timedelta(days=1)
+        _alertlevel = i['properties']['alertlevel']
+        _alertscore = i['properties']['alertscore']
 
         event = {
             'name':_name,
@@ -43,7 +41,9 @@ def get_alert():
             'from':_from,
             'to':_to,
             'isHappening': _isHappening,
-            'isToday': _isToday
+            'isToday': _isToday,
+            'alertlevel':_alertlevel,
+            'alertscore':_alertscore
         }
 
         if _isToday:
@@ -56,21 +56,11 @@ def get_alert():
     
     return events
 
-def publish(msg,route):
-
-    channel = CONNECTION.channel()
-
-    # Declare a queue named 'hello'
-    channel.exchange_declare(exchange='alerts', exchange_type='topic')
-    # Publish a message to the alert queue
-    channel.basic_publish(exchange='alerts', routing_key=route, body=msg)
-    # close connection
-    channel.close()
-
 def main():
+    rabbitmq = Rabbitmq()
     while True:
         alert = get_alert()
-        publish(json.dumps(alert),'*.alert')
+        rabbitmq.publish_message(json.dumps(alert),'*.alert')
         sleep(10)
     
 if __name__ == "__main__":
