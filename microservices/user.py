@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
-# from datetime import datetime
+from datetime import date
 # import json
 
 app = Flask(__name__)
@@ -124,7 +124,8 @@ def add_location():
 # Get all users latest location (Select last location where userID == userID)
 @app.route("/location/latest", methods=['GET'])
 def get_all_users_latest_location():
-    user_loc = Location.query.order_by(Location.timestamp.desc()).group_by(Location.userID).all()
+    current_timestamp_date = date.today()
+    user_loc = Location.query.filter_by(timestamp=current_timestamp_date).order_by(Location.timestamp.desc()).group_by(Location.userID).all()
     result = []
     # Check if length of users is 0
     if len(user_loc) != 0:
