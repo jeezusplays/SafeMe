@@ -3,6 +3,7 @@ from gdacs.api import GDACSAPIReader
 from datetime import datetime, timedelta
 from time import sleep
 from amqp_helper import Rabbitmq
+from datetime import datetime
 
 import json
 import dateparser
@@ -38,8 +39,8 @@ def get_alert():
             'type':_eventtype,
             'country':_country,
             'country_short':_country_short,
-            'from':_from,
-            'to':_to,
+            'from':_from.strftime("%d/%m/%Y %H:%M"),
+            'to':_to.strftime("%d/%m/%Y %H:%M"),
             'isHappening': _isHappening,
             'isToday': _isToday,
             'alertlevel':_alertlevel,
