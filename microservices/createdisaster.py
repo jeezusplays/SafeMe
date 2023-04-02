@@ -11,16 +11,22 @@ def createDisasterWithUsers(alerts):
     usersLoc = getUsersLastLoc()
     for alert in alerts:
         try:
+            routing_keys = []
+
             affected_userIds = affectedUsers(usersLoc,alert)
-            disaster = createDisaster(alert)
             affected_users = getUsersById(affected_userIds)
+            disaster = createDisaster(alert)
+            
+
             for affected_user in affected_users:
                 disasterId = disaster.get('disasterID',0)
-
                 result = addAffectedUser(affected_user,disasterId)
                 if result.get("code",400) != 200:
                     raise Exception('error createDisaster')
-                rabbitmq.publish_message(json.dumps(alert),f'user.{affected_user["userID"]}.alert')
+                
+                routing_keys.append(f'user.{affected_user["userID"]}.alert')
+            
+            rabbitmq.publish_fanout_message(json.dumps(alert),routing_keys)
 
         except Exception as e:
             print(e)
