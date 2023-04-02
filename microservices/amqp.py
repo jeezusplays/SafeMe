@@ -28,5 +28,6 @@ from amqp_helper import Rabbitmq
 
 if __name__ == '__main__':
     broker = Rabbitmq()
+    ######################### ADD QUEUES FOR USERS, ASSUME QUEUES ARE CREATED ON ACCOUNT CREATION ######################
     queues = [('gdacalert','gdac.alert'),('logalert','log.alert'),('logevent','log.event')]
     broker.add_queue(queues)
