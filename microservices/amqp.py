@@ -1,4 +1,4 @@
-# # Set up amqp exchange with queues
+# Set up amqp exchange with queues
 # GDAC alert
 # gdac.alert
 
@@ -22,3 +22,11 @@
 
 # Localised alert
 # {country}.{city}.alert
+
+from amqp_helper import Rabbitmq
+
+
+if __name__ == '__main__':
+    broker = Rabbitmq()
+    queues = [('gdacalert','gdac.alert'),('logalert','log.alert'),('logevent','log.event')]
+    broker.add_queue(queues)
