@@ -110,6 +110,7 @@ Feel free to contact and connect!
       <th></th>
       <th>Name</th>
       <th>Main Role</th>
+      <th>Github</th>
       <th>LinkedIn</th>
    </tr>
    <tr>
@@ -118,6 +119,7 @@ Feel free to contact and connect!
       </td>
       <td>Joey Tan</td>
       <td>Project Manager</td>
+      <td><a href="https://github.com/jeezusplays">Github</a></td>
       <td><a href="https://linkedin.com/in/joey-tan-zuyi">LinkedIn</a></td>
    </tr>
    <tr>
@@ -126,6 +128,7 @@ Feel free to contact and connect!
       </td>
       <td>Samuel Chung</td>
       <td>Software Engineer</td>
+      <td><a href="https://github.com/samchung95">Github</a></td>
       <td><a href="https://www.linkedin.com/in/samuel-chung-339688154/">LinkedIn</a></td>
    </tr>
    <tr>
@@ -134,6 +137,7 @@ Feel free to contact and connect!
       </td>
       <td>Liow Hong Xiang</td>
       <td>Software Engineer</td>
+      <td><a href="https://github.com/hx240">Github</a></td>
       <td><a href="https://www.linkedin.com/in/liowhongxiang/">LinkedIn</a></td>
    </tr>
    <tr>
@@ -142,6 +146,7 @@ Feel free to contact and connect!
       </td>
       <td>Anthony Ho</td>
       <td>UX Designer</td>
+      <td><a href="https://github.com/anthonyckho">Github</a></td>
       <td><a href="https://www.linkedin.com/in/anthony-ho-uxdesign/">LinkedIn</a></td>
 </table>
 
