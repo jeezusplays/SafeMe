@@ -1,13 +1,7 @@
-import pika
+from amqp_helper import Rabbitmq
+
 import json
 
-HOST = ''
-PORT = ''
-QUEUE = ''
-
-
-# Connect to RabbitMQ server
-CONNECTION = pika.BlockingConnection(pika.ConnectionParameters(host=HOST, port=PORT))
 
 
 # Get GDAC alert
@@ -17,18 +11,9 @@ def alertCallback(ch, method, properties, body):
     print("Received message:", body)
     pass
 
-def subscribeAlert():
-    channel = CONNECTION.channel()
-
-    # Declare a queue named 'hello'
-    channel.queue_declare(queue='hello')    
-
-    # Register the callback function to consume messages from the 'hello' queue
-    channel.basic_consume(queue='hello', on_message_callback=alertCallback, auto_ack=True)
-
-    # Start consuming messages from the 'hello' queue
-    channel.start_consuming()
-    pass
+def main():
+    rabbitmq = Rabbitmq()
+    rabbitmq.subscribe('gdacalert',alertCallback)
 
     
 
@@ -41,4 +26,6 @@ def subscribeAlert():
 # Create disaster  - send request
 # [POST] /disaster/new
 
+if __name__ == "__main__":
+    main()
 
