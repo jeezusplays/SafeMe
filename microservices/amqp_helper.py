@@ -70,8 +70,8 @@ class Rabbitmq():
         self.channel = channel
 
         # Declare the exchange
-        channel.exchange_declare(exchange=EXCHANGE, exchange_type='topic')
-        return connection, channel
+        self.channel.exchange_declare(exchange=EXCHANGE, exchange_type='topic')
+        return self.connection, self.channel
     
     def _close(self):
         
@@ -110,7 +110,7 @@ class Rabbitmq():
 
         self._connect()
         # Register a consumer
-        channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
+        self.channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
 
         consumer_thread = threading.Thread(target=start_consuming)
         consumer_thread.start()
