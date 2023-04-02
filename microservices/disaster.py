@@ -115,4 +115,4 @@ def get_user_status(disasterID):
 
 # Allows the service to be accessible from any other in the network
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5002, debug=True)
