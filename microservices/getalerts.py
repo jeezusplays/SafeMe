@@ -12,8 +12,8 @@ import pika
 def get_alert():
     client = GDACSAPIReader()
     events = client.latest_events()
-
     events_dict = events.dict()
+    # pprint(events_dict)
     events = {}
     for i in events_dict['features']:
 
@@ -28,6 +28,8 @@ def get_alert():
         _country_short = i['properties']['iso3']
         _isHappening = _from <= _now <= _to
         _isToday = _from.date() == _now.date()-timedelta(days=1)
+        _alertlevel = i['properties']['alertlevel']
+        _alertscore = i['properties']['alertscore']
 
         event = {
             'name':_name,
@@ -39,7 +41,9 @@ def get_alert():
             'from':_from,
             'to':_to,
             'isHappening': _isHappening,
-            'isToday': _isToday
+            'isToday': _isToday,
+            'alertlevel':_alertlevel,
+            'alertscore':_alertscore
         }
 
         if _isToday:
