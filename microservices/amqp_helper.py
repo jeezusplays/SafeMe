@@ -1,3 +1,5 @@
+from pika.exchange_type import ExchangeType
+
 import pika
 import json
 import threading
@@ -63,14 +65,14 @@ class Rabbitmq():
 
         # Connect to RabbitMQ server
         connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=HOST, port=PORT, heartbeat=3600, blocked_connection_timeout=3600,))
+            pika.ConnectionParameters(host=self.host, port=self.port, heartbeat=3600, blocked_connection_timeout=3600,))
         channel = connection.channel()
 
         self.connection = connection
         self.channel = channel
 
         # Declare the exchange
-        self.channel.exchange_declare(exchange=EXCHANGE, exchange_type='topic')
+        self.channel.exchange_declare(exchange=self.exchange, exchange_type=ExchangeType.topic)
         return self.connection, self.channel
     
     def _close(self):
@@ -83,7 +85,7 @@ class Rabbitmq():
             queue_names = [q.method.queue for q in queues]
 
             # Check if the specified queue is bound to the exchange
-            has_queue = any([q.method.exchange == EXCHANGE and q.method.queue == queue_name for q in queues])
+            has_queue = any([q.method.exchange == self.exchange and q.method.queue == queue_name for q in queues])
 
             # Close the connection
             connection.close()
@@ -96,7 +98,7 @@ class Rabbitmq():
         # Declare and bind the topic queues
         for queue,key in queues:
             self.channel.queue_declare(queue=queue, durable=True)
-            self.channel.queue_bind(queue=queue, exchange=EXCHANGE, routing_key=key)
+            self.channel.queue_bind(queue=queue, exchange=self.exchange, routing_key=key)
 
         self._close()
 
@@ -123,6 +125,11 @@ class Rabbitmq():
         self.channel.basic_publish(exchange=self.exchange, routing_key=key, body=msg)
         self._close()
 
+    def publish_messages(self,msgs,key):
+        self._connect()
+        for msg in msgs:
+            self.channel.basic_publish(exchange=self.exchange, routing_key=key, body=msg)
+        self._close()
 
 if __name__ == '__main__':
     broker = Rabbitmq()
