@@ -35,9 +35,9 @@ Other Assumptions:
 This section lists any major frameworks/libraries used to develop SafeMe.
 
 <!-- [![Vue][Vue.js]][Vue-url]  -->
-* HTML
-* Bootstrap
-* CSS
+* [HTML](https://www.w3schools.com/html/)
+* [Bootstrap](https://getbootstrap.com/)
+* [CSS](https://www.w3schools.com/css/)
 * [Vue.js](https://vuejs.org/)
 * [Python](https://www.python.org/)
 * [Flask](https://flask.palletsprojects.com/en/2.2.x/)
