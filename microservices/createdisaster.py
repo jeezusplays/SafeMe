@@ -7,7 +7,7 @@ import json
 
 # Get GDAC alert
 # gdac.alert
-def createDisaster(alerts):
+def createDisasterWithUsers(alerts):
     usersLoc = getUsersLastLoc()
     for alert in alerts:
         try:
@@ -17,9 +17,7 @@ def createDisaster(alerts):
             disasterId = disaster.get('disasterID',0)
             result = addAffectedUsers(affected_users,disasterId)
             if result.get("code",400) != 200:
-                pass
-            else:
-                return None
+                raise Exception('error createDisaster')
         except Exception as e:
             print(e)
             raise e
@@ -28,10 +26,9 @@ def createDisaster(alerts):
 def alertCallback(ch, method, properties, body):
     data = json.loads(body)
     pprint(data)
-    createDisaster(data)
-    # print("Received message:", data)
+    createDisasterWithUsers(data)
+    ########################### TODO SEND NOTIFICATION TO AMQP ###############################
 
-    pass
 
 def distanceFrom(lat1,lon1,lat2,lon2)->float:
     '''
