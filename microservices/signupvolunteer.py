@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 '''
-AMQP Setup required for sending family member status, not operational yet until AMQP is fully configured
+AMQP Setup required for sending volunteer data, not operational yet until AMQP is fully configured
 
 #import #{amqp_setup}
 '''
@@ -46,17 +46,19 @@ def add_volunteer():
             print("Getting user data...")
             print("----- Invoking user microservice to get user data -----")
             user_response_result = invoke_http("http://localhost:5001/user/" + str(data['userID']), method='GET')
-            print("Result from user microservice:", user_response_result)
+            print("Result from user microservice:", user_response_result, "\n")
+
             if user_response_result['code'] == 200:
                 print("Received volunteer data:", data)
                 print("----- Invoking volunteer microservice to add volunteer data -----")
-                volunteer_URL = "http://localhost:5003/volunteer/event/adduser/" + str(data["userID"])
+                volunteer_URL = "http://localhost:5003/volunteer/event/adduser"
                 volunteer_response_result = invoke_http(volunteer_URL, method='POST', json=data)
-                print("Result from volunteer microservice:", volunteer_response_result)
-                return jsonify(volunteer_response_result), 200
+                print("Result from volunteer microservice:", volunteer_response_result, "\n")
+                return volunteer_response_result
             else:
                 print("Error in getting user data:", user_response_result)
-                return jsonify(user_response_result), 400
+                return user_response_result
+            
         except Exception as e:
             # Unexpected error in code
             exc_type, exc_obj, exc_tb = sys.exc_info()
