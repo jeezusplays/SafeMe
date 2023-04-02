@@ -66,6 +66,9 @@ class Rabbitmq():
             pika.ConnectionParameters(host=HOST, port=PORT, heartbeat=3600, blocked_connection_timeout=3600,))
         channel = connection.channel()
 
+        self.connection = connection
+        self.channel = channel
+
         # Declare the exchange
         channel.exchange_declare(exchange=EXCHANGE, exchange_type='topic')
         return connection, channel
