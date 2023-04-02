@@ -77,7 +77,6 @@
                   </thead>
                   <tbody>
                       <tr v-for="(disaster, index) in this.mockData">
-                        
                           <td>{{disaster.country}}</td>
                           <td>{{disaster.type}}</td>
                           <td>{{disaster.distance}} km</td>
@@ -98,14 +97,13 @@
                           <td>
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-link" onclick="location.href='casualtyList.html'">View Casualties</button>
-                                <button v-if="!disaster.hasVolunteerEvent" type="button" class="btn btn-link" @click="openVolunteerEvent(index)">Request Volunteers</button>
-                                <button v-else type="button" class="btn btn-link" onclick="location.href='volunteerGov.html'">View Volunteers</button>
+                                <button type="button" class="btn btn-link">Request Volunteers</button>
                               </div>
                           </td>
                       </tr>
                   </tbody>
                 </table>
-            </div>
+              </div>
 
     
     </div>
@@ -125,6 +123,11 @@
         const app = Vue.createApp({
             data() {
                 return {
+
+                    //renders page depending on whether it is home, vol or casualties
+                    isHome: true,
+                    isCasualtyPage: false,
+
                     mockData: [
                         {
                         key: '1',
@@ -133,7 +136,50 @@
                         distance: 1,
                         incidence: "Thu, 23 Feb 2023 20:20:21 GMT",
                         danger: 'Low Risk',
-                        hasVolunteerEvent: true
+                        openVolunteers: false,
+                        volunteers: [],
+                        isSelected: false,
+                        casualties:[
+                                {
+                                userID: '001',
+                                name: 'A',
+                                status: 'Unresponsive',
+                                email: 'a@email.com',
+                                lastUpdate: 'Thu, 23 Feb 2023 00:54:02 GMT',
+                                },
+
+                                {
+                                userID: '002',
+                                name: 'B',
+                                status: 'Mildly Injured',
+                                email: 'b@email.com',
+                                lastUpdate: 'Thu, 23 Feb 2023 00:54:02 GMT',
+                                },
+
+                                {
+                                userID: '003',
+                                name: 'C',
+                                status: 'Severely Injured',
+                                email: 'a@email.com',
+                                lastUpdate: 'Thu, 23 Feb 2023 00:54:02 GMT',
+                                },
+
+                                {
+                                userID: '004',
+                                name: 'E',
+                                status: 'Pending',
+                                email: 'e@email.com',
+                                lastUpdate: 'Thu, 23 Feb 2023 00:54:02 GMT',
+                                },
+
+                                {
+                                userID: '005',
+                                name: 'You',
+                                status: 'Okay',
+                                email: 'f@email.com',
+                                lastUpdate: 'Thu, 23 Feb 2023 00:54:02 GMT',
+                                },
+                            ]
                         },
 
                         {
@@ -143,7 +189,8 @@
                         distance: 15,
                         incidence: "Thu, 23 Feb 2023 10:39:01 GMT",
                         danger: 'High Risk',
-                        hasVolunteerEvent: true
+                        isVolunteered: false,
+                        isSelected: false
                         },
                         {
                         key: '3',
@@ -152,7 +199,8 @@
                         distance: 20,
                         incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
                         danger: 'Moderate Risk',
-                        hasVolunteerEvent: false
+                        isVolunteered: false,
+                        isSelected: false
                         },
                         {
                         key: '4',
@@ -161,7 +209,8 @@
                         distance: 12,
                         incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
                         danger: 'Low Risk',
-                        hasVolunteerEvent: false
+                        isVolunteered: false,
+                        isSelected: false
                         },
                         {
                         key: '5',
@@ -170,17 +219,71 @@
                         distance: 100,
                         incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
                         danger: 'Low Risk',
-                        hasVolunteerEvent: false
+                        isVolunteered: false,
+                        isSelected: false
                         },
                   ]
                     
                 }
             },
 
-            methods:{
-                //changes copy from reuqest volunteer to view volunteers when a volunteer event is open
-                openVolunteerEvent(index){
-                    this.mockData[index].hasVolunteerEvent = true
+            method:{
+                // renders home page
+                toHome(){
+                    this.isHome = true
+                    this.isCasualtyPage = false
+                },
+
+                // renders casualty page
+                toCasualtyPage(){
+                    this.isHome = false
+                    this.isCasualtyPage = true
+                    console.log(this.isHome)
+                    console.log(this.isCasualtyPage)
+                },
+
+                //dynamically changes volunteer state on click
+                selectDisaster(index){
+                    this.mockData[index].isSelected = true
+                    console.log(this.mockData[index].isSelected)
+                },
+
+
+                //computes the casualty status distribution, returns an object
+                calulateDistribution(casualtyList){       
+                    var distributions = {
+                        numOkay: 0,
+                        numMildlyInjured: 0,
+                        numPending: 0,      
+                        //others include severely injured and unresponsive
+                        numOthers: 0
+                    }
+
+                    let total = casualtyList.length                   
+
+                    for (casualty of casualtyList){
+                        if (casualty.danger == 'Okay'){
+                            distributions.numOkay ++
+                        }
+
+                        else if (casualty.danger == 'Mildly Injured'){
+                            distributions.numMildlyInjured ++
+                        }
+
+                        else if (casualty.danger == 'Pending'){
+                            distributions.numPending ++
+                        }
+
+                        else{
+                            distributions.numOthers ++
+                        }
+                    }
+
+                    for (dist in distributions){
+                        let finalDistribution = (dist / total * 100).toFixed(2)
+                        distributions.dist = finalDistribution
+                    }
+                    return distributions
                 }
             }
         })
