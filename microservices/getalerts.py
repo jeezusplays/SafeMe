@@ -58,10 +58,13 @@ def get_alert():
     return events
 
 def main():
+    alert_list = []
     rabbitmq = Rabbitmq()
     while True:
-        alert = get_alert()
-        rabbitmq.publish_message(json.dumps(alert),'gdac.alert')
+        alerts = get_alert()
+        new_alerts = [alert for alert in alerts if alert not in alert_list]
+        alert_list+=new_alerts
+        rabbitmq.publish_message(json.dumps(new_alerts),'*.alert')
         sleep(10)
     
 if __name__ == "__main__":
