@@ -10,7 +10,7 @@ CREATE TABLE volunteer
     userID int not null,
     userName varchar(60) not null,
     contact int not null,
-    `timestamp` date not null,
+    `timestamp` timestamp not null,
     constraint volunteer_pk primary key (volunteerEventID, userID)
     -- constraint volunteer_pk primary key (volunteerID),
     -- constraint volunteer_fk1 foreign key (volunteerEventID) references volunteerEvent(volunteerEventID),

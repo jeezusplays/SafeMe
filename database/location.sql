@@ -11,7 +11,7 @@ CREATE TABLE location
     city varchar(60) not null,
     lat decimal(8,3) not null,
     `long` decimal(8,3) not null,
-    `timestamp` date not null,
+    `timestamp` timestamp not null,
     constraint location_pk primary key (locationID),
     constraint location_fk foreign key (userID) references user(userID)
 );
