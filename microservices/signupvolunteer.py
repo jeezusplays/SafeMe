@@ -25,6 +25,7 @@ def get_all_volunteer_event():
     response = invoke_http("http://localhost:5003/volunteer/event", method='GET')
     return response
 
+# UI > (Api gateway) [POST] /volunteer/signup/ > (signupvolunteer) [POST] /volunteer/event/adduser/
 # Get user status
 # [GET] /user/{userID}
 # Add volunteer - send request
