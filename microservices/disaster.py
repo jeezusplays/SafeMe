@@ -43,7 +43,7 @@ class Disaster(db.Model):
 class AffectedUser(db.Model):
     __tablename__ = 'affectedusers'
 
-    affectedUsersID = db.Column(db.Integer, primary_key=True)
+    affectedUsersID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     disasterID = db.Column(db.Integer, nullable=False)
     userID = db.Column(db.Integer, nullable=False)
     userName = db.Column(db.String(64), nullable=False)
@@ -51,7 +51,6 @@ class AffectedUser(db.Model):
     contact = db.Column(db.Integer, nullable=False)
 
     def __init__(self, affectedUsersID, disasterID, userID, userName, status, contact):
-        self.affectedUsersID = affectedUsersID
         self.disasterID = disasterID
         self.userID = userID
         self.userName = userName
