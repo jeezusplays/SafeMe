@@ -2,6 +2,7 @@ CREATE DATABASE IF NOT EXISTS safeme;
 USE safeme;
 
 -- Table: Disaster
+DROP TABLE IF EXISTS disaster;
 CREATE TABLE disaster
 (
     disasterID int not null auto_increment,
