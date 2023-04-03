@@ -19,7 +19,7 @@ CORS(app)
 class User(db.Model):
     __tablename__ = 'user'
 
-    userID = db.Column(db.Integer, primary_key=True)
+    userID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     userName = db.Column(db.String(64), nullable=False)
     familyID = db.Column(db.Integer, nullable=False)
     age = db.Column(db.Integer, nullable=False)
@@ -27,8 +27,7 @@ class User(db.Model):
     email = db.Column(db.String(64), nullable=False)
     contact = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, userID, userName, familyID, age, country, email, contact):
-        self.userID = userID
+    def __init__(self, userName, familyID, age, country, email, contact):
         self.userName = userName
         self.familyID = familyID
         self.age = age
@@ -43,16 +42,15 @@ class User(db.Model):
 class Location(db.Model):
     __tablename__ = 'location'
 
-    locationID = db.Column(db.Integer, primary_key=True)
+    locationID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     userID = db.Column(db.Integer, nullable=False)
     country = db.Column(db.String(64), nullable=False)
     city = db.Column(db.String(64), nullable=False)
     lat = db.Column(db.Float(precision=3), nullable=False)
     long = db.Column(db.Float(precision=3), nullable=False)
-    timestamp = db.Column(db.Date, nullable=False) # May need to change to DateTime
+    timestamp = db.Column(db.TimeStamp, nullable=False)
 
-    def __init__(self, locationID, userID, country, city, lat, long, timestamp):
-        self.locationID = locationID
+    def __init__(self, userID, country, city, lat, long, timestamp):
         self.userID = userID
         self.country = country
         self.city = city
@@ -109,7 +107,7 @@ def get_all_users_latest_location():
             result.append(user.json())
         return jsonify({"code": 200, "data": result})
     else:
-        return jsonify({"code": 404, "message": "There are no user locations today"}), 404
+        return jsonify({"code": 404, "message": "There are no users locations today"}), 404
 
 # Get family (Select * from users where familyID == familyID)
 @app.route("/user/family/<int:familyID>", methods=['GET'])
