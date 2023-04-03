@@ -3,18 +3,18 @@ from gdacs.api import GDACSAPIReader
 from datetime import datetime, timedelta
 from time import sleep
 from amqp_helper import Rabbitmq
+from datetime import datetime
 
 import json
 import dateparser
-import pika
 
 
 def get_alert():
     client = GDACSAPIReader()
     events = client.latest_events()
     events_dict = events.dict()
-    # pprint(events_dict)
-    events = {}
+
+    events = []
     for i in events_dict['features']:
 
         _from = dateparser.parse(i['properties']['fromdate'].replace('T',' '))
@@ -38,29 +38,27 @@ def get_alert():
             'type':_eventtype,
             'country':_country,
             'country_short':_country_short,
-            'from':_from,
-            'to':_to,
+            'from':_from.strftime("%d/%m/%Y %H:%M"),
+            'to':_to.strftime("%d/%m/%Y %H:%M"),
             'isHappening': _isHappening,
             'isToday': _isToday,
             'alertlevel':_alertlevel,
             'alertscore':_alertscore
         }
 
-        if _isToday:
-            pprint(event)
-        if events.get(_name,False):
-            if _name in events:
-                events[_name].append(event)
-        else:
-            events[_name] = [event]
+        events.append(event)
     
     return events
 
 def main():
+    alert_list = []
     rabbitmq = Rabbitmq()
     while True:
-        alert = get_alert()
-        rabbitmq.publish_message(json.dumps(alert),'*.alert')
+        alerts = get_alert()
+        new_alerts = [alert for alert in alerts if alert not in alert_list]
+        if len(new_alerts)>0:
+            alert_list+=new_alerts
+            rabbitmq.publish_message(json.dumps(new_alerts),'gdac.alert')
         sleep(10)
     
 if __name__ == "__main__":
