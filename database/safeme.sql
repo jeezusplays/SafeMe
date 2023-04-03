@@ -43,7 +43,7 @@ CREATE TABLE location
     city varchar(60) not null,
     lat decimal(8,3) not null,
     `long` decimal(8,3) not null,
-    `timestamp` date not null,
+    `timestamp` timestamp not null,
     constraint location_pk primary key (locationID),
     constraint location_fk foreign key (userID) references user(userID)
 );
@@ -171,7 +171,7 @@ CREATE TABLE volunteer
     userID int not null,
     userName varchar(60) not null,
     contact int not null,
-    `timestamp` date not null,
+    `timestamp` timestamp not null,
     constraint volunteer_pk primary key (volunteerEventID, userID)
     -- constraint volunteer_pk primary key (volunteerID),
     -- constraint volunteer_fk1 foreign key (volunteerEventID) references volunteerEvent(volunteerEventID),
