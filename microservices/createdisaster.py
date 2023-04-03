@@ -2,6 +2,7 @@ from invokes import invoke_http
 from pprint import pprint
 from amqp_helper import Rabbitmq
 from math import radians, sin, cos, sqrt, atan2
+from time import sleep
 
 import json
 
@@ -10,32 +11,34 @@ import json
 def createDisasterWithUsers(alerts):
     usersLoc = getUsersLastLoc()
     for alert in alerts:
-        try:
-            routing_keys = []
+        
+        if len(alert.get('country','')) > 0 and bool(alert.get('isToday',False)):
+            try:
+                routing_keys = []
 
-            affected_userIds = affectedUsers(usersLoc,alert)
-            affected_users = getUsersById(affected_userIds)
-            disaster = createDisaster(alert)
-            
-
-            for affected_user in affected_users:
-                disasterId = disaster.get('disasterID',0)
-                result = addAffectedUser(affected_user,disasterId)
-                if result.get("code",400) != 200:
-                    raise Exception('error createDisaster')
+                affected_userIds = affectedUsers(usersLoc,alert)
+                affected_users = getUsersById(affected_userIds)
+                disaster = createDisaster(alert)
                 
-                routing_keys.append(f'user.{affected_user["userID"]}.alert')
-            
-            rabbitmq.publish_fanout_message(json.dumps(alert),routing_keys)
 
-        except Exception as e:
-            print(e)
-            raise e
+                for affected_user in affected_users:
+                    disasterId = disaster.get('disasterID',0)
+                    result = addAffectedUser(affected_user,disasterId)
+                    if result.get("code",400) in range(200,300):
+                        print(f'Added affected user {result["data"]}')
+                    
+                    routing_keys.append(f'user.{affected_user["userID"]}.alert')
+                    print(routing_keys)
+                rabbitmq.publish_fanout_message(json.dumps(alert),routing_keys)
+                
+            except Exception as e:
+                print(e)
+                raise e
     pass
 
 def alertCallback(ch, method, properties, body):
     data = json.loads(body)
-    pprint(data)
+    # pprint(data)
     createDisasterWithUsers(data)
 
 def distanceFrom(lat1,lon1,lat2,lon2)->float:
@@ -60,9 +63,12 @@ def distanceFrom(lat1,lon1,lat2,lon2)->float:
     
 def getUsersLastLoc():
     try:
-        result = invoke_http("http://0.0.0.0:5001/location/latest", method="GET")
-        if result.get("code",400) == 200:
-            return result
+        result = invoke_http("http://127.0.0.1:5001/location/latest", method="GET")
+        code = result.get("code",400)
+        if code in range(200,300):
+            return result['data']
+        elif code == 404:
+            return []
         else:
             return None
     except Exception as e:
@@ -73,9 +79,10 @@ def getUsersById(userIds):
     users = []
     for ids in userIds:
         try:
-            result = invoke_http(f"http://0.0.0.0:5002/user/{ids}",method="GET")
-            if result.get("code",400) == 200:
-                users.append(result)
+            result = invoke_http(f"http://127.0.0.1:5001/user/{ids}",method="GET")
+            print(result)
+            if result.get("code",400) in range(200,300):
+                users.append(result['data'])
             else:
                 raise Exception('Error getting users by user id createdisaster.py')
         except Exception as e:
@@ -93,20 +100,29 @@ def addAffectedUser(user, disasterId):
     }
     
     try:
-        result = invoke_http('http://0.0.0.0:5002/affecteduser', method='POST', json=affectedUser)
-        if result.get("code",400) == 200:
+        result = invoke_http('http://127.0.0.1:5002/affecteduser', method='POST', json=affectedUser)
+        print(result)
+        if result.get("code",400) in range(200,300):
             return result
         else:
             return Exception('error adding affected user createdisaster.py')
     except Exception as e:
         print(e)
 
-def createDisaster(alert):
-    data = alert
-    try:
-        result = invoke_http("http://localhost:5002/disaster/new", method="POST", json=data)
+def createDisaster(alert:dict):
+    data = {
+        'disasterName': alert['name'],
+        'country': alert['country'],
+        'city':alert['country'],
+        'lat':alert['location']['coordinates'][0],
+        'long':alert['location']['coordinates'][1],
+        'disasterSeverityLevel': alert['alertlevel'].lower()
+    }
 
-        if result.get("code",400) == 200:
+
+    try:
+        result = invoke_http("http://127.0.0.1:5002/disaster/new", method="POST", json=data)
+        if result.get("code",400) in range(200,300):
             return result
         else:
            raise SystemError('Unable to create disaster')
@@ -115,6 +131,7 @@ def createDisaster(alert):
         raise e
     
 def affectedUsers(usersLoc,alert:dict):
+    
     location = alert.get('location',{'coordinates':[0,0],'type':'point'})
     coordinates = location.get('coordinates')
 
@@ -137,6 +154,8 @@ def main():
     global rabbitmq
     rabbitmq = Rabbitmq()
     rabbitmq.subscribe('gdacalert',alertCallback)
+    sleep(5)
+    rabbitmq.unsubscribe()
 
 # Send localised alerts
 # [AMQP] user.{userID}.alert
