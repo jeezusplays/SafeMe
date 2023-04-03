@@ -2,6 +2,7 @@ CREATE DATABASE IF NOT EXISTS safeme;
 USE safeme;
 
 -- Table: Location
+DROP TABLE IF EXISTS location;
 CREATE TABLE location
 (
     locationID int not null auto_increment,
