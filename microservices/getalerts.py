@@ -53,6 +53,7 @@ def get_alert():
 def main():
     alert_list = []
     rabbitmq = Rabbitmq()
+    print('------------- Get alerts running -------------')
     while True:
         alerts = get_alert()
         new_alerts = [alert for alert in alerts if alert not in alert_list]
