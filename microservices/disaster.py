@@ -50,7 +50,7 @@ class AffectedUser(db.Model):
     status = db.Column(db.String(64), nullable=False)
     contact = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, affectedUsersID, disasterID, userID, userName, status, contact):
+    def __init__(self, disasterID, userID, userName, status, contact):
         self.disasterID = disasterID
         self.userID = userID
         self.userName = userName
