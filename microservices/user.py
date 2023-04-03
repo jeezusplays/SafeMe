@@ -107,7 +107,7 @@ def get_all_users_latest_location():
             result.append(user.json())
         return jsonify({"code": 200, "data": result})
     else:
-        return jsonify({"code": 404, "message": "There are no users location today"}), 404
+        return jsonify({"code": 404, "message": "There are no users locations today"}), 404
 
 # Get family (Select * from users where familyID == familyID)
 @app.route("/user/family/<int:familyID>", methods=['GET'])
