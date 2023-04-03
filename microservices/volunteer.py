@@ -20,14 +20,13 @@ CORS(app)
 class Volunteer(db.Model):
     __tablename__ = 'volunteer'
 
-    volunteerEventID = db.Column(db.Integer, primary_key=True)
+    volunteerEventID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     userID = db.Column(db.Integer, nullable=False)
     userName = db.Column(db.String(64), nullable=False)
     contact = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.Date, nullable=False)
 
-    def __init__(self, volunteerEventID, userID, userName, contact, timestamp):
-        self.volunteerEventID = volunteerEventID
+    def __init__(self, userID, userName, contact, timestamp):
         self.userID = userID
         self.userName = userName
         self.contact = contact
@@ -40,13 +39,12 @@ class Volunteer(db.Model):
 class VolunteerEvent(db.Model):
     __tablename__ = 'volunteerevent'
 
-    volunteerEventID = db.Column(db.Integer, primary_key=True)
+    volunteerEventID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     volunteerEventName = db.Column(db.String(64), nullable=False)
     institute = db.Column(db.String(64), nullable=False)
     disasterID = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, volunteerEventID, volunteerEventName, institute, disasterID):
-        self.volunteerEventID = volunteerEventID
+    def __init__(self, volunteerEventName, institute, disasterID):
         self.volunteerEventName = volunteerEventName
         self.institute = institute
         self.disasterID = disasterID
