@@ -118,6 +118,8 @@ class Rabbitmq():
         consumer_thread.start()
 
     def unsubscribe(self):
+        if self.channel is None:
+            self._connect()
         self.channel.stop_consuming()
 
     def publish_message(self,msg,key):
