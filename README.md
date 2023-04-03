@@ -104,10 +104,10 @@ Feel free to contact and connect!
 
 || Name | Main Role | Github | LinkedIn |
 |-----------| ----------- | ----------- | ----------- | ----------- |
-|![](https://avatars.githubusercontent.com/u/68149788?v=4)|Tan Zuyi Joey|Project Manager|[jeezusplays](https://github.com/jeezusplays)|[LinkedIn](https://linkedin.com/in/joey-tan-zuyi)|
-|![](https://avatars.githubusercontent.com/u/41113285?v=4")|Samuel Chung|Software Engineer|[samchung95](https://github.com/samchung95)|[LinkedIn](https://www.linkedin.com/in/samuel-chung-339688154/)|
-|![](https://avatars.githubusercontent.com/u/111420736?v=4)|Liow Hong Xiang|Software Engineer|[hx240](https://github.com/hx240)|[LinkedIn](https://www.linkedin.com/in/liowhongxiang/)|
-|![](https://avatars.githubusercontent.com/u/111410622?v=4)|Anthony Ho|UX Designer|[anthonyckho](https://github.com/anthonyckho)|[LinkedIn](https://www.linkedin.com/in/anthony-ho-uxdesign/)|
+|<img src="https://avatars.githubusercontent.com/u/68149788?v=4" width="100"></img>|Tan Zuyi Joey|Project Manager|[jeezusplays](https://github.com/jeezusplays)|[LinkedIn](https://linkedin.com/in/joey-tan-zuyi)|
+|<img src="https://avatars.githubusercontent.com/u/41113285?v=4" width="100"></img>|Samuel Chung|Software Engineer|[samchung95](https://github.com/samchung95)|[LinkedIn](https://www.linkedin.com/in/samuel-chung-339688154/)|
+|<img src="https://avatars.githubusercontent.com/u/111420736?v=4" width="100"></img>|Liow Hong Xiang|Software Engineer|[hx240](https://github.com/hx240)|[LinkedIn](https://www.linkedin.com/in/liowhongxiang/)|
+|<img src="https://avatars.githubusercontent.com/u/111410622?v=4" width="100"></img>|Anthony Ho|UX Designer|[anthonyckho](https://github.com/anthonyckho)|[LinkedIn](https://www.linkedin.com/in/anthony-ho-uxdesign/)|
 
 ## Acknowledgements
 These are other fellow team members who contributed to this project!
