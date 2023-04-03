@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
-# from datetime import datetime
+from datetime import date
 # import json
 
 app = Flask(__name__)
@@ -39,18 +39,6 @@ class User(db.Model):
     def json(self):
         return {"userID": self.userID, "userName": self.userName, "familyID": self.familyID, "age": self.age, "country": self.country, "email": self.email, "contact": self.contact}
 
-# User class using Object Relational Mapping (ORM) with userID, userName, familyID, age, country, email, contact
-# class User(db.Model):
-#     __tablename__ = 'user'
-#     userID = db.Column(db.Integer, primary_key=True)
-#     userName = db.Column(db.String(64), nullable=False)
-#     familyID = db.Column(db.Integer, nullable=False)
-#     age = db.Column(db.Integer, nullable=False)
-#     country = db.Column(db.String(64), nullable=False)
-#     email = db.Column(db.String(64), nullable=False)
-#     contact = db.Column(db.Integer, nullable=False)
-#     location = db.relationship('Location', backref=db.backref('user', lazy=True))
-
 # Location class with locationID, userID, country, city, lat, long, timestamp with no ORM
 class Location(db.Model):
     __tablename__ = 'location'
@@ -74,18 +62,6 @@ class Location(db.Model):
 
     def json(self):
         return {"locationID": self.locationID, "userID": self.userID, "country": self.country, "city": self.city, "lat": self.lat, "long": self.long, "timestamp": self.timestamp}
-
-# Location class using Object Relational Mapping (ORM) with locationID, userID, country, city, lat, long, timestamp
-# class Location(db.Model):
-#     __tablename__ = 'location'
-#     locationID = db.Column(db.Integer, primary_key=True)
-#     userID = db.Column(db.Integer, db.ForeignKey('user.userID'), nullable=False)
-#     country = db.Column(db.String(64), nullable=False)
-#     city = db.Column(db.String(64), nullable=False)
-#     lat = db.Column(db.Float, nullable=False)
-#     long = db.Column(db.Float, nullable=False)
-#     timestamp = db.Column(db.DateTime, nullable=False)
-#     user = db.relationship('User', backref=db.backref('location', lazy=True))
 
 # Get all users from db
 @app.route("/user", methods=['GET'])
@@ -124,7 +100,8 @@ def add_location():
 # Get all users latest location (Select last location where userID == userID)
 @app.route("/location/latest", methods=['GET'])
 def get_all_users_latest_location():
-    user_loc = Location.query.order_by(Location.timestamp.desc()).group_by(Location.userID).all()
+    current_timestamp_date = date.today()
+    user_loc = Location.query.filter_by(timestamp=current_timestamp_date).order_by(Location.timestamp.desc()).group_by(Location.userID).all()
     result = []
     # Check if length of users is 0
     if len(user_loc) != 0:
@@ -132,7 +109,7 @@ def get_all_users_latest_location():
             result.append(user.json())
         return jsonify({"code": 200, "data": result})
     else:
-        return jsonify({"code": 404, "message": "There are no users"}), 404
+        return jsonify({"code": 404, "message": "There are no user locations today"}), 404
 
 # Get family (Select * from users where familyID == familyID)
 @app.route("/user/family/<int:familyID>", methods=['GET'])
@@ -145,8 +122,8 @@ def get_family(familyID):
             result.append(user.json())
         return jsonify({"code": 200, "data": result})
     else:
-        return jsonify({"code": 404, "message": "There are no users"}), 404
+        return jsonify({"code": 404, "message": "There are no users in this family"}), 404
 
 # Allows the service to be accessible from any other in the network
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)
