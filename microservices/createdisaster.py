@@ -3,6 +3,7 @@ from pprint import pprint
 from amqp_helper import Rabbitmq
 from math import radians, sin, cos, sqrt, atan2
 from time import sleep
+from datetime import datetime
 
 import json
 
@@ -16,20 +17,31 @@ def createDisasterWithUsers(alerts):
             try:
                 routing_keys = []
 
-                affected_userIds = affectedUsers(usersLoc,alert)
-                affected_users = getUsersById(affected_userIds)
                 disaster = createDisaster(alert)
+                affected_userIds = affectedUsers(usersLoc,alert)
+                users = getUsersById(affected_userIds)
                 
+                
+                msgs = []
 
-                for affected_user in affected_users:
+                for user in users:
                     disasterId = disaster.get('disasterID',0)
-                    result = addAffectedUser(affected_user,disasterId)
+                    result = addAffectedUser(user,disasterId)
+
                     if result.get("code",400) in range(200,300):
                         print(f'Added affected user {result["data"]}')
-                    
-                    routing_keys.append(f'user.{affected_user["userID"]}.alert')
-                    print(routing_keys)
-                rabbitmq.publish_fanout_message(json.dumps(alert),routing_keys)
+
+                    affectedUser = result["data"]
+                    affectedUsersID = affectedUser["affectedUsersID"]
+
+                    msgs.append(json.dumps({
+                        "affectedUsersID":affectedUsersID,
+                        "alert":alert
+                    }))
+
+                    routing_keys.append(f'user.{user["userID"]}.alert')
+                print(len(msgs),len(routing_keys))
+                rabbitmq.publish_fanout_message_multi(msgs,routing_keys)
                 
             except Exception as e:
                 print(e)
@@ -70,7 +82,7 @@ def getUsersLastLoc():
         elif code == 404:
             return []
         else:
-            return None
+            return []
     except Exception as e:
         print(e)
         raise e
@@ -116,15 +128,18 @@ def createDisaster(alert:dict):
         'city':alert['country'],
         'lat':alert['location']['coordinates'][0],
         'long':alert['location']['coordinates'][1],
-        'disasterSeverityLevel': alert['alertlevel'].lower()
+        'disasterSeverityLevel': alert['alertlevel'].lower(),
+        'disasterTimestamp': alert['to']
     }
 
 
     try:
         result = invoke_http("http://127.0.0.1:5002/disaster/new", method="POST", json=data)
+
         if result.get("code",400) in range(200,300):
             return result
         else:
+           print(result)
            raise SystemError('Unable to create disaster')
         
     except Exception as e:
