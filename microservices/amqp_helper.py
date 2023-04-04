@@ -1,3 +1,5 @@
+from pika.exchange_type import ExchangeType
+
 import pika
 import json
 import threading
@@ -63,12 +65,15 @@ class Rabbitmq():
 
         # Connect to RabbitMQ server
         connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=HOST, port=PORT, heartbeat=3600, blocked_connection_timeout=3600,))
+            pika.ConnectionParameters(host=self.host, port=self.port, heartbeat=3600, blocked_connection_timeout=3600,))
         channel = connection.channel()
 
+        self.connection = connection
+        self.channel = channel
+
         # Declare the exchange
-        channel.exchange_declare(exchange=EXCHANGE, exchange_type='topic')
-        return connection, channel
+        self.channel.exchange_declare(exchange=self.exchange, exchange_type=ExchangeType.topic)
+        return self.connection, self.channel
     
     def _close(self):
         
@@ -80,20 +85,20 @@ class Rabbitmq():
             queue_names = [q.method.queue for q in queues]
 
             # Check if the specified queue is bound to the exchange
-            has_queue = any([q.method.exchange == EXCHANGE and q.method.queue == queue_name for q in queues])
+            has_queue = any([q.method.exchange == self.exchange and q.method.queue == queue_name for q in queues])
 
             # Close the connection
             connection.close()
 
             return has_queue
 
-    def add_queue(self, queues:list(tuple)):
+    def add_queue(self, queues:list[tuple]):
         self._connect()
 
         # Declare and bind the topic queues
         for queue,key in queues:
             self.channel.queue_declare(queue=queue, durable=True)
-            self.channel.queue_bind(queue=queue, exchange=EXCHANGE, routing_key=key)
+            self.channel.queue_bind(queue=queue, exchange=self.exchange, routing_key=key)
 
         self._close()
 
@@ -107,19 +112,26 @@ class Rabbitmq():
 
         self._connect()
         # Register a consumer
-        channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
+        self.channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
 
         consumer_thread = threading.Thread(target=start_consuming)
         consumer_thread.start()
 
     def unsubscribe(self):
+        if self.channel is None:
+            self._connect()
         self.channel.stop_consuming()
 
     def publish_message(self,msg,key):
         self._connect()
-        channel.basic_publish(exchange=self.exchange, routing_key=key, body=msg)
+        self.channel.basic_publish(exchange=self.exchange, routing_key=key, body=msg)
         self._close()
 
+    def publish_fanout_message(self,msg,keys):
+        self._connect()
+        for key in keys:
+            self.channel.basic_publish(exchange=self.exchange, routing_key=key, body=msg)
+        self._close()
 
 if __name__ == '__main__':
     broker = Rabbitmq()
