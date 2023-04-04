@@ -45,7 +45,7 @@ def send_user_status():
 
             # Update user status in disaster db
             print("----- Invoking disaster microservice to update user status: -----")
-            disaster_URL = "http://localhost:5002/disaster/update/user/" + str(user_status["userID"])
+            disaster_URL = "http://localhost:5002/disaster/update/user/" + str(user_status["affectedUsersID"])
             result = invoke_http(disaster_URL, method = "PUT", json=user_status)
             print("Result: ", result)
             
