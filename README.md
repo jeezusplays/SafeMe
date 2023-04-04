@@ -27,7 +27,7 @@ Government:
 Other Assumptions:
 * A user can only be affected by 1 disaster at any given time
 * Disaster & Volunteer events have a start and end datetimes
-* For the purpose of demonstration, users are in a family. 
+* For the purpose of demonstration, users are in one family group already. 
 
 ## Built With
 ### Major Frameworks / Libraries
