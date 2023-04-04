@@ -1,6 +1,9 @@
 from flask import Flask
 from flask_sock import Sock
 from amqp_helper import Rabbitmq
+from time import sleep
+
+
 import json
 
 app = Flask(__name__)
@@ -37,6 +40,7 @@ def callback(ch, method, properties, body):
 def ws(ws):
     while True:
         txt = ws.receive()
+        print(txt)
         try:
             data = json.loads(txt)
             message_type = data.get('message',"Error")
@@ -61,5 +65,10 @@ if __name__ == '__main__':
     rabbitmq = Rabbitmq()
     rabbitmq.subscribe('user_1')
     rabbitmq.subscribe('family_1')
+    
+    sleep(10)
+    # rabbitmq.subscribe('family_1')
+    rabbitmq.unsubscribe()
     app.run(debug=True)
+    
 
