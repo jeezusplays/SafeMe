@@ -171,7 +171,8 @@
                         .catch(error => {
                             console.log(error);
                         });
-                    axios.get("http://localhost:5001/location/all")
+                    
+                        axios.get(location_table_URL)
                         .then(response => {
                             console.log("This the start of hell");
                             console.log(response.data.data)
@@ -210,7 +211,7 @@
                 //     }
                 // }
             },
-            created () {
+            mounted () {
                 // on Vue instance created, load the user list
                 this.getAllUsers();
             },
