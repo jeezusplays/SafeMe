@@ -48,7 +48,7 @@ class Location(db.Model):
     city = db.Column(db.String(64), nullable=False)
     lat = db.Column(db.Float(precision=3), nullable=False)
     long = db.Column(db.Float(precision=3), nullable=False)
-    timestamp = db.Column(db.TimeStamp, nullable=False)
+    timestamp = db.Column(db.TIMESTAMP, nullable=False)
 
     def __init__(self, userID, country, city, lat, long, timestamp):
         self.userID = userID

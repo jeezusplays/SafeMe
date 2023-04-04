@@ -58,10 +58,10 @@
                 <div v-for="(member,index) in this.family" class="card col-2 mx-2 my-4">
                     <img class="card-img-top" src="../img/you.png" alt="Card image cap">
                     <div class="card-body">
-                        <h4 class="card-title">{{member.name}}</h4>
+                        <h4 class="card-title">{{member.userName}}</h4>
                         <ul class="card-text" style="list-style: none">
                             <li>User ID: {{member.userID}}</li>
-                            <li>Name: {{member.email}}</li>
+                            <li>Email: {{member.email}}</li>
                             <li>
                                 Status:
                                 <strong v-if="member.status == 'Mildly Injured'"
@@ -87,69 +87,29 @@
 
         <!-- SUBMISISON TOAST -->
         <div v-for="member in this.family" class="toast-container position-fixed bottom-0 end-0 p-3">
-            <div :id="member.name" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div :id="member.userName" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <strong class="me-auto">Escalation was successful</strong>
                     <small>Just now</small>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
                 <div class="toast-body">
-                    {{member.name}}'s status has been escalated to the government!
+                    {{member.userName}}'s status has been escalated to the government!
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        const user_table_URL = "http:/localhost:5001/user/family/1";
+        const location_table_URL = "http:/localhost:5001/location";
+        const affected_users_URL = "http:/localhost:5002/affected";  
+
         const app = Vue.createApp({
             data() {
                 return {
-                    family: [
-                        {
-                            userID: '001',
-                            name: 'John',
-                            status: 'Unresponsive',
-                            photo: 'img/personA.png',
-                            email: 'joeytanbiz@gmail.com',
-                            lastKnownCity: 'United States, New York',
-                        },
-
-                        {
-                            userID: '002',
-                            name: 'Jane',
-                            status: 'Mildly Injured',
-                            photo: 'img/personB.png',
-                            email: 'hongxiangliow@gmail.com',
-                            lastKnownCity: 'Indonesia, Jakarta',
-                        },
-
-                        {
-                            userID: '003',
-                            name: 'Bob',
-                            status: 'Severely Injured',
-                            photo: 'img/personC.png',
-                            email: 'hx24000@gmail.com',
-                            lastKnownCity: 'India, Mumbai',
-                        },
-
-                        {
-                            userID: '004',
-                            name: 'Alice',
-                            status: 'Pending',
-                            photo: 'img/persone.png',
-                            email: 'alice@aol.com',
-                            lastKnownCity: 'China, Beijing',
-                        },
-
-                        {
-                            userID: '005',
-                            name: 'Michael',
-                            status: 'Okay',
-                            photo: 'img/you.png',
-                            email: 'michael@outlook.com',
-                            lastKnownCity: 'Philippines, Manila',
-                        },
-                    ]
+                    family: [],
+                    message: "なにか入力してください",
                 }
             },
 
@@ -172,6 +132,18 @@
             },
 
             methods: {
+                getAllusers(){
+                    fetch(user_table_URL)
+                        .then(response => response.json())
+                        .then(data => {
+                            this.family = data.data
+                            console.log(this.family)
+                        })
+                        .catch(error => {
+                            console.log(error)
+                            this.family = []
+                        })
+                },
                 //get family photo
                 // getPhoto(member){
                 //     return member.photo
@@ -189,7 +161,11 @@
                 //         this.isDisabled(index)
                 //     }
                 // }
-            }
+            },
+            created () {
+                // on Vue instance created, load the user list
+                this.getAllusers();
+            },
         })
         app.mount('#app')
     </script>
