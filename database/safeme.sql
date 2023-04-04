@@ -91,6 +91,7 @@ CREATE TABLE disaster
     lat decimal(8,3) not null,
     `long` decimal(8,3) not null,
     disasterSeverityLevel varchar(10) not null, -- red, amber, green
+    disasterTimestamp timestamp not null,
     constraint disaster_pk primary key (disasterID)
 );
 
