@@ -104,12 +104,9 @@ class Rabbitmq():
 
         self._close()
 
-    def _subscribe(self,queue, callback=None,args=None):
-        
+    def _subscribe(self,queue, callback=None):
         if callback is None:
             callback = lambda ch, method, properties, body: print(f"Received message: {json.loads(body)}")
-        if args is not None:
-            callback = lambda ch, method, properties, body: callback(ch, method, properties, body, args)
 
         def start_consuming():
             self.channel.start_consuming()
@@ -117,31 +114,19 @@ class Rabbitmq():
         self._connect()
 
         # Register a consumer
-<<<<<<< Updated upstream
         self.channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
-<<<<<<< Updated upstream
-=======
-        self.consumingList.append(queue)
-=======
-        if args is None:
-            self.channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
-        else:
-            self.channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True, arguments=args)
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 
         consumer_thread = threading.Thread(target=start_consuming)
         consumer_thread.start()
 
-    def subscribe(self,queue,callback=None,args=None):
+    def subscribe(self,queue,callback=None):
 
         self.consumers.append({
             'exchange': Rabbitmq(),
             'queue': queue,
-            'callback': callback,
-            'args':args
+            'callback': callback
             })
-        self.consumers[-1]['exchange']._subscribe(queue,callback,args)
+        self.consumers[-1]['exchange']._subscribe(queue,callback)
 
     def checkConsuming(self):
         while True:
