@@ -24,7 +24,7 @@ class Volunteer(db.Model):
     userID = db.Column(db.Integer, nullable=False)
     userName = db.Column(db.String(64), nullable=False)
     contact = db.Column(db.Integer, nullable=False)
-    timestamp = db.Column(db.TimeStamp, nullable=False)
+    timestamp = db.Column(db.TIMESTAMP, nullable=False)
 
     def __init__(self, userID, userName, contact, timestamp):
         self.userID = userID
