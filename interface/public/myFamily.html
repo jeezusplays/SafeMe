@@ -12,6 +12,7 @@
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
     <script defer src="../script.js"></script>
+
 </head>
 
 <body>
@@ -54,38 +55,30 @@
 
         <!-- CARD Group -->
         <div class="container-fluid">
-            <div class="row d-flex justify-content-center">
-                <div v-for="(member,index) in this.family" class="card col-2 mx-2 my-4">
-                    <img class="card-img-top" src="../img/you.png" alt="Card image cap">
-                    <div class="card-body">
-                        <h4 class="card-title">{{member.userName}}</h4>
-                        <ul class="card-text" style="list-style: none">
-                            <li>User ID: {{member.userID}}</li>
-                            <li>Email: {{member.email}}</li>
-                            <li>
-                                Status:
-                                <strong v-if="member.status == 'Mildly Injured'"
-                                    class="text-warning"><br>{{member.status}}</strong>
-
-                                <strong v-else-if="member.status == 'Pending'"
-                                    class="text-secondary"><br>{{member.status}}</strong>
-
-                                <strong v-else-if="member.status == 'Okay'"
-                                    class="text-success"><br>{{member.status}}</strong>
-
-                                <strong v-else class="text-danger"><br>{{member.status}}</strong>
-                            </li>
-                            <li>Last Known Location: {{member.lastKnownCity}}</li>
-                        </ul>
-
-                        <button type="button" class="btn btn-primary" :id="member.userID" :disabled="isDisabled(index)"
-                            @click="disableOnClick(index)">Escalate to government</button>
-                    </div>
+            <div class="row justify-content-center">
+            <div v-for="(member,index) in this.family" class="card col-12 col-sm-6 col-md-4 col-lg-3 mx-2 my-4">
+                <img class="card-img-top" src="../img/you.png" alt="Card image cap">
+                <div class="card-body">
+                <h4 class="card-title">{{member.userName}}</h4>
+                <ul class="card-text" style="list-style: none">
+                    <li>User ID: {{member.userID}}</li>
+                    <li>Email: {{member.email}}</li>
+                    <li>
+                    Status:
+                    <strong v-if="member.status == 'Mildly Injured'" class="text-warning">{{member.status}}</strong>
+                    <strong v-else-if="member.status == 'Pending'" class="text-secondary">{{member.status}}</strong>
+                    <strong v-else-if="member.status == 'Okay'" class="text-success">{{member.status}}</strong>
+                    <strong v-else class="text-danger">{{member.status}}</strong>
+                    </li>
+                    <li>Last Known Location: {{member.lastKnownCity}}</li>
+                </ul>
+                <button type="button" class="btn btn-primary mt-3" :id="member.userID" :disabled="isDisabled(index)" @click="disableOnClick(index)">Escalate to government</button>
                 </div>
+            </div>
             </div>
         </div>
 
-        <!-- SUBMISISON TOAST -->
+        <!-- SUBMISSION TOAST -->
         <div v-for="member in this.family" class="toast-container position-fixed bottom-0 end-0 p-3">
             <div :id="member.userName" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
@@ -101,9 +94,9 @@
     </div>
 
     <script>
-        const user_table_URL = "http:/localhost:5001/user/family/1";
-        const location_table_URL = "http:/localhost:5001/location";
-        const affected_users_URL = "http:/localhost:5002/affected";  
+        const user_table_URL = "http://localhost:5001/user/family/1";
+        const location_table_URL = "http://localhost:5001/location/all";
+        const affected_users_URL = "http://localhost:5002/affected";  
 
         const app = Vue.createApp({
             data() {
@@ -132,27 +125,72 @@
             },
 
             methods: {
-                getAllusers(){
+                getAllUsers() {
                     fetch(user_table_URL)
-                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Error fetching user data");
+                            }
+                            return response.json();
+                        })
                         .then(data => {
-                            this.family = data.data
-                            console.log(this.family)
+                            this.family = data.data;
+                            console.log(this.family);
+                            fetch(affected_users_URL)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error("Error fetching affected user data");
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    for (member of this.family) {
+                                        for (user of data.data) {
+                                            if (member.userID == user.userID) {
+                                                member.status = user.status;
+                                                console.log(member.status);
+                                            }
+                                        }
+                                    }
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                });
+                        //     fetch(location_table_URL)
+                        //         .then(response => {
+                        //             if (!response.ok) {
+                        //                 throw new Error("Error fetching location data");
+                        //             }
+                        //             return response.json();
+                        //         })
+                        //         .then(data => {
+                        //             for (member of this.family) {
+                        //                 for (location of data.data) {
+                        //                     if (member.userID == location.userID) {
+                        //                         member.lastKnownCity = location.country;
+                        //                         console.log(member.lastKnownCity);
+                        //                     }
+                        //                 }
+                        //             }
+                        //         })
+                        //         .catch(error => {
+                        //             console.log(error);
+                        //         });
                         })
                         .catch(error => {
-                            console.log(error)
-                            this.family = []
-                        })
+                            console.log(error);
+                        });
                 },
-                //get family photo
-                // getPhoto(member){
-                //     return member.photo
-                // }
+
 
                 //disables button onclick
                 isDisabled(index) {
                     return this.isReportedArr[index]
                 },
+                //get family photo
+                // getPhoto(member){
+                //     return member.photo
+                // }
 
                 //disables escalate button onclick
                 // disableOnClick(index){
@@ -164,7 +202,7 @@
             },
             created () {
                 // on Vue instance created, load the user list
-                this.getAllusers();
+                this.getAllUsers();
             },
         })
         app.mount('#app')
