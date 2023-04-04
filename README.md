@@ -55,7 +55,6 @@ You will also need the following software installed in your machine.
 * [Postman](https://www.postman.com/) *(for testing)*
 * [Python](https://www.python.org/)
 * [Node.js](https://nodejs.org/en/)
-* [npm](https://www.npmjs.com/)
 * [WAMP](https://www.wampserver.com/en/) / [MAMP](https://www.mamp.info/en/) / [XAMPP](https://www.apachefriends.org/index.html)
 * [MySQL](https://www.mysql.com/)
 
