@@ -6,8 +6,8 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
-# from datetime import datetime
-# import json
+from datetime import date
+import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/safeme'
@@ -19,7 +19,7 @@ CORS(app)
 class User(db.Model):
     __tablename__ = 'user'
 
-    userID = db.Column(db.Integer, primary_key=True)
+    userID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     userName = db.Column(db.String(64), nullable=False)
     familyID = db.Column(db.Integer, nullable=False)
     age = db.Column(db.Integer, nullable=False)
@@ -27,8 +27,7 @@ class User(db.Model):
     email = db.Column(db.String(64), nullable=False)
     contact = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, userID, userName, familyID, age, country, email, contact):
-        self.userID = userID
+    def __init__(self, userName, familyID, age, country, email, contact):
         self.userName = userName
         self.familyID = familyID
         self.age = age
@@ -39,32 +38,19 @@ class User(db.Model):
     def json(self):
         return {"userID": self.userID, "userName": self.userName, "familyID": self.familyID, "age": self.age, "country": self.country, "email": self.email, "contact": self.contact}
 
-# User class using Object Relational Mapping (ORM) with userID, userName, familyID, age, country, email, contact
-# class User(db.Model):
-#     __tablename__ = 'user'
-#     userID = db.Column(db.Integer, primary_key=True)
-#     userName = db.Column(db.String(64), nullable=False)
-#     familyID = db.Column(db.Integer, nullable=False)
-#     age = db.Column(db.Integer, nullable=False)
-#     country = db.Column(db.String(64), nullable=False)
-#     email = db.Column(db.String(64), nullable=False)
-#     contact = db.Column(db.Integer, nullable=False)
-#     location = db.relationship('Location', backref=db.backref('user', lazy=True))
-
 # Location class with locationID, userID, country, city, lat, long, timestamp with no ORM
 class Location(db.Model):
     __tablename__ = 'location'
 
-    locationID = db.Column(db.Integer, primary_key=True)
+    locationID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     userID = db.Column(db.Integer, nullable=False)
     country = db.Column(db.String(64), nullable=False)
     city = db.Column(db.String(64), nullable=False)
     lat = db.Column(db.Float(precision=3), nullable=False)
     long = db.Column(db.Float(precision=3), nullable=False)
-    timestamp = db.Column(db.Date, nullable=False) # May need to change to DateTime
+    timestamp = db.Column(db.TIMESTAMP, nullable=False)
 
-    def __init__(self, locationID, userID, country, city, lat, long, timestamp):
-        self.locationID = locationID
+    def __init__(self, userID, country, city, lat, long, timestamp):
         self.userID = userID
         self.country = country
         self.city = city
@@ -74,18 +60,6 @@ class Location(db.Model):
 
     def json(self):
         return {"locationID": self.locationID, "userID": self.userID, "country": self.country, "city": self.city, "lat": self.lat, "long": self.long, "timestamp": self.timestamp}
-
-# Location class using Object Relational Mapping (ORM) with locationID, userID, country, city, lat, long, timestamp
-# class Location(db.Model):
-#     __tablename__ = 'location'
-#     locationID = db.Column(db.Integer, primary_key=True)
-#     userID = db.Column(db.Integer, db.ForeignKey('user.userID'), nullable=False)
-#     country = db.Column(db.String(64), nullable=False)
-#     city = db.Column(db.String(64), nullable=False)
-#     lat = db.Column(db.Float, nullable=False)
-#     long = db.Column(db.Float, nullable=False)
-#     timestamp = db.Column(db.DateTime, nullable=False)
-#     user = db.relationship('User', backref=db.backref('location', lazy=True))
 
 # Get all users from db
 @app.route("/user", methods=['GET'])
@@ -121,10 +95,11 @@ def add_location():
         return jsonify({"code": 500, "data": {"message": "An error occurred while adding the location."}}), 500
     return jsonify({"code": 201, "data": location.json()}), 201
 
-# Get all users latest location (Select last location where userID == userID)
+# Get all users latest location today (Select last location where userID == userID)
 @app.route("/location/latest", methods=['GET'])
 def get_all_users_latest_location():
-    user_loc = Location.query.order_by(Location.timestamp.desc()).group_by(Location.userID).all()
+    current_timestamp_date = date.today()
+    user_loc = Location.query.filter_by(timestamp=current_timestamp_date).order_by(Location.timestamp.desc()).group_by(Location.userID).all()
     result = []
     # Check if length of users is 0
     if len(user_loc) != 0:
@@ -132,7 +107,20 @@ def get_all_users_latest_location():
             result.append(user.json())
         return jsonify({"code": 200, "data": result})
     else:
-        return jsonify({"code": 404, "message": "There are no users"}), 404
+        return jsonify({"code": 404, "message": "There are no users locations today"}), 404
+
+# Get all the user location history (Select all location where userID == userID)
+@app.route("/location/all", methods=['GET'])
+def get_all_users_location():
+    user_location_all = Location.query.all()
+    result = []
+    # Check if length of users is 0
+    if len(user_location_all) != 0:
+        for user in user_location_all:
+            result.append(user.json())
+        return jsonify({"code": 200, "data": result})
+    else:
+        return jsonify({"code": 404, "message": "There are no users locations"}), 404
 
 # Get family (Select * from users where familyID == familyID)
 @app.route("/user/family/<int:familyID>", methods=['GET'])
@@ -145,7 +133,7 @@ def get_family(familyID):
             result.append(user.json())
         return jsonify({"code": 200, "data": result})
     else:
-        return jsonify({"code": 404, "message": "There are no users"}), 404
+        return jsonify({"code": 404, "message": "There are no users in this family"}), 404
 
 # Allows the service to be accessible from any other in the network
 if __name__ == '__main__':
