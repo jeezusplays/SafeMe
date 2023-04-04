@@ -6,23 +6,60 @@ import json
 app = Flask(__name__)
 sock = Sock(app)
 
+class MessageCentre:
+    def __init__(self) -> None:
+        self.messages = {
+            'user':{},
+            'family':{}
+        }
+        pass
+    def _add(self,msg,type,id):
+        if type == 'user' or type == 'family':
+            # If user message doesnt exist, add in a new list, else add to list
+            self.messages[type][id] = self.messages[type].get(id,[])+[msg]
+    def getUserAlert(self,userID):
+        return self.messages['user'].get(userID,[])
+    def getFamilyAlert(self,familyID):
+        return self.messages['family'].get(familyID,[])
+
+def callback(ch, method, properties, body):
+    data = json.loads(body)
+
+    print(data)
+
+    type = data.get('type',None)
+    id = data.get('id',None)
+    msg = data.get('msg',None)
+    messageCentre._add(msg=msg,type=type,id=id)
+
+
 @sock.route('/ws')
 def ws(ws):
     while True:
         txt = ws.receive()
         try:
             data = json.loads(txt)
-            print(data)
-            ws.send('Hello there')
+            message_type = data.get('message',"Error")
+            if message_type == "getUserAlert":
+                id = data.get('userID')
+                if id is not None and messageCentre:
+                    msg = messageCentre.getUserAlert(id)
+                    ws.send(json.dumps({'code': 200, 'data': msg}))
+            elif message_type == "getFamilyAlert":
+                id = data.get('familyID')
+                if id is not None and messageCentre:
+                    msg = messageCentre.getUserAlert(id)
+                    ws.send(json.dumps({'code': 200, 'data': msg}))
+
         except Exception as e:
             print(e)
-        
-    # print(ws)
-    # print('WebSocket client connected')
-    # return 'WebSocket connection established'
+
 
 if __name__ == '__main__':
+    global messageCentre
+    messageCentre = MessageCentre()
     rabbitmq = Rabbitmq()
     rabbitmq.subscribe('user_1')
-    # app.run(debug=True)
+    rabbitmq.subscribe('family_1')
+    app.run(debug=True)
 
