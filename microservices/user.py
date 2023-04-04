@@ -100,8 +100,6 @@ def add_location():
 @app.route("/location/latest", methods=['GET'])
 def get_all_users_latest_location():
 
-    user_loc = Location.query.order_by(Location.timestamp.desc()).group_by(Location.userID).all()
-
     current_timestamp_date = date.today()
     user_loc = Location.query.filter(db.func.date(Location.timestamp) == current_timestamp_date)\
                          .order_by(Location.timestamp.desc())\
