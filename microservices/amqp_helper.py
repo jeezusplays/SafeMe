@@ -154,6 +154,12 @@ class Rabbitmq():
         for key in keys:
             self.channel.basic_publish(exchange=self.exchange, routing_key=key, body=msg)
         self._close()
+    
+    def publish_fanout_message_multi(self,msgs,keys):
+        self._connect()
+        for msg,key in zip(msgs,keys):
+            self.channel.basic_publish(exchange=self.exchange, routing_key=key, body=msg)
+        self._close()
 
 if __name__ == '__main__':
     broker = Rabbitmq()
