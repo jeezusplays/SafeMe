@@ -35,7 +35,7 @@ This section lists any major frameworks/libraries used to develop SafeMe.
 
 * [HTML](https://www.w3schools.com/html/), [Bootstrap](https://getbootstrap.com/), [CSS](https://www.w3schools.com/css/), [Vue.js](https://vuejs.org/)
 * [Python](https://www.python.org/)
-* [Flask](https://flask.palletsprojects.com/en/2.2.x/), [flask_sock](https://flask-sock.readthedocs.io/en/latest/) *(websocket used to disseminate notifications and alerts to users, allowing for 2-way communication between the client and the server)
+* [Flask](https://flask.palletsprojects.com/en/2.2.x/), [flask_sock](https://flask-sock.readthedocs.io/en/latest/) *(websocket used to disseminate notifications and alerts to users, allowing for 2-way communication between the client and the server)*
 * [AMQP](https://www.amqp.org/)
 
 ### APIs
