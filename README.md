@@ -39,7 +39,7 @@ This section lists any major frameworks/libraries used to develop SafeMe.
 * [AMQP](https://www.amqp.org/)
 
 ### APIs
-This are the APIs used to provide SafeMe with data on natural disasters.
+This section lists any APIs used to develop SafeMe.
 * [Kong API Gateway](https://docs.konghq.com/gateway/latest/) is used as a middleware to help hide the microservices' endpoints while being able to route the client to the needed services. It acts a message-oriented middleware (MOM) to help with future scalability.
 * [GDACS API](https://www.gdacs.org/)
 
