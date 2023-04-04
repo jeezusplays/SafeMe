@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 from datetime import date
-# import json
+import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/safeme'
@@ -95,7 +95,7 @@ def add_location():
         return jsonify({"code": 500, "data": {"message": "An error occurred while adding the location."}}), 500
     return jsonify({"code": 201, "data": location.json()}), 201
 
-# Get all users latest location (Select last location where userID == userID)
+# Get all users latest location today (Select last location where userID == userID)
 @app.route("/location/latest", methods=['GET'])
 def get_all_users_latest_location():
     current_timestamp_date = date.today()
@@ -108,6 +108,19 @@ def get_all_users_latest_location():
         return jsonify({"code": 200, "data": result})
     else:
         return jsonify({"code": 404, "message": "There are no users locations today"}), 404
+
+# Get all the user location history (Select all location where userID == userID)
+@app.route("/location/all", methods=['GET'])
+def get_all_users_location():
+    user_location_all = Location.query.all()
+    result = []
+    # Check if length of users is 0
+    if len(user_location_all) != 0:
+        for user in user_location_all:
+            result.append(user.json())
+        return jsonify({"code": 200, "data": result})
+    else:
+        return jsonify({"code": 404, "message": "There are no users locations"}), 404
 
 # Get family (Select * from users where familyID == familyID)
 @app.route("/user/family/<int:familyID>", methods=['GET'])
