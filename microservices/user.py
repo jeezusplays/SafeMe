@@ -50,6 +50,7 @@ class Location(db.Model):
     long = db.Column(db.Float(precision=3), nullable=False)
     timestamp = db.Column(db.TIMESTAMP, nullable=False)
 
+
     def __init__(self, userID, country, city, lat, long, timestamp):
         self.userID = userID
         self.country = country
@@ -98,8 +99,15 @@ def add_location():
 # Get all users latest location (Select last location where userID == userID)
 @app.route("/location/latest", methods=['GET'])
 def get_all_users_latest_location():
+
+    user_loc = Location.query.order_by(Location.timestamp.desc()).group_by(Location.userID).all()
+
     current_timestamp_date = date.today()
-    user_loc = Location.query.filter_by(timestamp=current_timestamp_date).order_by(Location.timestamp.desc()).group_by(Location.userID).all()
+    user_loc = Location.query.filter(db.func.date(Location.timestamp) == current_timestamp_date)\
+                         .order_by(Location.timestamp.desc())\
+                         .group_by(Location.userID)\
+                         .all()
+
     result = []
     # Check if length of users is 0
     if len(user_loc) != 0:
