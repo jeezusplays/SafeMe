@@ -16,6 +16,7 @@ def createDisasterWithUsers(alerts):
         if len(alert.get('country','')) > 0 and bool(alert.get('isToday',False)):
             try:
                 routing_keys = []
+                family_routing_keys = []
 
                 disaster = createDisaster(alert)
                 affected_userIds = affectedUsers(usersLoc,alert)
@@ -38,11 +39,12 @@ def createDisasterWithUsers(alerts):
                         "affectedUsersID":affectedUsersID,
                         "alert":alert
                     }))
-
                     routing_keys.append(f'user.{user["userID"]}.alert')
-                print(len(msgs),len(routing_keys))
-                rabbitmq.publish_fanout_message_multi(msgs,routing_keys)
+                    family_routing_keys.append(f'family.{user["familyID"]}.alert')
                 
+                rabbitmq.publish_fanout_message_multi(msgs,routing_keys)
+                rabbitmq.publish_fanout_message_multi(msgs,family_routing_keys)
+
             except Exception as e:
                 print(e)
                 raise e
