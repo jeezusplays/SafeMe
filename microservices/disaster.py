@@ -111,6 +111,15 @@ def get_user_status(disasterID):
 
     return jsonify({"message": "Affected user not found."}), 404
 
+# Get all user status  (select * from affected_users table)
+@app.route("/affected", methods=['GET'])
+def get_all_user_status():
+    affected_user = AffectedUser.query.all()
+    if affected_user:
+        return jsonify({"code": 200, "data": [affected_user.json() for affected_user in affected_user]}), 200
+
+    return jsonify({"message": "Affected user not found."}), 404
+
 # Allows the service to be accessible from any other in the network
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=True)
