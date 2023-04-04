@@ -145,7 +145,6 @@ class Rabbitmq():
             rabbit._unsubscribe()
         self.consumers.clear()
 
-
     def publish_message(self,msg,key):
         self._connect()
         self.channel.basic_publish(exchange=self.exchange, routing_key=key, body=msg)
