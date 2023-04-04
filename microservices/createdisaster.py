@@ -154,7 +154,7 @@ def main():
     global rabbitmq
     rabbitmq = Rabbitmq()
     rabbitmq.subscribe('gdacalert',alertCallback)
-    sleep(5)
+    sleep(20)
     rabbitmq.unsubscribe()
 
 # Send localised alerts
