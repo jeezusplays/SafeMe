@@ -115,7 +115,6 @@ class Rabbitmq():
 
         # Register a consumer
         self.channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
-        self.consumingList.append(queue)
 
         consumer_thread = threading.Thread(target=start_consuming)
         consumer_thread.start()
@@ -141,7 +140,7 @@ class Rabbitmq():
 
     def unsubscribe(self):
         for consumer in self.consumers:
-            rabbit = self.consumers['exchange']
+            rabbit = consumer['exchange']
             rabbit._unsubscribe()
         self.consumers.clear()
 

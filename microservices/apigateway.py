@@ -1,81 +1,42 @@
-# Kong API gateway
-
 import requests
 
-# Define the Kong API Gateway URL and Admin API endpoint
-KONG_URL = 'http://localhost:8001'
+KONG_ADMIN_URL = 'http://localhost:8001'
 
-def addAPI(json):
-    # Create the API using the Kong Admin API
-    response = requests.post(KONG_URL, json=json)
+# Function to create a service and a route to that service on Kong
+def create_service_and_route(service_name, service_url,consumer_route):
+    # First create the service
+    response = requests.post(KONG_ADMIN_URL + '/services/', json={
+        'name': service_name,
+        'url': service_url
+    })
 
-    # Check if the API was successfully created
-    if response.status_code == 201:
-        print('API created successfully.')
-    else:
-        print('API creation failed with status code:', response.status_code)
+    if response.status_code != 201:
+        print('Error creating service:', response.json())
+        return
 
-# Get user
-# [GET] /user/{userID}
-getUserAPI = {
-    'name': 'get-user',
-    'upstream_url': 'http://my-service:8080',
-    'uris': ['/user/{userID}'],
-    'methods':['GET']
-}
-addAPI(getUserAPI)
+    service_id = response.json()['id']
+    print('Service created with ID:', service_id)
 
-# Update user
-# [POST] /user/update
-updateUserAPI = {
-    'name': 'update-user',
-    'upstream_url': 'http://my-service:8080',
-    'uris': ['/user/update'],
-    'methods': ['POST']
-}
-addAPI(updateUserAPI)
+    # Now create the route to the service
+    response = requests.post(KONG_ADMIN_URL + '/routes/', json={
+        'name': service_name + '_route',
+        'paths': [consumer_route],
+        'methods': ['GET','POST','PUT','DELETE'],
+        'service': {'id': service_id}
+    })
 
-# Add location
-# [POST] /user/location
-addLocationAPI = {
-    'name': 'add-location',
-    'upstream_url': 'http://my-service:8080',
-    'uris': ['/user/location'],
-    'methods': ['POST']
-}
-addAPI(addLocationAPI)
+    if response.status_code != 201:
+        print('Error creating route:', response.json())
+        # Clean up by deleting the service if the route creation failed
+        requests.delete(KONG_ADMIN_URL + '/services/' + service_id)
+        return
 
-# Get all user latest location
-# [GET] /user/location/latest
-getLocationAPI = {
-    'name': 'get-latest-location',
-    'upstream_url': 'http://my-service:8080',
-    'uris': ['/user/location/latest/{userID}'],
-    'methods': ['GET']
-}
-addAPI(getLocationAPI)
+    route_id = response.json()['id']
+    print('Route created with ID:', route_id)
 
-# Get user status 
-# [GET] disaster/affectedusers/{disasterID}
-getAffectedUsersAPI = {
-    'name': 'get-affected-users',
-    'upstream_url': 'http://my-service:8080',
-    'uris': ['/disaster/affectedusers/{disasterID}'],
-    'methods': ['GET']
-}
-addAPI(getAffectedUsersAPI)
 
-# Receive alerts & Send status
-# [WebSocket] /get/alerts
-
-# Send status - POST request to Update user status microservice
-# [POST] /user/status
-
-# Get alerts
-# [AMQP] {country}.{city}.alert
-
-# Get family status
-# [WebSocket] /{familyID}/users/status
-
-# Get member status
-# [AMQP] *.{familyID}.status
+if __name__ == '__main__':
+    # Now create a dummy service and route
+    create_service_and_route('user_service4',
+                             'http://host.docker.internal:5001',
+                             '/api')
