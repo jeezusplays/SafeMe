@@ -63,12 +63,11 @@ if __name__ == '__main__':
     global messageCentre
     messageCentre = MessageCentre()
     rabbitmq = Rabbitmq()
+    print("subscribing to user_1 and family_1")
     rabbitmq.subscribe('user_1')
     rabbitmq.subscribe('family_1')
-    
-    sleep(10)
     # rabbitmq.subscribe('family_1')
-    rabbitmq.unsubscribe()
     app.run(debug=True)
+    rabbitmq.unsubscribe()
     
 
