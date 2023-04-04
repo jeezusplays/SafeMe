@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Family</title>
+    <script src="https://unpkg.com/vue@next"></script>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+    <script defer src="../script.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- NAVBAR-->
+        <nav class="navbar navbar-light navbar-expand-lg bg-body-secondary" style="background-color: #e3f2fd;">
+            <div class="container-fluid">
+                <!-- Shows account type -->
+                <a class="navbar-brand" href="disastersNearMe.html">SafeMe (Public)</a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <!-- Navbar tabs for Public UI -->
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="disastersNearMe.html">Disasters Near Me</a>
+                            <!-- <a v-else class="nav-link" aria-current="page" href="#">Disasters Near Me</a> -->
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="myFamily.html">My Family</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="volunteerPublic.html">Volunteer to Help</a>
+                        </li>
+                    </ul>
+
+                    <!-- Navbar tabs for Gvmt UI -->
+                    <!-- <ul v-else class="navbar-nav me-auto mb-2 mb-lg-0"></ul> -->
+                    <!-- Switches between account types -->
+                    <button class="btn btn-outline-primary"
+                        onclick="location.href='../gov/countryDisasters.html'">Switch Account Type</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- CARD Group -->
+        <div class="container-fluid">
+            <div class="row d-flex justify-content-center">
+                <div v-for="(member,index) in this.family" class="card col-2 mx-2 my-4">
+                    <img class="card-img-top" src="../img/you.png" alt="Card image cap">
+                    <div class="card-body">
+                        <h4 class="card-title">{{member.name}}</h4>
+                        <ul class="card-text" style="list-style: none">
+                            <li>User ID: {{member.userID}}</li>
+                            <li>Name: {{member.email}}</li>
+                            <li>
+                                Status:
+                                <strong v-if="member.status == 'Mildly Injured'"
+                                    class="text-warning"><br>{{member.status}}</strong>
+
+                                <strong v-else-if="member.status == 'Pending'"
+                                    class="text-secondary"><br>{{member.status}}</strong>
+
+                                <strong v-else-if="member.status == 'Okay'"
+                                    class="text-success"><br>{{member.status}}</strong>
+
+                                <strong v-else class="text-danger"><br>{{member.status}}</strong>
+                            </li>
+                            <li>Last Known Location: {{member.lastKnownCity}}</li>
+                        </ul>
+
+                        <button type="button" class="btn btn-primary" :id="member.userID" :disabled="isDisabled(index)"
+                            @click="disableOnClick(index)">Escalate to government</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUBMISISON TOAST -->
+        <div v-for="member in this.family" class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div :id="member.name" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">Escalation was successful</strong>
+                    <small>Just now</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{member.name}}'s status has been escalated to the government!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    family: [
+                        {
+                            userID: '001',
+                            name: 'John',
+                            status: 'Unresponsive',
+                            photo: 'img/personA.png',
+                            email: 'joeytanbiz@gmail.com',
+                            lastKnownCity: 'United States, New York',
+                        },
+
+                        {
+                            userID: '002',
+                            name: 'Jane',
+                            status: 'Mildly Injured',
+                            photo: 'img/personB.png',
+                            email: 'hongxiangliow@gmail.com',
+                            lastKnownCity: 'Indonesia, Jakarta',
+                        },
+
+                        {
+                            userID: '003',
+                            name: 'Bob',
+                            status: 'Severely Injured',
+                            photo: 'img/personC.png',
+                            email: 'hx24000@gmail.com',
+                            lastKnownCity: 'India, Mumbai',
+                        },
+
+                        {
+                            userID: '004',
+                            name: 'Alice',
+                            status: 'Pending',
+                            photo: 'img/persone.png',
+                            email: 'alice@aol.com',
+                            lastKnownCity: 'China, Beijing',
+                        },
+
+                        {
+                            userID: '005',
+                            name: 'Michael',
+                            status: 'Okay',
+                            photo: 'img/you.png',
+                            email: 'michael@outlook.com',
+                            lastKnownCity: 'Philippines, Manila',
+                        },
+                    ]
+                }
+            },
+
+            // Attempt to disable button on-click
+            computed: {
+                //an array of booleans that will be used in disable() method to disable buttons on click
+                isReportedArr() {
+                    var reportsArr = Array()
+                    for (member of this.family) {
+                        //if user is okay, button should be disabled by default
+                        if (member.status != 'Okay') {
+                            reportsArr.push(false)
+                        }
+                        else {
+                            reportsArr.push(true)
+                        }
+                    }
+                    return reportsArr
+                }
+            },
+
+            methods: {
+                //get family photo
+                // getPhoto(member){
+                //     return member.photo
+                // }
+
+                //disables button onclick
+                isDisabled(index) {
+                    return this.isReportedArr[index]
+                },
+
+                //disables escalate button onclick
+                // disableOnClick(index){
+                //     if (this.isReportedArr[index] == false){
+                //         this.isReportedArr[index] = true
+                //         this.isDisabled(index)
+                //     }
+                // }
+            }
+        })
+        app.mount('#app')
+    </script>
+
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

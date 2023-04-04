@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Volunteer List</title>
+    <script src="https://unpkg.com/vue@next"></script>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+    <!-- Datatables for table styling -->
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+    <!-- Datatables JS scripts -->
+    <script defer src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script defer src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script defer src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script defer src="../script.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <nav class="navbar navbar-light navbar-expand-lg bg-body-secondary" style="background-color: #e3f2fd;">
+            <div class="container-fluid">
+                <!-- Shows account type -->
+                <a class="navbar-brand" href="countryDisasters.html">SafeMe (Government)</a>
+
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                    <!-- Navbar tabs for Gvmt UI -->
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+                    <!-- Switches between account types -->
+                    <button class="btn btn-outline-primary"
+                        onclick="location.href='../public/disastersNearMe.html'">Switch Account Type</button>
+                </div>
+            </div>
+        </nav>
+
+
+        <div class="container my-5">
+
+            <!-- BREADCRUMBS -->
+            <div class="container my-4 mx-0">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="countryDisasters.html">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">View Volunteers</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <!-- VOLUNTEER EVENT HEADER VIEW MODE -->
+            <div v-if="!inEditMode" class="d-flex flex-row align-items-center gap-3">
+                <div class="pr-3 pr-3 me-auto">
+                    <h3 class="my-4">{{volunteerEventName}}</h3>
+                </div>
+                <div class="">
+                    <button type="button" class="btn btn-primary" @click="this.swichModes">Edit Volunteer Event
+                        Name</button>
+                </div>
+            </div>
+
+            <!-- VOLUNTEER EVENT HEADER EDIT MODE -->
+            <div v-else class="d-flex flex-row align-items-center gap-3">
+                <div class="pr-3 pr-3 me-auto">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Enter new volunteer event name</span>
+                        <input type="text" class="form-control" placeholder="Username" aria-label="Username"
+                            aria-describedby="basic-addon1" v-model="this.volunteerEventName">
+                    </div>
+                </div>
+                <div class="">
+                    <button type="button" class="btn btn-primary" @click="this.swichModes">Save Changes</button>
+                </div>
+            </div>
+            <!-- DISASTER TABLE FOR VOLUNTEERS -->
+            <table id="example" class="table table-striped my-auto" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Country, City</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(volunteer, index) in this.volunteers">
+
+                        <td>{{volunteer.userID}}</td>
+                        <td>{{volunteer.name}}</td>
+                        <td>{{volunteer.country}}</td>
+                        <td>
+                            <button type="button" class="btn btn-link" :disabled="volunteer.isCalled"
+                                @click="volunteered(index)">Call Up Volunteer</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <script>
+            const app = Vue.createApp({
+                data() {
+                    return {
+                        volunteers: [
+                            {
+                                key1: '999',
+                                key2: '999999',
+                                userID: '001',
+                                name: 'A',
+                                country: 'Singapore, Singapore',
+                                isCalled: false
+                            },
+                            {
+                                userID: '002',
+                                name: 'B',
+                                country: 'Singapore, Singapore',
+                                isCalled: false
+                            },
+                            {
+                                userID: '003',
+                                name: 'C',
+                                country: 'Singapore, Singapore',
+                                isCalled: true
+                            },
+                            {
+                                userID: '004',
+                                name: 'D',
+                                country: 'Singapore, Singapore',
+                                isCalled: true
+                            },
+                        ],
+                        volunteerEventName: 'Disaster',
+                        inEditMode: true,
+                    }
+                },
+
+                methods: {
+                    //disables the 'call up' button upon click
+                    volunteered(index) {
+                        this.volunteers[index].isCalled = true
+                    },
+
+                    // toggles between edit mode and view mode
+                    swichModes() {
+                        this.inEditMode = !this.inEditMode
+                    },
+                }
+            })
+            app.mount('#app')
+        </script>
+
+        <!-- Bootstrap Bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+            crossorigin="anonymous"></script>
+</body>
+
+</html>
