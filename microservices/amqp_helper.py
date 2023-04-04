@@ -60,6 +60,8 @@ class Rabbitmq():
 
         self.connection = None
         self.channel = None
+        self.consumers = []
+        
         
     def _connect(self):
 
@@ -102,8 +104,7 @@ class Rabbitmq():
 
         self._close()
 
-    def subscribe(self,queue,callback=None):
-
+    def _subscribe(self,queue, callback=None):
         if callback is None:
             callback = lambda ch, method, properties, body: print(f"Received message: {json.loads(body)}")
 
@@ -111,16 +112,39 @@ class Rabbitmq():
             self.channel.start_consuming()
 
         self._connect()
+
         # Register a consumer
         self.channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
+        self.consumingList.append(queue)
 
         consumer_thread = threading.Thread(target=start_consuming)
         consumer_thread.start()
 
-    def unsubscribe(self):
+    def subscribe(self,queue,callback=None):
+
+        self.consumers.append({
+            'exchange': Rabbitmq(),
+            'queue': queue,
+            'callback': callback
+            })
+        self.consumers[-1]['exchange']._subscribe(queue,callback)
+
+    def checkConsuming(self):
+        while True:
+            for consumer_tag in self.channel.consumer_tags:
+                print(f"Consumer tag: {consumer_tag}")
+                
+    def _unsubscribe(self):
         if self.channel is None:
             self._connect()
         self.channel.stop_consuming()
+
+    def unsubscribe(self):
+        for consumer in self.consumers:
+            rabbit = self.consumers['exchange']
+            rabbit._unsubscribe()
+        self.consumers.clear()
+
 
     def publish_message(self,msg,key):
         self._connect()
