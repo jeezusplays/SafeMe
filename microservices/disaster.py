@@ -20,39 +20,39 @@ CORS(app)
 class Disaster(db.Model):
     __tablename__ = 'disaster'
 
-    disasterID = db.Column(db.Integer, primary_key=True)
+    disasterID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     disasterName = db.Column(db.String(64), nullable=False)
     country = db.Column(db.String(64), nullable=False)
     city = db.Column(db.String(64), nullable=False)
     lat = db.Column(db.Float(precision=3), nullable=False)
     long = db.Column(db.Float(precision=3), nullable=False)
     disasterSeverityLevel = db.Column(db.String(64), nullable=False)
+    disasterTimestamp = db.Column(db.TIMESTAMP, nullable=False)
 
-    def __init__(self, disasterID, disasterName, country, city, lat, long, disasterSeverityLevel):
-        self.disasterID = disasterID
+    def __init__(self, disasterName, country, city, lat, long, disasterSeverityLevel, disasterTimestamp):
         self.disasterName = disasterName
         self.country = country
         self.city = city
         self.lat = lat
         self.long = long
         self.disasterSeverityLevel = disasterSeverityLevel
+        self.disasterTimestamp = disasterTimestamp
 
     def json(self):
-        return {"disasterID": self.disasterID, "disasterName": self.disasterName, "country": self.country, "city": self.city, "lat": self.lat, "long": self.long, "disasterSeverityLevel": self.disasterSeverityLevel}
+        return {"disasterID": self.disasterID, "disasterName": self.disasterName, "country": self.country, "city": self.city, "lat": self.lat, "long": self.long, "disasterSeverityLevel": self.disasterSeverityLevel, "disasterTimestamp": self.disasterTimestamp}
 
 # Affected user class with affectedUsersID, disasterID, userID, userName, status, contact with no ORM
 class AffectedUser(db.Model):
     __tablename__ = 'affectedusers'
 
-    affectedUsersID = db.Column(db.Integer, primary_key=True)
+    affectedUsersID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     disasterID = db.Column(db.Integer, nullable=False)
     userID = db.Column(db.Integer, nullable=False)
     userName = db.Column(db.String(64), nullable=False)
     status = db.Column(db.String(64), nullable=False)
     contact = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, affectedUsersID, disasterID, userID, userName, status, contact):
-        self.affectedUsersID = affectedUsersID
+    def __init__(self, disasterID, userID, userName, status, contact):
         self.disasterID = disasterID
         self.userID = userID
         self.userName = userName
@@ -113,6 +113,15 @@ def get_user_status(disasterID):
 
     return jsonify({"message": "Affected user not found."}), 404
 
+# Get all user status  (select * from affected_users table)
+@app.route("/affected", methods=['GET'])
+def get_all_user_status():
+    affected_user = AffectedUser.query.all()
+    if affected_user:
+        return jsonify({"code": 200, "data": [affected_user.json() for affected_user in affected_user]}), 200
+
+    return jsonify({"message": "Affected user not found."}), 404
+
 # Allows the service to be accessible from any other in the network
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5002, debug=True)
