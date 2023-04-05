@@ -61,7 +61,7 @@
                     <h2 v-if = "member.face == 'Inactive'">Please reload page or activate User + Disaster microservices with WAMP!</h2>
                 </div>                 
                 <div v-for="(member, index) in this.family" class="card col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 mx-2 my-4">
-                    <img v-if="member.face == 'Active'" class="card-img-top" src="../img/you.png" alt="Card image cap">
+                    <img v-if="this.face == 'Active'" class="card-img-top" src="../img/you.png" alt="Card image cap">
                     <img v-if="member.face == 'Inactive'" class="card-img-top" src="../img/you.jpg" alt="Card image cap">
                     <div class="card-body">
                         <h4 class="card-title text-center">{{member.userName}}</h4>
@@ -109,8 +109,8 @@
     </div>
 
     <script>
-        const user_table_URL = "http://localhost:5001/user/family/1";
-        const location_table_URL = "http://localhost:5001/location/all";
+        const user_URL = "http://localhost:5001/user/family/1";
+        const location_URL = "http://localhost:5001/location/all";
         const affected_users_URL = "http://localhost:5002/affected";  
 
         const app = Vue.createApp({
@@ -124,11 +124,10 @@
                             contact: "Loading...",
                             email: "Loading...",
                             status: "Loading...",
-                            lastKnownCity: "Loading...",
-                            face: "Inactive"
-                        }
+                            lastKnownCity: "Loading...",                        }
                     ],
                     message: "なにか入力してください",
+                    face: "Inactive"
                 }
             },
 
@@ -152,7 +151,7 @@
 
             methods: {
                 async getAllUsers() {
-                    await fetch(user_table_URL)
+                    await fetch(user_URL)
                         .then(response => {
                             if (!response.ok) {
                                 throw new Error("Error fetching user data");
@@ -161,7 +160,7 @@
                         })
                         .then(data => {
                             this.family = data.data;
-                            console.log(this.family);
+                            // console.log(this.family);
                             fetch(affected_users_URL)
                                 .then(response => {
                                     if (!response.ok) {
@@ -171,11 +170,11 @@
                                 })
                                 .then(data => {
                                     for (member of this.family) {
-                                        this.family.face = "Active";
+                                        this.face = "Active";
                                         for (user of data.data) {
                                             if (member.userID == user.userID) {
                                                 member.status = user.status;
-                                                console.log(member.status);
+                                                // console.log(member.status);
                                             }
                                         }
                                     }
@@ -188,18 +187,17 @@
                             console.log(error);
                         });
                     
-                        axios.get(location_table_URL)
+                        axios.get(location_URL)
                         .then(response => {
-                            console.log("This the start of hell");
-                            console.log(response.data.data)
+                            // console.log(response.data.data)
                             for (member of this.family) {
-                                console.log(JSON.stringify(member.userID))
+                                // console.log(JSON.stringify(member.userID))
                                 member.lastKnownCity = "Unknown";
                                 for (location_row of response.data.data)
                                 {
                                     if (member.userID == location_row.userID) {
                                         member.lastKnownCity = location_row.country + ", " + location_row.city;
-                                        console.log(member.lastKnownCity);
+                                        // console.log(member.lastKnownCity);
                                     }
                                 }
                             }
