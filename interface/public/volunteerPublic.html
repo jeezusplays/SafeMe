@@ -65,31 +65,31 @@
         <thead>
           <tr>
             <th>Country/City</th>
-            <th>Disaster Type</th>
+            <th>Disaster Name</th>
             <th>Distance Away</th>
             <th>Time of Incident</th>
-            <th>Danger Status</th>
+            <th>Danger Impact</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(disaster, index) in this.mockData">
+          <tr v-for="(disaster, index) in this.disaster_table">
             <td>{{disaster.country}}</td>
-            <td>{{disaster.type}}</td>
+            <td>{{disaster.disasterName}}</td>
             <td>{{disaster.distance}} km</td>
-            <td>{{disaster.incidence}}</td>
+            <td>{{disaster.disasterTimestamp}}</td>
             <!-- Checks for danger status and renders the colour status -->
-            <td v-if="disaster.danger == 'Low Risk'">
-              <span class="badge text-bg-success">{{disaster.danger}}</span>
+            <td v-if="disaster.disasterSeverityLevel == 'green'">
+              <span class="badge text-bg-success">Low</span>
             </td>
-            <td v-else-if="disaster.danger == 'Moderate Risk'">
-              <span class="badge text-bg-warning">{{disaster.danger}}</span>
+            <td v-else-if="disaster.disasterSeverityLevel == 'amber'">
+              <span class="badge text-bg-warning">Medium</span>
             </td>
-            <td v-else-if="disaster.danger == 'Pending'">
-              <span class="badge text-bg-secondary">{{disaster.danger}}</span>
+            <td v-else-if="disaster.disasterSeverityLevel == 'red'">
+              <span class="badge text-bg-danger">High</span>
             </td>
             <td v-else>
-              <span class="badge text-bg-danger">{{disaster.danger}}</span>
+              <span class="badge text-bg-secondary">None</span>
             </td>
             <td>
               <button type="button" class="btn btn-link" :id="disaster.key1" :disabled="disaster.isVolunteered"
@@ -100,7 +100,7 @@
       </table>
     </div>
 
-    <!-- SUBMISISON TOAST -->
+    <!-- SUBMISSION TOAST -->
     <div v-for="disaster in this.mockData" class="toast-container position-fixed bottom-0 end-0 p-3">
       <div :id="disaster.key2" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
@@ -116,70 +116,112 @@
   </div>
 
   <script>
+    const disaster_URL = "http://localhost:5002/disaster";
+    const user_location_URL = "http://localhost:5001/location/1";
+    const volunteer_URL = "http://localhost:5003/volunteer";
+    const userID = 1;
+
     const app = Vue.createApp({
       data() {
         return {
-          mockData: [
+          disaster_table: [
             {
-              key1: '1',
-              key2: 'a',
-              country: 'Chile',
-              type: 'Earthquake',
-              distance: 1,
-              incidence: "Thu, 23 Feb 2023 20:20:21 GMT",
-              danger: 'Low Risk',
-              isVolunteered: false
-            },
-            {
-              key1: '2',
-              key2: 'b',
-              country: 'Cuba',
-              type: 'Earthquake',
-              distance: 15,
-              incidence: "Thu, 23 Feb 2023 10:39:01 GMT",
-              danger: 'High Risk',
-              isVolunteered: false
-            },
-            {
-              key1: '3',
-              key2: 'c',
-              country: 'Turkey',
-              type: 'Tsunami',
-              distance: 20,
-              incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-              danger: 'Moderate Risk',
-              isVolunteered: false
-            },
-            {
-              key1: '4',
-              key2: 'd',
-              country: 'Korea',
-              type: 'Fire',
-              distance: 12,
-              incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-              danger: 'Low Risk',
-              isVolunteered: false
-            },
-            {
-              key1: '5',
-              key2: 'e',
-              country: 'Korea',
-              type: 'Fire',
-              distance: 100,
-              incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-              danger: 'Pending',
-              isVolunteered: false
-            },
-          ]
-
+              danger: "-",
+              distance: 0.0
+            }
+          ],
+          status: "Unavailable",
+          user_lat: 0.0,
+          user_long: 0.0,
         }
       },
 
       methods: {
         //dynamically changes volunteer state on click
         volunteered(index) {
-          this.mockData[index].isVolunteered = true
+          this.disaster_table[index].isVolunteered = true
+        },
+        populate_disasters() {
+          // Get request using axios to fetch data from the disaster table
+          axios.get(disaster_URL)
+            .then(response => {
+              this.disaster_table = response.data.data
+              console.log(this.disaster_table)
+              // Get request using axios to fetch data from users
+              axios.get(user_location_URL)
+                .then(response => {
+                  user_location = response.data.data
+                  // Check if there is more than 1 user location entry
+                  if (user_location.length > 1) {
+                    // If there is more than 1 user location entry, then we need to find the most recent one
+                    // Sort the user location array by timestamp
+                    user_location.sort(function (a, b) {
+                      return new Date(b.timestamp) - new Date(a.timestamp);
+                    });
+                    // Set the user location to the most recent one
+                    user_location = user_location[0];
+                    this.user_lat = user_location.lat;
+                    this.user_long = user_location.long;
+                  } else {
+                    // If there is only 1 user location entry, then we can just set the user location to the first entry
+                    user_location = user_location[0];
+                    this.user_lat = user_location.lat;
+                    this.user_long = user_location.long;
+                  }
+                  // Loop through the disaster table and calculate the distance between the user and the disaster
+                  for (var i = 0; i < this.disaster_table.length; i++) {
+                    console.log(this.disaster_table[i])
+                    // Calculate the distance between the user and the disaster
+                    var distance = this.calculate_distance(this.user_lat, this.user_long, this.disaster_table[i].lat, this.disaster_table[i].long);
+                    // Round the distance to 2 decimal places
+                    distance = distance.toFixed(2);
+                    // Set the distance in the disaster table
+                    this.disaster_table[i].distance = distance;
+                    // Set the isVolunteered to false first
+                    this.disaster_table[i].isVolunteered = false;
+                    // Check if the user has already volunteered for the disaster
+                    axios.get(volunteer_URL)
+                      .then(response => {
+                        // If the user has already volunteered for the disaster, then set the isVolunteered to true
+                        if (response.data.data.length > 0) {
+                          this.disaster_table[i].isVolunteered = true;
+                        }
+                      })
+                      .catch(error => {
+                        console.log(error)
+                      })
+                  }
+                })
+                .catch(error => {
+                  console.log(error)
+                })
+            })
+            .catch(error => {
+              console.log(error)
+            })
+        },
+        calculate_distance(lat1, lon1, lat2, lon2) {
+          // Calculate the distance between the user and the disaster
+          console.log(lat1, lon1, lat2, lon2)
+          var R = 6371; // Radius of the earth in km
+          var dLat = this.deg2rad(lat2 - lat1);  // deg2rad below
+          var dLon = this.deg2rad(lon2 - lon1);
+          var a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2)
+            ;
+          var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          var d = R * c; // Distance in km
+          return d;
+        },
+        deg2rad(deg) {
+          return deg * (Math.PI / 180)
         }
+
+      },
+      mounted() {
+        this.populate_disasters();
       }
     })
     app.mount('#app')

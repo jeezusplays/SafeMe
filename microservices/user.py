@@ -128,6 +128,19 @@ def get_all_users_location():
     else:
         return jsonify({"code": 404, "message": "There are no users locations"}), 404
 
+# Get only 1 user location history (Select all location where userID == userID)
+@app.route("/location/<int:userID>", methods=['GET'])
+def get_user_location(userID):
+    user_location = Location.query.filter_by(userID=userID).all()
+    result = []
+    # Check if length of users is 0
+    if len(user_location) != 0:
+        for user in user_location:
+            result.append(user.json())
+        return jsonify({"code": 200, "data": result})
+    else:
+        return jsonify({"code": 404, "message": "There are no users locations"}), 404
+
 # Get family (Select * from users where familyID == familyID)
 @app.route("/user/family/<int:familyID>", methods=['GET'])
 def get_family(familyID):
