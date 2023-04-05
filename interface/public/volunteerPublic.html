@@ -116,10 +116,11 @@
   </div>
 
   <script>
-    const disaster_URL = "http://localhost:5002/disaster";
-    const user_location_URL = "http://localhost:5001/location/1";
-    const volunteer_URL = "http://localhost:5003/volunteer";
+    // Hardcoded userID for now
     const userID = 1;
+    const disaster_URL = "http://localhost:5002/disaster";
+    const user_location_URL = "http://localhost:5001/location/" + userID;
+    const volunteer_URL = "http://localhost:5003/volunteer/event";
 
     const app = Vue.createApp({
       data() {
@@ -169,28 +170,31 @@
                     this.user_long = user_location.long;
                   }
                   // Loop through the disaster table and calculate the distance between the user and the disaster
-                  for (var i = 0; i < this.disaster_table.length; i++) {
-                    console.log(this.disaster_table[i])
-                    // Calculate the distance between the user and the disaster
-                    var distance = this.calculate_distance(this.user_lat, this.user_long, this.disaster_table[i].lat, this.disaster_table[i].long);
-                    // Round the distance to 2 decimal places
-                    distance = distance.toFixed(2);
-                    // Set the distance in the disaster table
-                    this.disaster_table[i].distance = distance;
-                    // Set the isVolunteered to false first
-                    this.disaster_table[i].isVolunteered = false;
-                    // Check if the user has already volunteered for the disaster
-                    axios.get(volunteer_URL)
-                      .then(response => {
-                        // If the user has already volunteered for the disaster, then set the isVolunteered to true
-                        if (response.data.data.length > 0) {
-                          this.disaster_table[i].isVolunteered = true;
+                  axios.get(volunteer_URL)
+                    .then(response => {
+                      volunteer_event_response = response.data
+                      for (var i = 0; i < this.disaster_table.length; i++) {
+                        console.log(this.disaster_table[i])
+                        // Calculate the distance between the user and the disaster
+                        var distance = this.calculate_distance(this.user_lat, this.user_long, this.disaster_table[i].lat, this.disaster_table[i].long);
+                        // Round the distance to 2 decimal places
+                        distance = distance.toFixed(2);
+                        // Set the distance in the disaster table
+                        this.disaster_table[i].distance = distance;
+                        // Set the isVolunteered to true first
+                        this.disaster_table[i].isVolunteered = true;
+                        // Loop through volunteer events and determine if there is a volunteer event for the disaster
+                        for (var j = 0; j < volunteer_event_response.length; j++) {
+                          if (this.disaster_table[i].disasterName == volunteer_event_response[j].disasterName) {
+                            this.disaster_table[i].isVolunteered = false;
+                          }
                         }
-                      })
-                      .catch(error => {
-                        console.log(error)
-                      })
-                  }
+                      }
+                    })
+                    .catch(error => {
+                      console.log(error)
+                    })
+
                 })
                 .catch(error => {
                   console.log(error)
