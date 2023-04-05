@@ -58,8 +58,12 @@
         <!-- CARD Group -->
         <div class="container-fluid">
             <div class="row justify-content-center">
+                <div v-for="(member, index) in this.family">
+                    <h2 v-if = "member.face == 'Inactive'">Please reload page or activate User + Disaster microservices with WAMP!</h2>
+                </div>                 
                 <div v-for="(member, index) in this.family" class="card col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 mx-2 my-4">
-                    <img class="card-img-top" src="../img/you.png" alt="Card image cap">
+                    <img v-if="member.face == 'Active'" class="card-img-top" src="../img/you.png" alt="Card image cap">
+                    <img v-if="member.face == 'Inactive'" class="card-img-top" src="../img/you.jpg" alt="Card image cap">
                     <div class="card-body">
                         <h4 class="card-title text-center">{{member.userName}}</h4>
                         <div class="card-text list-group list-group-flush">
@@ -113,7 +117,18 @@
         const app = Vue.createApp({
             data() {
                 return {
-                    family: [],
+                    family: [
+                        {
+                            // Create placeholder data for testing or unavailable data
+                            userID: 0,
+                            userName: "Loading...",
+                            contact: "Loading...",
+                            email: "Loading...",
+                            status: "Loading...",
+                            lastKnownCity: "Loading...",
+                            face: "Inactive"
+                        }
+                    ],
                     message: "なにか入力してください",
                 }
             },
@@ -157,6 +172,7 @@
                                 })
                                 .then(data => {
                                     for (member of this.family) {
+                                        this.family.face = "Active";
                                         for (user of data.data) {
                                             if (member.userID == user.userID) {
                                                 member.status = user.status;
