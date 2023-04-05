@@ -83,6 +83,14 @@ def add_volunteer():
 def get_all_volunteers():
     return jsonify({"volunteers": [volunteer.json() for volunteer in Volunteer.query.all()]})
 
+# Get volunteers by userID (For UI) (select * from volunteers table)
+@app.route("/volunteer/<int:userID>", methods=['GET'])
+def get_volunteers_by_userID(userID):
+    volunteer = Volunteer.query.filter_by(userID=userID).first()
+    if volunteer:
+        return jsonify(volunteer.json())
+    return jsonify({"message": "Volunteer not found."}), 404
+
 # Get all volunteer event data (For UI) (select * from volunteer event)
 @app.route("/volunteer/event", methods=['GET'])
 def get_all_volunteer_events():
