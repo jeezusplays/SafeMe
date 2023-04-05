@@ -140,7 +140,7 @@ def get_user_location(userID):
         return jsonify({"code": 200, "data": result})
     else:
         return jsonify({"code": 404, "message": "There are no users locations"}), 404
-
+    
 # Get family (Select * from users where familyID == familyID)
 @app.route("/user/family/<int:familyID>", methods=['GET'])
 def get_family(familyID):
