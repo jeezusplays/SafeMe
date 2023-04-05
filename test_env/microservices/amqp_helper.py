@@ -1,12 +1,13 @@
 from pika.exchange_type import ExchangeType
+from os import environ
 
 import pika
 import json
 import threading
 
 
-HOST = "localhost"  # default hostname
-PORT = 5672  # default port
+HOST = "rabbitmq-mgmt"  # default hostname
+PORT = environ.get("RABBITMQ_PORT")  # default port
 EXCHANGE = 'safeme'
 
 def check_setup():

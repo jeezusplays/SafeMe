@@ -1,0 +1,86 @@
+version: '3'
+
+networks:
+  service_network:
+    driver: bridge
+
+services:
+  user:
+    build: ./microservices/user
+    environment:
+      USER_DB_NAME: ${USER_DB_NAME}
+      USER_HOST_PORT: ${USER_HOST_PORT}
+    ports:
+      - "${USER_HOST_PORT}:${USER_HOST_PORT}"
+    depends_on:
+      - user-db
+    networks:
+      - service_network
+
+  user-db:
+    image: mysql:latest
+    ports:
+      - "${USER_DB_HOST_PORT}:3306"
+    volumes:
+      - ./microservices/user/db.sql:/docker-entrypoint-initdb.d/db.sql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    networks:
+      - service_network
+
+  disaster:
+    build: ./microservices/disaster
+    environment:
+      DISASTER_DB_NAME: ${DISASTER_DB_NAME}
+      DISASTER_HOST_PORT: ${DISASTER_HOST_PORT}
+    ports:
+      - "${DISASTER_HOST_PORT}:${DISASTER_HOST_PORT}"
+    depends_on:
+      - disaster-db
+    networks:
+      - service_network
+
+  disaster-db:
+    image: mysql:latest
+    ports:
+      - "${DISASTER_DB_HOST_PORT}:3306"
+    volumes:
+      - ./microservices/disaster/db.sql:/docker-entrypoint-initdb.d/db.sql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    networks:
+      - service_network
+
+  volunteerevent:
+    build: ./microservices/volunteerevent
+    environment:
+      VOLUNTEEREVENT_DB_NAME: ${VOLUNTEEREVENT_DB_NAME}
+      VOLUNTEEREVENT_HOST_PORT: ${VOLUNTEEREVENT_HOST_PORT}
+    ports:
+      - "${VOLUNTEEREVENT_HOST_PORT}:${VOLUNTEEREVENT_HOST_PORT}"
+    depends_on:
+      - volunteerevent-db
+    networks:
+      - service_network
+
+  volunteerevent-db:
+    image: mysql:latest
+    ports:
+      - "${VOLUNTEEREVENT_DB_HOST_PORT}:3306"
+    volumes:
+      - ./microservices/volunteerevent/db.sql:/docker-entrypoint-initdb.d/db.sql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    networks:
+      - service_network
+
+  rabbitmq-mgmt:
+    image: rabbitmq:3-management
+    hostname: esd-rabbit
+    environment:
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    ports:
+      - "${RABBITMQ_PORT}:${RABBITMQ_PORT}"
+      - "15672:15672"
+
+

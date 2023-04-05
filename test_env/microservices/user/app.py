@@ -2,6 +2,7 @@
 import os
 from os import environ
 
+
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -9,8 +10,13 @@ from flask_cors import CORS
 from datetime import date
 import json
 
+DB_NAME = environ.get("USER_DB_NAME")
+PORT = environ.get("USER_HOST_PORT")
+print("This db name is: ",DB_NAME)
+print("The port for this container: ",PORT)
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/safeme'
+app.config['SQLALCHEMY_DATABASE_URI'] =  f'mysql+mysqlconnector://root@user-db:3306/{DB_NAME}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 CORS(app)
@@ -156,4 +162,4 @@ def get_family(familyID):
 
 # Allows the service to be accessible from any other in the network
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=PORT, debug=True)
