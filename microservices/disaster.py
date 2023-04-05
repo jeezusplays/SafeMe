@@ -75,6 +75,15 @@ def create_disaster():
 
     return jsonify({"code": 201, "data": disaster.json()}), 201
 
+# Get All disaster (select * from disaster table)
+@app.route("/disaster", methods=['GET'])
+def get_all_disaster():
+    disaster = Disaster.query.all()
+    if disaster:
+        return jsonify({"code": 200, "data": [disaster.json() for disaster in disaster]}), 200
+
+    return jsonify({"message": "Disaster not found."}), 404
+
 # Add affected users (add users to affecteduser table)
 @app.route("/affecteduser", methods=['POST'])
 def create_affected_user():
