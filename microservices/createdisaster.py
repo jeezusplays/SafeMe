@@ -9,6 +9,9 @@ import json
 
 # Get GDAC alert
 # gdac.alert
+
+# Send localised alerts
+# [AMQP] user.{userID}.alert
 def createDisasterWithUsers(alerts):
     usersLoc = getUsersLastLoc()
     for alert in alerts:
@@ -74,7 +77,9 @@ def distanceFrom(lat1,lon1,lat2,lon2)->float:
     distance = R * c
 
     return distance
-    
+
+# Get all user latest location - send request
+# [GET] /location/latest 
 def getUsersLastLoc():
     try:
         result = invoke_http("http://127.0.0.1:5001/location/latest", method="GET")
@@ -123,6 +128,8 @@ def addAffectedUser(user, disasterId):
     except Exception as e:
         print(e)
 
+# Create disaster - send request
+# [POST] /disaster/new
 def createDisaster(alert:dict):
     data = {
         'disasterName': alert['name'],
@@ -173,16 +180,6 @@ def main():
     rabbitmq.subscribe('gdacalert',alertCallback)
     sleep(20)
     rabbitmq.unsubscribe()
-
-# Send localised alerts
-# [AMQP] user.{userID}.alert
-
-# Get all user latest location - send request
-# [GET] /location/latest
-
-# Create disaster - send request
-# [POST] /disaster/new
-
 
 # Execute this program if it is run as a main script
 if __name__ == "__main__":
