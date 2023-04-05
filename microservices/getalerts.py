@@ -38,8 +38,8 @@ def get_alert():
             'type':_eventtype,
             'country':_country,
             'country_short':_country_short,
-            'from':_from.strftime("%d/%m/%Y %H:%M"),
-            'to':_to.strftime("%d/%m/%Y %H:%M"),
+            'from':_from.strftime("%Y/%m/%d %H:%M:%S"),
+            'to':_to.strftime("%Y/%m/%d %H:%M:%S"),
             'isHappening': _isHappening,
             'isToday': _isToday,
             'alertlevel':_alertlevel,
@@ -57,6 +57,7 @@ def main():
     while True:
         alerts = get_alert()
         new_alerts = [alert for alert in alerts if alert not in alert_list]
+        print(new_alerts)
         if len(new_alerts)>0:
             alert_list+=new_alerts
             rabbitmq.publish_message(json.dumps(new_alerts),'gdac.alert')
