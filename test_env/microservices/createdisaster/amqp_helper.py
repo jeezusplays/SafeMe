@@ -1,42 +1,18 @@
 from pika.exchange_type import ExchangeType
 from os import environ
+from typing import List, Tuple
+from time import sleep
 
 import pika
 import json
 import threading
 
 
-HOST = "rabbitmq-mgmt"  # default hostname
+HOST = "rabbitmq"  # default hostname
 PORT = environ.get("RABBITMQ_PORT")  # default port
+print(f'Listening to port: {str(PORT)}')
 EXCHANGE = 'safeme'
 
-def check_setup():
-    # The shared connection and channel created when the module is imported may be expired,
-    # timed out, disconnected by the broker or a client;
-    # - re-establish the connection/channel is they have been closed
-    global connection, channel, hostname, port, exchangename, exchangetype
-
-    if not is_connection_open(connection):
-        connection = pika.BlockingConnection(pika.ConnectionParameters(
-            host=hostname, port=port, heartbeat=3600, blocked_connection_timeout=3600))
-    if channel.is_closed:
-        channel = connection.channel()
-        channel.exchange_declare(
-            exchange=exchangename, exchange_type=exchangetype, durable=True)
-
-def is_connection_open(connection):
-    # For a BlockingConnection in AMQP clients,
-    # when an exception happens when an action is performed,
-    # it likely indicates a broken connection.
-    # So, the code below actively calls a method in the 'connection' to check if an exception happens
-
-    try:
-        connection.process_data_events()
-        return True
-    except pika.exceptions.AMQPError as e:
-        print("AMQP Error:", e)
-        print("...creating a new connection.")
-        return False
 
 class Rabbitmq():
 
@@ -65,7 +41,7 @@ class Rabbitmq():
         
         
     def _connect(self):
-
+        print(f"connectiong to {HOST}:{PORT}")
         # Connect to RabbitMQ server
         connection = pika.BlockingConnection(
             pika.ConnectionParameters(host=self.host, port=self.port, heartbeat=3600, blocked_connection_timeout=3600,))
@@ -84,18 +60,22 @@ class Rabbitmq():
         self.channel = None
 
     def _has_queue(self,queue_name):
-            queues = self.channel.queue_declare('', passive=True, arguments={'x-expires': 60000})
-            queue_names = [q.method.queue for q in queues]
+            
+            if self.channel is None:
+                self._connect()
 
-            # Check if the specified queue is bound to the exchange
-            has_queue = any([q.method.exchange == self.exchange and q.method.queue == queue_name for q in queues])
+            try:
+                queues = self.channel.queue_declare(queue_name, passive=True, arguments={'x-expires': 60000})
+            except Exception as e:
+                print(e)
+                return False
 
             # Close the connection
-            connection.close()
+            self._close()
 
-            return has_queue
+            return True
 
-    def add_queue(self, queues:list[tuple]):
+    def add_queue(self, queues:List[Tuple]):
         self._connect()
 
         # Declare and bind the topic queues
@@ -106,20 +86,34 @@ class Rabbitmq():
         self._close()
 
     def _subscribe(self,queue, callback=None):
-        if callback is None:
-            callback = lambda ch, method, properties, body: print(f"Received message: {json.loads(body)}")
+        while True:
+            try:
+                if self.channel is None or self.connection is None:
+                    self._connect()
 
-        def start_consuming():
-            self.channel.start_consuming()
+                if callback is None:
+                    callback = lambda ch, method, properties, body: print(f"Received message: {json.loads(body)}")
 
-        self._connect()
+                def start_consuming():
+                    self.channel.start_consuming()
 
-        # Register a consumer
-        self.channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
+                
+                # Register a consumer
+                queues = self.channel.queue_declare(queue, passive=True, arguments={'x-expires': 60000})
+                self.channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
 
-        consumer_thread = threading.Thread(target=start_consuming)
-        consumer_thread.start()
-
+                consumer_thread = threading.Thread(target=start_consuming)
+                consumer_thread.start()
+                break
+            except Exception as e:
+                print(e)
+    
+            sleep(1)
+        
+                
+            
+            
+            
     def subscribe(self,queue,callback=None):
 
         self.consumers.append({
@@ -144,6 +138,7 @@ class Rabbitmq():
             rabbit = consumer['exchange']
             rabbit._unsubscribe()
         self.consumers.clear()
+        self._close()
 
     def publish_message(self,msg,key):
         self._connect()
@@ -162,7 +157,35 @@ class Rabbitmq():
             self.channel.basic_publish(exchange=self.exchange, routing_key=key, body=msg)
         self._close()
 
+    def _is_connection_open(self):
+        # For a BlockingConnection in AMQP clients,
+        # when an exception happens when an action is performed,
+        # it likely indicates a broken connection.
+        # So, the code below actively calls a method in the 'connection' to check if an exception happens
+
+        try:
+            self.connection.process_data_events()
+            return True
+        except Exception as e:
+            print("AMQP Error:", e)
+            print("...creating a new connection.")
+            return False
+
+    def _setup(self):
+    # The shared connection and channel created when the module is imported may be expired,
+    # timed out, disconnected by the broker or a client;
+    # - re-establish the connection/channel is they have been closed
+    
+        while self.connection is None or self.channel is None:
+            try:
+                self._connect()
+            except Exception as e:
+                print(e)
+            sleep(1)
+            
+
 if __name__ == '__main__':
-    broker = Rabbitmq()
-    queues = [('gdacalert','gdac.alert'),('logalert','log.alert'),('logevent','log.event')]
-    broker.add_queue(queues)
+    pass
+    # broker = Rabbitmq()
+    # queues = [('gdacalert','gdac.alert'),('logalert','log.alert'),('logevent','log.event')]
+    # broker.add_queue(queues)

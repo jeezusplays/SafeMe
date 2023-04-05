@@ -4,8 +4,12 @@ from amqp_helper import Rabbitmq
 from math import radians, sin, cos, sqrt, atan2
 from time import sleep
 from datetime import datetime
+from os import environ
 
 import json
+
+USER_HOST_PORT = environ.get("USER_HOST_PORT")
+DISASTER_HOST_PORT = environ.get("DISASTER_HOST_PORT")
 
 # Get GDAC alert
 # gdac.alert
@@ -82,7 +86,7 @@ def distanceFrom(lat1,lon1,lat2,lon2)->float:
 # [GET] /location/latest 
 def getUsersLastLoc():
     try:
-        result = invoke_http("http://127.0.0.1:5001/location/latest", method="GET")
+        result = invoke_http(f"http://user:{USER_HOST_PORT}/location/latest", method="GET")
         code = result.get("code",400)
         if code in range(200,300):
             return result['data']
@@ -98,7 +102,7 @@ def getUsersById(userIds):
     users = []
     for ids in userIds:
         try:
-            result = invoke_http(f"http://127.0.0.1:5001/user/{ids}",method="GET")
+            result = invoke_http(f"http://user:{USER_HOST_PORT}/user/{ids}",method="GET")
             print(result)
             if result.get("code",400) in range(200,300):
                 users.append(result['data'])
@@ -119,7 +123,7 @@ def addAffectedUser(user, disasterId):
     }
     
     try:
-        result = invoke_http('http://127.0.0.1:5002/affecteduser', method='POST', json=affectedUser)
+        result = invoke_http(f'http://disaster:{DISASTER_HOST_PORT}/affecteduser', method='POST', json=affectedUser)
         print(result)
         if result.get("code",400) in range(200,300):
             return result
@@ -143,7 +147,7 @@ def createDisaster(alert:dict):
 
 
     try:
-        result = invoke_http("http://127.0.0.1:5002/disaster/new", method="POST", json=data)
+        result = invoke_http(f"http://disaster:{DISASTER_HOST_PORT}/disaster/new", method="POST", json=data)
 
         if result.get("code",400) in range(200,300):
             return result
@@ -177,10 +181,10 @@ def affectedUsers(usersLoc,alert:dict):
 def main():
     global rabbitmq
     rabbitmq = Rabbitmq()
-    sleep(10)
+    rabbitmq._setup()
+    print("Subscribing to gdacalert now")
     rabbitmq.subscribe('gdacalert',alertCallback)
     
-    rabbitmq.unsubscribe()
 
 # Execute this program if it is run as a main script
 if __name__ == "__main__":

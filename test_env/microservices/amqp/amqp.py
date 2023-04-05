@@ -28,6 +28,7 @@ from amqp_helper import Rabbitmq
 
 if __name__ == '__main__':
     broker = Rabbitmq()
+    broker._setup()
     ######################### ASSUME QUEUES ARE CREATED ON ACCOUNT CREATION ######################
     queues = [('gdacalert','gdac.alert'),
               ('logalert','log.alert'),

@@ -74,13 +74,61 @@ services:
     networks:
       - service_network
 
-  rabbitmq-mgmt:
+  rabbitmq:
     image: rabbitmq:3-management
-    hostname: esd-rabbit
     environment:
       RABBITMQ_PORT: ${RABBITMQ_PORT}
+    deploy:
+      mode: detach
+    logging:
+      driver: none
     ports:
       - "${RABBITMQ_PORT}:${RABBITMQ_PORT}"
       - "15672:15672"
+    networks:
+      - service_network
 
+  rabbitmq-setup:
+    build: ./microservices/amqp
+    environment:
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    depends_on:
+      - rabbitmq
+    networks:
+      - service_network
 
+  getalert:
+    build: ./microservices/getalert
+    environment:
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    depends_on:
+      - rabbitmq
+    networks:
+      - service_network
+      
+
+  websocket:
+    build: ./microservices/app_websocket
+    environment:
+      SAFEME_WEBSOCKET_HOST_PORT: ${SAFEME_WEBSOCKET_HOST_PORT}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    ports:
+      - "${SAFEME_WEBSOCKET_HOST_PORT}:${SAFEME_WEBSOCKET_HOST_PORT}"
+    depends_on:
+      - rabbitmq
+    networks:
+      - service_network
+      
+    
+  createdisaster:
+    build: ./microservices/createdisaster
+    environment:
+      USER_HOST_PORT: ${USER_HOST_PORT}
+      DISASTER_HOST_PORT: ${DISASTER_HOST_PORT}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    depends_on:
+      - rabbitmq
+    networks:
+      - service_network
+      
+  
