@@ -1,8 +1,8 @@
-CREATE DATABASE IF NOT EXISTS safeme;
-USE safeme;
+CREATE DATABASE IF NOT EXISTS user;
+USE user;
 
 -- Table: Location
-DROP TABLE IF EXISTS location;
+DROP TABLE IF EXISTS user;
 CREATE TABLE location
 (
     locationID int not null auto_increment,
