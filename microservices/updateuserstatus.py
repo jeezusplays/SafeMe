@@ -3,6 +3,7 @@ import os, sys
 import pika
 import json
 
+from amqp_helper import Rabbitmq
 from invokes import invoke_http
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -42,12 +43,20 @@ def send_user_status():
         try:
             user_status = request.get_json()
             print("Received user status: ", user_status)
+            affectedUsersID = user_status.get("affectedUsersID","0")
+            familyID = user_status.get("familyID","0")
 
             # Update user status in disaster db
             print("----- Invoking disaster microservice to update user status: -----")
-            disaster_URL = "http://localhost:5002/disaster/update/user/" + str(user_status["affectedUsersID"])
+            disaster_URL = "http://localhost:5002/disaster/update/user/" + str(affectedUsersID)
             result = invoke_http(disaster_URL, method = "PUT", json=user_status)
             print("Result: ", result)
+            
+            code = result['code']
+            if code in range(200,300):
+                routing_key = f"family.{familyID}.status"
+                rabbitmq = Rabbitmq()
+                rabbitmq.publish_message(msg=json.dumps(user_status),key=routing_key)
             
             return jsonify(result), 200
         except Exception as e:
