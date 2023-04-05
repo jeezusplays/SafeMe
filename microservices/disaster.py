@@ -82,7 +82,7 @@ def get_all_disaster():
     if disaster:
         return jsonify({"code": 200, "data": [disaster.json() for disaster in disaster]}), 200
 
-    return jsonify({"message": "Disaster not found."}), 404
+    return jsonify({"message": "No existing disasters were found."}), 404
 
 # Add affected users (add users to affecteduser table)
 @app.route("/affecteduser", methods=['POST'])
