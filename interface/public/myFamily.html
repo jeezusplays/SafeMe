@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My Family</title>
+    <link rel="icon" type="image/x-icon" href="../img/favicon.ico">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
@@ -57,10 +58,10 @@
         <!-- CARD Group -->
         <div class="container-fluid">
             <div class="row justify-content-center">
-                <div v-for="(member,index) in this.family" class="card col-12 col-sm-6 col-md-4 col-lg-3 mx-2 my-4">
+                <div v-for="(member, index) in this.family" class="card col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 mx-2 my-4">
                     <img class="card-img-top" src="../img/you.png" alt="Card image cap">
                     <div class="card-body">
-                        <h4 class="card-title">{{member.userName}}</h4>
+                        <h4 class="card-title text-center">{{member.userName}}</h4>
                         <div class="card-text list-group list-group-flush">
                             <div class="list-group-item">Contact: {{member.contact}}</div>
                             <div class="list-group-item">Email: {{member.email}}</div>
@@ -171,7 +172,8 @@
                         .catch(error => {
                             console.log(error);
                         });
-                    axios.get("http://localhost:5001/location/all")
+                    
+                        axios.get(location_table_URL)
                         .then(response => {
                             console.log("This the start of hell");
                             console.log(response.data.data)
@@ -210,7 +212,7 @@
                 //     }
                 // }
             },
-            created () {
+            mounted () {
                 // on Vue instance created, load the user list
                 this.getAllUsers();
             },
