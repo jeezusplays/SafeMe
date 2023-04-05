@@ -1,4 +1,5 @@
-CREATE DATABASE IF NOT EXISTS affectedUsers;
+DROP DATABASE IF EXISTS affectedUsers;
+CREATE affectedUsers;
 USE affectedUsers;
 
 -- Table: Affected Users

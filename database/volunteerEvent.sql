@@ -1,4 +1,5 @@
-CREATE DATABASE IF NOT EXISTS volunteerEvent;
+DROP DATABASE IF EXISTS volunteerEvent;
+CREATE DATABASE volunteerEvent;
 USE volunteerEvent;
 
 -- Table: Volunteer Event

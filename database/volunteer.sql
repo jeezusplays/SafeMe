@@ -1,4 +1,5 @@
-CREATE DATABASE IF NOT EXISTS volunteer;
+DROP DATABASE IF EXISTS volunteer;
+CREATE DATABASE volunteer;
 USE volunteer;
 
 -- Table: Volunteer

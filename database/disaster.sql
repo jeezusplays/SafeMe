@@ -1,4 +1,5 @@
-CREATE DATABASE IF NOT EXISTS disaster;
+DROP DATABASE IF EXISTS disaster;
+CREATE DATABASE disaster;
 USE disaster;
 
 -- Table: Disaster

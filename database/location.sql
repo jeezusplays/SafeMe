@@ -1,8 +1,9 @@
-CREATE DATABASE IF NOT EXISTS user;
-USE user;
+DROP DATABASE IF EXISTS location;
+CREATE DATABASE location;
+USE location;
 
 -- Table: Location
-DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS location;
 CREATE TABLE location
 (
     locationID int not null auto_increment,

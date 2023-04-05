@@ -1,4 +1,5 @@
-CREATE DATABASE IF NOT EXISTS user;
+DROP DATABASE IF EXISTS user;
+CREATE DATABASE user;
 USE user;
 
 -- Table: User
