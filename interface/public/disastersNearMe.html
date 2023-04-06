@@ -26,7 +26,6 @@
 
 <body>
   <div id="app">
-
     <!-- MODAL to check in on a disaster stricken user within 10km of disaster -->
     <div v-if="this.userStatus_level != 'safe'" class="modal" tabindex="-1" id="checkInModal">
       <div class="modal-dialog">
@@ -82,7 +81,6 @@
             <!-- Navbar tabs for Public UI -->
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="disastersNearMe.html">Disasters Near Me</a>
-              <!-- <a v-else class="nav-link" aria-current="page" href="#">Disasters Near Me</a> -->
             </li>
             <li class="nav-item">
               <a class="nav-link" href="myFamily.html">My Family</a>
@@ -92,8 +90,6 @@
             </li>
           </ul>
 
-          <!-- Navbar tabs for Gvmt UI -->
-          <!-- <ul v-else class="navbar-nav me-auto mb-2 mb-lg-0"></ul> -->
           <!-- Switches between account types -->
           <button class="btn btn-outline-primary" onclick="location.href='../gov/countryDisasters.html'">Switch to
             Government (for demo purpose)</button>
@@ -136,11 +132,7 @@
         </tbody>
       </table>
     </div>
-
-
   </div>
-
-  <!-- Vue App -->
   <script>
 
     // Hardcoded userID for now
@@ -288,10 +280,8 @@
         deg2rad(deg) {
           return deg * (Math.PI / 180)
         }
-
-
-
       },
+      
       mounted() {
         this.populate_disasters();
         // Set delay for checkInModal to show
