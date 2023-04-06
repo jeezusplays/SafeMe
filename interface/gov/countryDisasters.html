@@ -99,8 +99,8 @@
                                     onclick="location.href='casualtyList.html'">View Casualties</button>
                                 <button v-if="!disaster.hasVolunteerEvent" type="button" class="btn btn-link"
                                     @click="openVolunteerEvent(index)">Request Volunteers</button>
-                                <button v-else type="button" class="btn btn-link"
-                                    onclick="location.href='volunteerGov.html'">View Volunteers</button>
+                                <button v-else type="button" class="btn btn-link" @click="redirectVolunteerPage(index)">View Volunteers</button>
+
                             </div>
                         </td>
                     </tr>
@@ -111,6 +111,7 @@
 
     <script>
         const disaster_URL = "http://localhost:5002/disaster"
+        const volunteerEvent_URL = "http://localhost:5003/volunteer/event/create"
 
         const app = Vue.createApp({
             data() {
@@ -170,7 +171,7 @@
                         //     danger: 'Low Risk',
                         //     hasVolunteerEvent: false
                         // },
-                    ]
+                    ],
 
                 }
             },
@@ -179,6 +180,18 @@
                 //changes copy from reuqest volunteer to view volunteers when a volunteer event is open
                 openVolunteerEvent(index) {
                     this.disaster_table[index].hasVolunteerEvent = true
+                    // Post request using axios to create a volunteer event
+                    axios.post(volunteerEvent_URL, {
+                        disasterID: this.disaster_table[index].disasterID,
+                        volunteerEventName: this.disaster_table[index].disasterName,
+                        institute: "Red Cross",
+                    })
+                        .then(response => {
+                            console.log(response)
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
                 },
 
                 populate_disasters() {
@@ -192,6 +205,10 @@
                             console.log(error)
                         })
                     // Function to loop through this.disaster_table and fetch all disaster distance to user
+                },
+                redirectVolunteerPage(index) {
+                    // Redirects to the volunteer page with the disaster name
+                    window.location.href = "volunteerGov.html?disasterID=" + this.disaster_table[index].disasterID
                 }
             },
 

@@ -102,7 +102,7 @@ def create_affected_user():
 def update_user_status(affectedUsersID):
     affected_user = AffectedUser.query.filter_by(affectedUsersID=affectedUsersID).first()
     if affected_user:
-        data = request.get_json()   
+        data = request.get_json()
         affected_user.status = data['status']
         try:
             db.session.commit()
