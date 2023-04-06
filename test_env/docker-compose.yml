@@ -111,6 +111,7 @@ services:
 
   getalert:
     build: ./microservices/getalert
+    restart: on-failure
     environment:
       RABBITMQ_PORT: ${RABBITMQ_PORT}
       SERVICEHELPER_HOST_PORT : ${SERVICEHELPER_HOST_PORT}
@@ -122,30 +123,29 @@ services:
       
   websocket:
     build: ./microservices/app_websocket
+    restart: on-failure
     environment:
       SAFEME_WEBSOCKET_HOST_PORT: ${SAFEME_WEBSOCKET_HOST_PORT}
       SERVICEHELPER_HOST_PORT : ${SERVICEHELPER_HOST_PORT}
       RABBITMQ_PORT: ${RABBITMQ_PORT}
     ports:
       - "${SAFEME_WEBSOCKET_HOST_PORT}:${SAFEME_WEBSOCKET_HOST_PORT}"
-    depends_on:
-      - servicehelper
     networks:
       - service_network     
     
   createdisaster:
     build: ./microservices/createdisaster
+    restart: on-failure
     environment:
       USER_HOST_PORT: ${USER_HOST_PORT}
       DISASTER_HOST_PORT: ${DISASTER_HOST_PORT}
       RABBITMQ_PORT: ${RABBITMQ_PORT}
       SERVICEHELPER_HOST_PORT : ${SERVICEHELPER_HOST_PORT}
-    depends_on:
-      - servicehelper
-
+    ports:
+      - "6969:6969"
     networks:
       - service_network
-    restart: "always"
+    
       
   #######################################
   # Postgres: The database used by Kong
@@ -191,7 +191,7 @@ services:
   #######################################
   kong:
     image: kong:2.0.4
-    restart: always
+    restart: on-failure
     networks:
       - service_network
     environment:
@@ -236,8 +236,5 @@ services:
       USER_HOST_PORT: ${USER_HOST_PORT}
       DISASTER_HOST_PORT: ${DISASTER_HOST_PORT}
       VOLUNTEEREVENT_HOST_PORT: ${VOLUNTEEREVENT_HOST_PORT}
-    depends_on:
-      - kong
-      - servicehelper
     networks:
       - service_network

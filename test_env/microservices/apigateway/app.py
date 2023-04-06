@@ -10,7 +10,7 @@ USER_HOST_PORT = environ.get("USER_HOST_PORT")
 DISASTER_HOST_PORT = environ.get("DISASTER_HOST_PORT")
 VOLUNTEEREVENT_HOST_PORT = environ.get("VOLUNTEEREVENT_HOST_PORT")
 
-KONG_ADMIN_URL = f'http://localhost:{KONG_ADMIN_PORT}'
+KONG_ADMIN_URL = f'http://kong:{KONG_ADMIN_PORT}'
 print(KONG_ADMIN_URL)
 
 # Function to create a service and a route to that service on Kong
@@ -46,7 +46,11 @@ def create_service_and_route(service_name, service_url,consumer_route):
     print('Route created with ID:', route_id)
 
 def check_connection():
-    while not invoke_http(f"{KONG_ADMIN_URL}/services")['code'] in range(200,300):
+    r = invoke_http(f"{KONG_ADMIN_URL}/services")
+    code = r.get("code",200)
+    while not code in range(200,300):
+        r = invoke_http(f"{KONG_ADMIN_URL}/services")
+        code = r.get("code",200)
         print("Kong connection not ready")
         sleep(1)
     print("Kong connection ready")
