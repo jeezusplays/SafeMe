@@ -35,7 +35,7 @@ def createDisasterWithUsers(alerts):
                 for user in users:
                     disasterId = disaster.get('disasterID',0)
                     result = addAffectedUser(user,disasterId)
-
+                    print(result)
                     if result.get("code",400) in range(200,300):
                         print(f'Added affected user {result["data"]}')
 
@@ -87,6 +87,7 @@ def distanceFrom(lat1,lon1,lat2,lon2)->float:
 def getUsersLastLoc():
     try:
         result = invoke_http(f"http://user:{USER_HOST_PORT}/location/latest", method="GET")
+        print(result)
         code = result.get("code",400)
         if code in range(200,300):
             return result['data']
@@ -121,9 +122,11 @@ def addAffectedUser(user, disasterId):
         "status": "Pending",
         "contact":user["contact"]
     }
+
+    print(f"Adding affected user {affectedUser}")
     
     try:
-        result = invoke_http(f'http://disaster:{DISASTER_HOST_PORT}/affecteduser', method='POST', json=affectedUser)
+        result = invoke_http(f'http://disaster:{DISASTER_HOST_PORT}/affecteduser', method='POST', json=json.dumps(affectedUser))
         print(result)
         if result.get("code",400) in range(200,300):
             return result
@@ -150,7 +153,7 @@ def createDisaster(alert:dict):
         result = invoke_http(f"http://disaster:{DISASTER_HOST_PORT}/disaster/new", method="POST", json=data)
 
         if result.get("code",400) in range(200,300):
-            return result
+            return result['data']
         else:
            print(result)
            raise SystemError('Unable to create disaster')

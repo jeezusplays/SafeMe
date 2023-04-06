@@ -56,13 +56,16 @@ def main():
     rabbitmq._setup()
     print('------------- Get alerts running -------------')
     while True:
-        alerts = get_alert()
-        new_alerts = [alert for alert in alerts if alert not in alert_list]
-        print(new_alerts)
-        if len(new_alerts)>0:
-            alert_list+=new_alerts
-            rabbitmq.publish_message(json.dumps(new_alerts),'gdac.alert')
-        sleep(10)
+        try:
+            alerts = get_alert()
+            new_alerts = [alert for alert in alerts if alert not in alert_list]
+            print(new_alerts)
+            if len(new_alerts)>0:
+                alert_list+=new_alerts
+                rabbitmq.publish_message(json.dumps(new_alerts),'gdac.alert')
+        except Exception as e:
+            print(e)
+        sleep(5)
     
 if __name__ == "__main__":
     main()

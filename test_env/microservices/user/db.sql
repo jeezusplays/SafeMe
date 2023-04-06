@@ -48,7 +48,7 @@ CREATE TABLE location
 -- Insert 10 rows into the location table, referencing user table
 INSERT INTO location (userID, country, city, lat, `long`, `timestamp`)
 VALUES
-  (1, 'United States', 'New York', 40.713, -74.006, '2021-01-01'),
+  (1, 'United States', 'New York', -121.322, 36.804, '2023-04-06'),
   (2, 'Indonesia', 'Jakarta', -6.215, 106.845, '2021-01-02'),
   (3, 'India', 'Mumbai', 19.076, 72.878, '2021-01-03'),
   (4, 'China', 'Beijing', 39.904, 116.407, '2021-01-04'),

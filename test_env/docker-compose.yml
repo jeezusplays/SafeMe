@@ -18,7 +18,8 @@ services:
       - service_network
 
   user-db:
-    image: mysql:latest
+    image: mysql:8.0.26
+    command: --sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
     ports:
       - "${USER_DB_HOST_PORT}:3306"
     volumes:
@@ -41,13 +42,14 @@ services:
       - service_network
 
   disaster-db:
-    image: mysql:latest
+    image: mysql:8.0.26
     ports:
       - "${DISASTER_DB_HOST_PORT}:3306"
     volumes:
       - ./microservices/disaster/db.sql:/docker-entrypoint-initdb.d/db.sql
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_INIT_COMMAND: "SET GLOBAL sql_mode=''"
     networks:
       - service_network
 
@@ -64,7 +66,7 @@ services:
       - service_network
 
   volunteerevent-db:
-    image: mysql:latest
+    image: mysql:8.0.26
     ports:
       - "${VOLUNTEEREVENT_DB_HOST_PORT}:3306"
     volumes:
@@ -78,10 +80,7 @@ services:
     image: rabbitmq:3-management
     environment:
       RABBITMQ_PORT: ${RABBITMQ_PORT}
-    deploy:
-      mode: detach
-    logging:
-      driver: none
+      MYSQL_INIT_COMMAND: "SET GLOBAL sql_mode=''"
     ports:
       - "${RABBITMQ_PORT}:${RABBITMQ_PORT}"
       - "15672:15672"
@@ -130,5 +129,6 @@ services:
       - rabbitmq
     networks:
       - service_network
+    restart: "always"
       
   

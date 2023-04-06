@@ -61,7 +61,7 @@ def main():
         if len(new_alerts)>0:
             alert_list+=new_alerts
             rabbitmq.publish_message(json.dumps(new_alerts),'gdac.alert')
-        sleep(10)
+        sleep(0.5)
     
 if __name__ == "__main__":
     main()
