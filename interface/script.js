@@ -12,16 +12,16 @@ $(document).ready(function () {
 const statusToasts = [
     {
         buttonID: 'liveToastBtn1',
-        toastID: 'okay'
+        toastID: 'safe'
     },
     {
         buttonID: 'liveToastBtn2',
-        toastID: 'mildlyInjured'
+        toastID: 'injured'
     },
-    {
-        buttonID: 'liveToastBtn3',
-        toastID: 'severelyInjured'
-    },
+    // {
+    //     buttonID: 'liveToastBtn3',
+    //     toastID: 'severelyInjured'
+    // },
 ]
 for (let status of statusToasts){
     const toastTrigger = document.getElementById(status.buttonID)

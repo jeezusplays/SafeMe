@@ -28,7 +28,7 @@
   <div id="app">
 
     <!-- MODAL to check in on a disaster stricken user within 10km of disaster -->
-    <div v-if="this.userStatus_level != 'Okay'" class="modal" tabindex="-1" id="checkInModal">
+    <div v-if="this.userStatus_level != 'safe'" class="modal" tabindex="-1" id="checkInModal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -40,11 +40,11 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal"
-              id="liveToastBtn1">Okay</button>
+              id="liveToastBtn1">Safe</button>
             <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal"
-              id="liveToastBtn2">Slightly Injured</button>
-            <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal"
-              id="liveToastBtn3">Severely Injured</button>
+              id="liveToastBtn2">Injured</button>
+            <!-- <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal"
+              id="liveToastBtn3">Severely Injured</button> -->
           </div>
         </div>
       </div>
