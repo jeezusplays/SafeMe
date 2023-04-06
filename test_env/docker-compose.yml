@@ -9,6 +9,18 @@ volumes:
   
 services:
 
+  db:
+    image: mysql
+    command: --sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
+    ports:
+      - "${USER_DB_HOST_PORT}:3306"
+    volumes:
+      - ./microservices/db:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    networks:
+      - service_network
+
   servicehelper:
     build: ./microservices/servicehelper
     environment:
@@ -20,25 +32,15 @@ services:
 
   user:
     build: ./microservices/user
+    restart: always
     environment:
       USER_DB_NAME: ${USER_DB_NAME}
       USER_HOST_PORT: ${USER_HOST_PORT}
+      SERVICEHELPER_HOST_PORT : ${SERVICEHELPER_HOST_PORT}
     ports:
       - "${USER_HOST_PORT}:${USER_HOST_PORT}"
     depends_on:
-      - user-db
-    networks:
-      - service_network
-
-  user-db:
-    image: mysql:8.0.31
-    command: --sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
-    ports:
-      - "${USER_DB_HOST_PORT}:3306"
-    volumes:
-      - ./microservices/user/db.sql:/docker-entrypoint-initdb.d/db.sql
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      - db
     networks:
       - service_network
 
@@ -47,22 +49,11 @@ services:
     environment:
       DISASTER_DB_NAME: ${DISASTER_DB_NAME}
       DISASTER_HOST_PORT: ${DISASTER_HOST_PORT}
+      SERVICEHELPER_HOST_PORT : ${SERVICEHELPER_HOST_PORT}
     ports:
       - "${DISASTER_HOST_PORT}:${DISASTER_HOST_PORT}"
     depends_on:
-      - disaster-db
-    networks:
-      - service_network
-
-  disaster-db:
-    image: mysql:8.0.31
-    ports:
-      - "${DISASTER_DB_HOST_PORT}:3306"
-    volumes:
-      - ./microservices/disaster/db.sql:/docker-entrypoint-initdb.d/db.sql
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-      MYSQL_INIT_COMMAND: "SET GLOBAL sql_mode=''"
+      - db
     networks:
       - service_network
 
@@ -74,18 +65,7 @@ services:
     ports:
       - "${VOLUNTEEREVENT_HOST_PORT}:${VOLUNTEEREVENT_HOST_PORT}"
     depends_on:
-      - volunteerevent-db
-    networks:
-      - service_network
-
-  volunteerevent-db:
-    image: mysql:8.0.31
-    ports:
-      - "${VOLUNTEEREVENT_DB_HOST_PORT}:3306"
-    volumes:
-      - ./microservices/volunteerevent/db.sql:/docker-entrypoint-initdb.d/db.sql
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      - db
     networks:
       - service_network
 
@@ -123,7 +103,6 @@ services:
       
   websocket:
     build: ./microservices/app_websocket
-    restart: on-failure
     environment:
       SAFEME_WEBSOCKET_HOST_PORT: ${SAFEME_WEBSOCKET_HOST_PORT}
       SERVICEHELPER_HOST_PORT : ${SERVICEHELPER_HOST_PORT}
@@ -135,17 +114,24 @@ services:
     
   createdisaster:
     build: ./microservices/createdisaster
-    restart: on-failure
+    restart: always
     environment:
       USER_HOST_PORT: ${USER_HOST_PORT}
       DISASTER_HOST_PORT: ${DISASTER_HOST_PORT}
       RABBITMQ_PORT: ${RABBITMQ_PORT}
       SERVICEHELPER_HOST_PORT : ${SERVICEHELPER_HOST_PORT}
-    ports:
-      - "6969:6969"
     networks:
       - service_network
-    
+
+  sendemail:
+    build: ./microservices/sendemail
+    restart: on-failure
+    environment:
+      EMAIL: ${EMAIL}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      SERVICEHELPER_HOST_PORT : ${SERVICEHELPER_HOST_PORT}
+    networks:
+      - service_network  
       
   #######################################
   # Postgres: The database used by Kong
@@ -238,3 +224,4 @@ services:
       VOLUNTEEREVENT_HOST_PORT: ${VOLUNTEEREVENT_HOST_PORT}
     networks:
       - service_network
+

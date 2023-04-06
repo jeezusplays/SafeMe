@@ -87,9 +87,10 @@ class Rabbitmq():
 
     def _subscribe(self,queue, callback=None):
         while True:
-            self._connect()
             try:
-                
+                if self.channel is None or self.connection is None:
+                    self._connect()
+
                 if callback is None:
                     callback = lambda ch, method, properties, body: print(f"Received message: {json.loads(body)}")
 
@@ -137,7 +138,6 @@ class Rabbitmq():
             rabbit = consumer['exchange']
             rabbit._unsubscribe()
         self.consumers.clear()
-        self._close()
 
     def publish_message(self,msg,key):
         self._connect()

@@ -48,7 +48,8 @@ CREATE TABLE location
 -- Insert 10 rows into the location table, referencing user table
 INSERT INTO location (userID, country, city, lat, `long`, `timestamp`)
 VALUES
-  (1, 'United States', 'New York', -121.322, 36.804, '2023-04-06'),
+  -- DUMMY DATA, USE FIRST ENTRY TO FAKE NEAR INCIDENT --
+  (1, 'United States', 'New York', -75.324, 4.892, '2023-04-07'),
   (2, 'Indonesia', 'Jakarta', -6.215, 106.845, '2021-01-02'),
   (3, 'India', 'Mumbai', 19.076, 72.878, '2021-01-03'),
   (4, 'China', 'Beijing', 39.904, 116.407, '2021-01-04'),
@@ -58,3 +59,4 @@ VALUES
   (8, 'Peru', 'Lima', -12.046, -77.043, '2021-01-08'),
   (9, 'France', 'Paris', 48.857, 2.352, '2021-01-09'),
   (10, 'Malaysia', 'Kuala Lumpur', 3.139, 101.687, '2021-01-10');
+  

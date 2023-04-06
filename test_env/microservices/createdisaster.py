@@ -31,6 +31,7 @@ def createDisasterWithUsers(alerts):
                 for user in users:
                     disasterId = disaster.get('disasterID',0)
                     result = addAffectedUser(user,disasterId)
+                    print(disasterId,result)
 
                     if result.get("code",400) in range(200,300):
                         print(f'Added affected user {result["data"]}')

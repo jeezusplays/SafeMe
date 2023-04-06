@@ -22,17 +22,21 @@ class MessageCentre:
         if type == 'user' or type == 'family':
             self.messages[type][id] = self.messages[type].get(id,[])+[msg]
             print(self.messages)
+
     def getUserAlert(self,userID):
-        print(self.messages['user'])
+        print(f"sending user alert now {userID}")
         return self.messages['user'].get(userID,[])
+    
     def getFamilyAlert(self,familyID):
+        print(f"sending family alert now {familyID}")
         return self.messages['family'].get(familyID,[])
 
-def callback_user_alert(ch, method, properties, body):
+def callback_alert(ch, method, properties, body):
     routing_key = method.routing_key
     data = json.loads(body)
-    id = routing_key.split('.')[1]
-    type = "user"
+    split = routing_key.split('.')
+    id = split[1]
+    type = split[0]
 
     print(id)
     print(type)
@@ -48,22 +52,25 @@ def ws(ws):
             with app.app_context():
                 data = json.loads(txt)
                 message_type = data.get('message', "Error")
+
                 if message_type == "getUserAlert":
                     id = data.get('userID')
-                    print(message_centre)
                     if id is not None and message_centre:
                         print(message_centre.messages)
                         msg = message_centre.getUserAlert(str(id))
                         ws.send(json.dumps({'code': 200, 'data': msg}))
+
                 elif message_type == "getFamilyAlert":
                     id = data.get('familyID')
                     if id is not None and message_centre:
-                        msg = message_centre.getUserAlert(id)
+                        msg = message_centre.getFamilyAlert(str(id))
                         ws.send(json.dumps({'code': 200, 'data': msg}))
+
         except Exception as e:
             print(e)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+
     print("Websocket microservice has started")
     while not servicehelper.isServiceReady("createdisaster"):
         sleep(1)
@@ -72,8 +79,9 @@ if __name__ == '__main__':
     message_centre = MessageCentre()
 
     print("subscribing to user_1 and family_1")
-    rabbitmq.subscribe('user_1', callback_user_alert)
-    rabbitmq.subscribe('family_1', callback_user_alert)
+
+    rabbitmq.subscribe('user_1', callback_alert)
+    rabbitmq.subscribe('family_1', callback_alert)
     try:
         servicehelper.serviceIsReady("websocket")
         app.run(host='0.0.0.0', port=SAFEME_WEBSOCKET_HOST_PORT)

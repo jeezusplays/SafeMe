@@ -1,11 +1,13 @@
 # Flask application that query database
 # Flask application to query db
-import os
+
 from os import environ
 
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from time import sleep
+from servicehelper import serviceIsReady
 
 
 DB_NAME = environ.get("DISASTER_DB_NAME")
@@ -14,7 +16,7 @@ print("This db name is: ",DB_NAME)
 print("The port for this container: ",PORT)
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqlconnector://root@disaster-db:3306/{DB_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqlconnector://root@db:3306/{DB_NAME}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 CORS(app)
@@ -74,11 +76,13 @@ class AffectedUser(db.Model):
 @app.route("/disaster/new", methods=['POST'])
 def create_disaster():
     data = request.get_json()
+    print(data)
     disaster = Disaster(**data)
     try:
         db.session.add(disaster)
         db.session.commit()
-    except:
+    except Exception as e:
+        print(e)
         return jsonify({"code": 500, "data": {"message": "An error occurred creating the disaster."}}), 500
 
     return jsonify({"code": 201, "data": disaster.json()}), 201
@@ -142,6 +146,19 @@ def get_all_user_status():
 
     return jsonify({"message": "Affected user not found."}), 404
 
+def dbReady():
+    try:
+        disaster = Disaster.query.all()
+    except Exception as e:
+        return False
+    if disaster:
+        return True
+    return False
+
 # Allows the service to be accessible from any other in the network
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=PORT, debug=True)
+    with app.app_context():
+        while not dbReady():
+            sleep(1)
+    serviceIsReady("disaster")
+    app.run(host='0.0.0.0', port=PORT)

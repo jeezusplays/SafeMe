@@ -22,6 +22,8 @@ def createDisasterWithUsers(alerts):
     for alert in alerts:
         
         if len(alert.get('country','')) > 0 and bool(alert.get('isToday',False)):
+            print(alert['country'])
+            print(alert['location'])
             try:
                 routing_keys = []
                 family_routing_keys = []
@@ -48,7 +50,7 @@ def createDisasterWithUsers(alerts):
                         "alert":alert
                     }))
                     routing_keys.append(f'user.{user["userID"]}.alert')
-                    family_routing_keys.append(f'family.{user["familyID"]}.alert')
+                    family_routing_keys.append(f'family.{user["familyID"]}.status')
                 
                 rabbitmq.publish_fanout_message_multi(msgs,routing_keys)
                 rabbitmq.publish_fanout_message_multi(msgs,family_routing_keys)
@@ -149,6 +151,7 @@ def createDisaster(alert:dict):
         'disasterTimestamp': alert['to']
     }
 
+    print(data)
 
     try:
         result = invoke_http(f"http://disaster:{DISASTER_HOST_PORT}/disaster/new", method="POST", json=data)
@@ -193,7 +196,8 @@ def main():
 # Execute this program if it is run as a main script
 if __name__ == "__main__":
     print("getdisaster container is running...")
-    while not servicehelper.isServiceReady("getalert"):
+    while not servicehelper.isServiceReady("disaster") or\
+        not servicehelper.isServiceReady("user"):
         sleep(1)
     main()
     servicehelper.serviceIsReady("createdisaster")

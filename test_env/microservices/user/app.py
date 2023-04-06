@@ -6,8 +6,10 @@ from os import environ
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from time import sleep
+from servicehelper import serviceIsReady
 
-from datetime import date
+from datetime import date, timedelta,datetime
 import json
 
 DB_NAME = environ.get("USER_DB_NAME")
@@ -16,7 +18,7 @@ print("This db name is: ",DB_NAME)
 print("The port for this container: ",PORT)
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] =  f'mysql+mysqlconnector://root@user-db:3306/{DB_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] =  f'mysql+mysqlconnector://root@db:3306/{DB_NAME}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 CORS(app)
@@ -106,7 +108,7 @@ def add_location():
 @app.route("/location/latest", methods=['GET'])
 def get_all_users_latest_location():
 
-    current_timestamp_date = date.today()
+    current_timestamp_date = (datetime.now()+timedelta(hours=8)).date()
     user_loc = Location.query.filter(db.func.date(Location.timestamp) == current_timestamp_date)\
                          .order_by(Location.timestamp.desc())\
                          .group_by(Location.userID)\
@@ -160,6 +162,19 @@ def get_family(familyID):
     else:
         return jsonify({"code": 404, "message": "There are no users in this family"}), 404
 
+def dbReady():
+    try:
+        users = User.query.all()
+    except Exception as e:
+        return False
+    if users:
+        return True
+    return False
+
 # Allows the service to be accessible from any other in the network
 if __name__ == '__main__':
+    with app.app_context():
+        while not dbReady():
+            sleep(1)
+    serviceIsReady("user")
     app.run(host='0.0.0.0', port=PORT, debug=True)

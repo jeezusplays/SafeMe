@@ -8,9 +8,16 @@ SERVICEHELPER_URL = f"http://servicehelper:{SERVICEHELPER_HOST_PORT}"
 print(SERVICEHELPER_URL)
 
 def isServiceReady(servicename):
-    r = invoke_http(f"{SERVICEHELPER_URL}/services/ready/{servicename}","GET")
-    print(f"Checking if service is ready: {r['code'] in range(200,300)}")
-    return r['code'] in range(200,300)
+    try:
+        r = invoke_http(f"{SERVICEHELPER_URL}/services/ready/{servicename}","GET")
+        code = r.get("code",500)
+        print(f"Checking if service ({servicename}) is ready: {code in range(200,300)}")
+        if code in range(200,300):
+            print(r['message'])
+            return bool(r['message'])
+    except Exception as e:
+        return False
+    return False
 
 def _serviceIsReady(servicename):
     sleep(1)
