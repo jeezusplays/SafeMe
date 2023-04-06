@@ -7,7 +7,7 @@ $(document).ready(function () {
         });
     }, 500);
 });
-
+  
 //Adds event listener to  buttons in 'Disasters Near Me' modal to trigger toasts
 const statusToasts = [
     {
