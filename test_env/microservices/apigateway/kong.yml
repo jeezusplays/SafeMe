@@ -1,0 +1,38 @@
+format_version: "1.1"
+
+services:
+  - name: user
+    url: http://user:${USER_HOST_PORT}
+    routes:
+      - name: user-route
+        paths:
+          - /api/user
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+
+  - name: disaster
+    url: http://disaster:${DISASTER_HOST_PORT}
+    routes:
+      - name: disaster-route
+        paths:
+          - /api/disaster
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+
+  - name: volunteerevent
+    url: http://volunteerevent:${USER_HOST_PORT}
+    routes:
+      - name: volunteerevent-route
+        paths:
+          - /api/volunteerevent
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
