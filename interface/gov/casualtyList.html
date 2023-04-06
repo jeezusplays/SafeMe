@@ -139,21 +139,15 @@
     </div>
 
     <script>
+        const current_URL = window.location.href;
+        //extract disasterID from URL
+        const disasterID = current_URL.split("=")[1];
         const affected_users_URL = 'http://localhost:5002/affected';
 
         const app = Vue.createApp({
             data() {
                 return {
-                    affected_users: [
-                        {
-                            userID: 'NIL',
-                            name: 'NIL',
-                            status: 'NIL',
-                            contact: 'NIL',
-                            // lastUpdate: 'NIL',
-                            // lastKnownCity: 'NIL',
-                        },
-                    ],
+                    affected_users: [],
                 }
             },
 
@@ -219,7 +213,14 @@
                 populate_affected() {
                     axios.get(affected_users_URL)
                         .then(response => {
-                            this.affected_users = response.data.data
+                            // Check if disasterID matches the disasterID in response.data.data objects
+                            // If it does, push the object into the affected_users array
+                            for (var i = 0; i < response.data.data.length; i++) {
+                                if (response.data.data[i].disasterID == disasterID) {
+                                    this.affected_users.push(response.data.data[i])
+                                }
+                            }
+                            // this.affected_users = response.data.data
                             // console.log("Affected " + this.affected_users)
                         })
                         .catch(error => {

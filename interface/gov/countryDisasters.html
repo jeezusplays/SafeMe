@@ -95,8 +95,10 @@
                         </td>
                         <td>
                             <div class="btn-group" role="group">
+                                <!-- <button type="button" class="btn btn-link"
+                                    onclick="location.href='casualtyList.html'">View Casualties</button> -->
                                 <button type="button" class="btn btn-link"
-                                    onclick="location.href='casualtyList.html'">View Casualties</button>
+                                    @click="redirectCasualtyList(index)">View Casualties</button>
                                 <button v-if="!disaster.hasVolunteerEvent" type="button" class="btn btn-link"
                                     @click="openVolunteerEvent(index)">Request Volunteers</button>
                                 <button v-else type="button" class="btn btn-link" @click="redirectVolunteerPage(index)">View {{disaster.disasterName}} Volunteers</button>
@@ -131,7 +133,7 @@
             },
 
             methods: {
-                //changes copy from reuqest volunteer to view volunteers when a volunteer event is open
+                //changes copy from request volunteer to view volunteers when a volunteer event is open
                 openVolunteerEvent(index) {
                     // Post request using axios to create a volunteer event
                     axios.post(create_volunteerEvent_URL, {
@@ -174,6 +176,12 @@
                         })
                     // Function to loop through this.disaster_table and fetch all disaster distance to user
                 },
+
+                redirectCasualtyList(index) {
+                    // Redirects to the casualty list page with the disaster name
+                    window.location.href = "casualtyList.html?disasterID=" + this.disaster_table[index].disasterID
+                },
+                
                 redirectVolunteerPage(index) {
                     // Redirects to the volunteer page with the disaster name
                     window.location.href = "volunteerGov.html?disasterID=" + this.disaster_table[index].disasterID
