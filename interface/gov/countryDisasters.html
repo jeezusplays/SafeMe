@@ -66,7 +66,7 @@
             <table id="example" class="table table-striped my-auto" style="width:100%">
                 <thead>
                     <tr>
-                        <th>Country/City</th>
+                        <th>Country, City</th>
                         <th>Disaster Name</th>
                         <!-- <th>Distance Away</th> -->
                         <th>Time of Incident</th>
@@ -76,7 +76,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="(disaster, index) in this.disaster_table">
-                        <td>{{disaster.country}} / {{disaster.city}}</td>
+                        <td>{{disaster.country}}, {{disaster.city}}</td>
                         <td>{{disaster.disasterName}}</td>
                         <!-- <td>{{disaster.distance}} km</td> -->
                         <td>{{disaster.disasterTimestamp}}</td>

@@ -1,6 +1,9 @@
 // Datatables script
 $(document).ready(function () {
-    $('#example').DataTable();
+    $('#example').DataTable({
+        // delay datatable loading until all data is loaded
+        stateSave: true,
+    });
 });
 
 //Adds event listener to  buttons in 'Disasters Near Me' modal to trigger toasts
