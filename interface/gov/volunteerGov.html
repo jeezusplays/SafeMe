@@ -170,6 +170,11 @@
     </div>
 
     <script>
+      // Fetch existing URL
+      const current_URL = window.location.href;
+      //extract disasterID from URL
+      const disasterID = current_URL.split("=")[1];
+      const disaster_URL = "http://localhost:5002/disaster"
       const volunteer_event_URL = "http://localhost:5003/volunteer/event";
       const volunteer_URL = "http://localhost:5003/volunteer";
       const location_URL = "http://localhost:5001/location/all";
@@ -206,7 +211,7 @@
               },
             ],
             volunteers: [],
-            volunteerEventName: "Disaster",
+            volunteerEventName: "Loading...",
             inEditMode: false,
           };
         },
@@ -224,6 +229,21 @@
 
           // fetches all volunteers from the database
           fetchVolunteers() {
+            axios
+              .get(disaster_URL)
+              .then((response) => {
+                console.log(response.data.data);
+                // Loop through disasters and check against disasterID
+                for (var i = 0; i < response.data.data.length; i++) {
+                  if (response.data.data[i].disasterID == disasterID) {
+                    this.volunteerEventName = response.data.data[i].disasterName;
+                  }
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+
             axios
               .get(volunteer_URL)
               .then((response) => {
@@ -259,6 +279,8 @@
         },
         mounted() {
           this.fetchVolunteers();
+          console.log(current_URL)
+
         },
       });
       app.mount("#app");
