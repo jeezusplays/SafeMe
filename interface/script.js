@@ -4,6 +4,7 @@ $(document).ready(function () {
         $('#datatable').DataTable({
             // delay datatable loading until all data is loaded
             stateSave: true,
+            "aaSorting": [2,'asc'],
         });
     }, 500);
 });

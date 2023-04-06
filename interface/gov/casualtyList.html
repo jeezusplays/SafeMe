@@ -121,13 +121,13 @@
 
                             <!-- Checks for danger status and renders the colour status -->
                             <td v-if="affected.status == 'safe'">
-                                <span class="badge text-bg-success">{{affected.status}}</span>
+                                <span class="badge text-bg-success text-capitalize">{{affected.status}}</span>
                             </td>
                             <td v-else-if="affected.status == 'injured'">
-                                <span class="badge text-bg-danger">{{affected.status}}</span>
+                                <span class="badge text-bg-danger text-capitalize">{{affected.status}}</span>
                             </td>
                             <td v-else="affected.status == 'pending'">
-                                <span class="badge text-bg-secondary">{{affected.status}}</span>
+                                <span class="badge text-bg-secondary text-capitalize">{{affected.status}}</span>
                             </td>
 
                             <td><a href="tel:{{affected.contact}}">{{affected.contact}}</a></td>

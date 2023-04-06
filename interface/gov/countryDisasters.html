@@ -196,7 +196,6 @@
           },
 
           populate_disasters() {
-            // Get request using axios to fetch data from the disaster table
             axios
               .get(disaster_URL)
               .then((response) => {
@@ -216,12 +215,22 @@
                     this.disaster_table[disasterIndex].hasVolunteerEvent = true;
                   }
                 }
+                const dt = new Date();
+                let diffTZ = dt.getTimezoneOffset();
+
+                // Loop through this.disaster_table and remove first 5 letters from disasterTimestamp
+                for (let i = 0; i < this.disaster_table.length; i++) {
+                    const disasterTimestamp = this.disaster_table[i].disasterTimestamp;
+                    // Given disasterTimestamp date format is (08 Aug 2021 11:00:00 GMT), apply difference in time zone to it
+                    const disasterTimestampDate = new Date(disasterTimestamp);
+                    disasterTimestampDate.setHours(disasterTimestampDate.getHours() + diffTZ);
+                    this.disaster_table[i].disasterTimestamp = disasterTimestampDate;
+                }
                 console.log(this.disaster_table);
               })
               .catch((error) => {
                 console.log(error);
               });
-            // Function to loop through this.disaster_table and fetch all disaster distance to user
           },
 
           redirectCasualtyList(index) {
