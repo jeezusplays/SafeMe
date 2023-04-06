@@ -7,6 +7,7 @@
     <title>Disasters in Country</title>
     <link rel="icon" type="image/x-icon" href="../img/favicon.ico">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -44,7 +45,7 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
                     <!-- Switches between account types -->
                     <button class="btn btn-outline-primary"
-                        onclick="location.href='../public/disastersNearMe.html'">Switch Account Type</button>
+                        onclick="location.href='../public/disastersNearMe.html'">Switch to Public (for demo purpose)</button>
                 </div>
             </div>
         </nav>
@@ -62,36 +63,35 @@
             </div>
 
             <!-- DISASTER TABLE FOR HOME -->
-            <table id="example" class="table table-striped my-auto" style="width:100%">
+            <table id="datatable" class="table table-striped my-auto" style="width:100%">
                 <thead>
                     <tr>
-                        <th>Country/City</th>
-                        <th>Disaster Type</th>
-                        <th>Distance Away</th>
+                        <th>Country, City</th>
+                        <th>Disaster Name</th>
+                        <!-- <th>Distance Away</th> -->
                         <th>Time of Incident</th>
-                        <th>Danger Status</th>
+                        <th>Impact Level</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(disaster, index) in this.mockData">
-
-                        <td>{{disaster.country}}</td>
-                        <td>{{disaster.type}}</td>
-                        <td>{{disaster.distance}} km</td>
-                        <td>{{disaster.incidence}}</td>
+                    <tr v-for="(disaster, index) in this.disaster_table">
+                        <td>{{disaster.country}}, {{disaster.city}}</td>
+                        <td>{{disaster.disasterName}}</td>
+                        <!-- <td>{{disaster.distance}} km</td> -->
+                        <td>{{disaster.disasterTimestamp}}</td>
                         <!-- Checks for danger status and renders the colour status -->
-                        <td v-if="disaster.danger == 'Low Risk'">
-                            <span class="badge text-bg-success">{{disaster.danger}}</span>
+                        <td v-if="disaster.disasterSeverityLevel == 'green'">
+                            <span class="badge text-bg-success">Low</span>
                         </td>
-                        <td v-else-if="disaster.danger == 'Moderate Risk'">
-                            <span class="badge text-bg-warning">{{disaster.danger}}</span>
+                        <td v-else-if="disaster.disasterSeverityLevel == 'amber'">
+                            <span class="badge text-bg-warning">Medium</span>
                         </td>
-                        <td v-else-if="disaster.danger == 'Pending'">
-                            <span class="badge text-bg-secondary">{{disaster.danger}}</span>
+                        <td v-else-if="disaster.disasterSeverityLevel == 'red'">
+                            <span class="badge text-bg-danger">High</span>
                         </td>
                         <td v-else>
-                            <span class="badge text-bg-danger">{{disaster.danger}}</span>
+                            <span class="badge text-bg-secondary">None</span>
                         </td>
                         <td>
                             <div class="btn-group" role="group">
@@ -99,8 +99,8 @@
                                     onclick="location.href='casualtyList.html'">View Casualties</button>
                                 <button v-if="!disaster.hasVolunteerEvent" type="button" class="btn btn-link"
                                     @click="openVolunteerEvent(index)">Request Volunteers</button>
-                                <button v-else type="button" class="btn btn-link"
-                                    onclick="location.href='volunteerGov.html'">View Volunteers</button>
+                                <button v-else type="button" class="btn btn-link" @click="redirectVolunteerPage(index)">View {{disaster.disasterName}} Volunteers</button>
+
                             </div>
                         </td>
                     </tr>
@@ -111,58 +111,68 @@
 
     <script>
         const disaster_URL = "http://localhost:5002/disaster"
+        const create_volunteerEvent_URL = "http://localhost:5003/volunteer/event/create"
+        const volunteerEvent_URL = "http://localhost:5003/volunteer/event"
 
         const app = Vue.createApp({
             data() {
                 return {
-                    mockData: [
+                    disaster_table: [
                         {
-                            key: '1',
-                            country: 'Turkey, Hatay',
-                            type: 'Earthquake',
-                            distance: 1,
-                            incidence: "Thu, 23 Feb 2023 20:20:21 GMT",
-                            danger: 'Low Risk',
-                            hasVolunteerEvent: true
-                        },
+                            country: 'NIL',
+                            city: 'NIL',
+                            disasterName: 'NIL',
+                            disasterTimestamp: 'NIL',
+                            disasterSeverityLevel: 'NIL',
+                            hasVolunteerEvent: false
+                        }
+                        // {
+                        //     key: '1',
+                        //     country: 'Turkey, Hatay',
+                        //     type: 'Earthquake',
+                        //     distance: 1,
+                        //     incidence: "Thu, 23 Feb 2023 20:20:21 GMT",
+                        //     danger: 'Low Risk',
+                        //     hasVolunteerEvent: true
+                        // },
 
-                        {
-                            key: '2',
-                            country: 'Turkey, Istanbul',
-                            type: 'Earthquake',
-                            distance: 15,
-                            incidence: "Thu, 23 Feb 2023 10:39:01 GMT",
-                            danger: 'High Risk',
-                            hasVolunteerEvent: true
-                        },
-                        {
-                            key: '3',
-                            country: 'Turkey, Izmur',
-                            type: 'Tsunami',
-                            distance: 20,
-                            incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                            danger: 'Moderate Risk',
-                            hasVolunteerEvent: false
-                        },
-                        {
-                            key: '4',
-                            country: 'Turkey, Trabzon',
-                            type: 'Fire',
-                            distance: 12,
-                            incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                            danger: 'Low Risk',
-                            hasVolunteerEvent: false
-                        },
-                        {
-                            key: '5',
-                            country: 'Turkey, Bursa',
-                            type: 'Fire',
-                            distance: 100,
-                            incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                            danger: 'Low Risk',
-                            hasVolunteerEvent: false
-                        },
-                    ]
+                        // {
+                        //     key: '2',
+                        //     country: 'Turkey, Istanbul',
+                        //     type: 'Earthquake',
+                        //     distance: 15,
+                        //     incidence: "Thu, 23 Feb 2023 10:39:01 GMT",
+                        //     danger: 'High Risk',
+                        //     hasVolunteerEvent: true
+                        // },
+                        // {
+                        //     key: '3',
+                        //     country: 'Turkey, Izmur',
+                        //     type: 'Tsunami',
+                        //     distance: 20,
+                        //     incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
+                        //     danger: 'Moderate Risk',
+                        //     hasVolunteerEvent: false
+                        // },
+                        // {
+                        //     key: '4',
+                        //     country: 'Turkey, Trabzon',
+                        //     type: 'Fire',
+                        //     distance: 12,
+                        //     incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
+                        //     danger: 'Low Risk',
+                        //     hasVolunteerEvent: false
+                        // },
+                        // {
+                        //     key: '5',
+                        //     country: 'Turkey, Bursa',
+                        //     type: 'Fire',
+                        //     distance: 100,
+                        //     incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
+                        //     danger: 'Low Risk',
+                        //     hasVolunteerEvent: false
+                        // },
+                    ],
 
                 }
             },
@@ -170,8 +180,55 @@
             methods: {
                 //changes copy from reuqest volunteer to view volunteers when a volunteer event is open
                 openVolunteerEvent(index) {
-                    this.mockData[index].hasVolunteerEvent = true
+                    // Post request using axios to create a volunteer event
+                    axios.post(create_volunteerEvent_URL, {
+                        disasterID: this.disaster_table[index].disasterID,
+                        volunteerEventName: this.disaster_table[index].disasterName,
+                        institute: "Red Cross",
+                    })
+                        .then(response => {
+                            console.log(response)
+                            this.disaster_table[index].hasVolunteerEvent = true
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                },
+
+                populate_disasters() {
+                    // Get request using axios to fetch data from the disaster table
+                    axios.get(disaster_URL)
+                        .then(response => {
+                            this.disaster_table = response.data.data
+                            // Loop through response.data.data and check if disasterID is in volunteer_event table
+                            for (let i = 0; i < response.data.data.length; i++) {
+                                axios.get(volunteerEvent_URL)
+                                    .then(response => {
+                                        for (let j = 0; j < response.data.volunteerEvents.length; j++) {
+                                            if (response.data.volunteerEvents[j].disasterID == this.disaster_table[i].disasterID) {
+                                                this.disaster_table[i].hasVolunteerEvent = true
+                                            }
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.log(error)
+                                    })
+                            }
+                            console.log(this.disaster_table)
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                    // Function to loop through this.disaster_table and fetch all disaster distance to user
+                },
+                redirectVolunteerPage(index) {
+                    // Redirects to the volunteer page with the disaster name
+                    window.location.href = "volunteerGov.html?disasterID=" + this.disaster_table[index].disasterID
                 }
+            },
+
+            mounted() {
+                this.populate_disasters();
             }
         })
         app.mount('#app')
