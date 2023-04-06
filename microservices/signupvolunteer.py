@@ -15,15 +15,13 @@ AMQP Setup required for sending volunteer data, not operational yet until AMQP i
 app = Flask(__name__)
 CORS(app)
 
+################################################ MOVED TO APIGATEWAY ######################################################
 # Get all volunteer event data
 # (For UI)
 # [GET] /volunteer/event
 # Return all volunteer event data from calling volunteer event microservice volunteer.py with invokes.py to parse json data
-@app.route("/volunteer/event", methods=['GET'])
-def get_all_volunteer_event():
-    print("Getting all volunteer event data...")
-    response = invoke_http("http://localhost:5003/volunteer/event", method='GET')
-    return response
+################################################ MOVED TO APIGATEWAY ######################################################
+
 
 # UI > (Api gateway) [POST] /volunteer/signup/ > (signupvolunteer) [POST] /volunteer/event/adduser/
 # Get user status
@@ -36,13 +34,20 @@ def add_volunteer():
     if request.is_json:
         try:
             data = request.get_json()
+
+            userID = data.get('userID')
+
+            if userID is None:
+                return {'code': 400, 'data': {'msg':'Error no userID sent'}}, 400
+
             print("Getting user data...")
             print("----- Invoking user microservice to get user data -----")
-            user_response_result = invoke_http("http://localhost:5001/user/" + str(data['userID']), method='GET')
+            user_URL = f"http://localhost:5001/user/{str(userID)}"
+            user_response_result = invoke_http(user_URL, method='GET')
             print("Result from user microservice:", user_response_result, "\n")
 
-            if user_response_result['code'] == 200:
-                print("Received volunteer data:", data)
+            if user_response_result['code'] in range(200,300):
+                print("Received user data:", user_response_result['data'])
                 print("----- Invoking volunteer microservice to add volunteer data -----")
                 volunteer_URL = "http://localhost:5003/volunteer/event/adduser"
                 volunteer_response_result = invoke_http(volunteer_URL, method='POST', json=data)
