@@ -100,7 +100,7 @@
             <button
               type="button"
               class="btn btn-primary"
-              @click="this.swichModes"
+              @click="this.switchModes"
             >
               Edit Volunteer Event Name
             </button>
@@ -128,7 +128,7 @@
             <button
               type="button"
               class="btn btn-primary"
-              @click="this.swichModes"
+              @click="this.switchModes"
             >
               Save Changes
             </button>
@@ -223,7 +223,7 @@
           },
 
           // toggles between edit mode and view mode
-          swichModes() {
+          switchModes() {
             this.inEditMode = !this.inEditMode;
           },
 
