@@ -108,7 +108,7 @@
                         <tr>
                             <th>User ID</th>
                             <th>Name</th>
-                            <!-- <th>Time of Last Update</th> -->
+                            <th>Time of Last Update</th>
                             <th>Status</th>
                             <th>Contact</th>
                         </tr>
@@ -117,7 +117,7 @@
                         <tr v-for="(affected, index) in this.affected_users">
                             <td>{{affected.affectedUsersID}}</td>
                             <td>{{affected.userName}}</td>
-                            <!-- <td>{{affected.lastUpdate}}</td> -->
+                            <td>{{affected.lastUpdate}}</td>
 
                             <!-- Checks for danger status and renders the colour status -->
                             <td v-if="affected.status == 'safe'">
@@ -143,6 +143,7 @@
         //extract disasterID from URL
         const disasterID = current_URL.split("=")[1];
         const affected_users_URL = 'http://localhost:5002/affected';
+        const user_URL = 'http://localhost:5001/location/all';
 
         const app = Vue.createApp({
             data() {
@@ -220,8 +221,24 @@
                                     this.affected_users.push(response.data.data[i])
                                 }
                             }
-                            // this.affected_users = response.data.data
                             // console.log("Affected " + this.affected_users)
+                            axios.get(user_URL)
+                                .then(response => {
+                                    // console.log(response.data.data)
+                                    for (var i = 0; i < this.affected_users.length; i++) {
+                                        for (var j = 0; j < response.data.data.length; j++) {
+                                            if (this.affected_users[i].userID == response.data.data[j].userID) {
+                                                this.affected_users[i].lastUpdate = 
+                                                response.data.data[j].country + ", " + response.data.data[j].city +
+                                                " (" + response.data.data[j].lat + ", " + response.data.data[j].long + ")"
+                                            }
+                                        }
+                                    }
+                                    // console.log(this.affected_users)
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                })
                         })
                         .catch(error => {
                             console.log(error)
