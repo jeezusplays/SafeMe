@@ -110,6 +110,7 @@
                             <th>Name</th>
                             <!-- <th>Time of Last Update</th> -->
                             <th>Status</th>
+                            <th>Contact</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -128,6 +129,8 @@
                             <td v-else="affected.status == 'pending'">
                                 <span class="badge text-bg-secondary">{{affected.status}}</span>
                             </td>
+
+                            <td><a href="tel:{{affected.contact}}">{{affected.contact}}</a></td>
                         </tr>
                     </tbody>
                 </table>
