@@ -111,6 +111,7 @@
 
     <script>
         const disaster_URL = "http://localhost:5002/disaster"
+        const volunteerEvent_URL = "http://localhost:5003/volunteer/event/create"
 
         const app = Vue.createApp({
             data() {
@@ -171,7 +172,6 @@
                         //     hasVolunteerEvent: false
                         // },
                     ],
-                    temp_disaster_name: '',
 
                 }
             },
@@ -180,7 +180,18 @@
                 //changes copy from reuqest volunteer to view volunteers when a volunteer event is open
                 openVolunteerEvent(index) {
                     this.disaster_table[index].hasVolunteerEvent = true
-                    this.temp_disaster_name = this.disaster_table[index].disasterName
+                    // Post request using axios to create a volunteer event
+                    axios.post(volunteerEvent_URL, {
+                        disasterID: this.disaster_table[index].disasterID,
+                        volunteerEventName: this.disaster_table[index].disasterName,
+                        institute: "Red Cross",
+                    })
+                        .then(response => {
+                            console.log(response)
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
                 },
 
                 populate_disasters() {
