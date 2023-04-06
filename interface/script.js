@@ -5,7 +5,7 @@ $(document).ready(function () {
             // delay datatable loading until all data is loaded
             stateSave: true,
         });
-    }, 300);
+    }, 500);
 });
 
 //Adds event listener to  buttons in 'Disasters Near Me' modal to trigger toasts
