@@ -34,5 +34,6 @@ if __name__ == '__main__':
               ('logevent','log.event'),
               ('user_1','user.1.alert'),
               ('family_1','family.1.status'),
+              ('family_all','family.*.status')
               ]
     broker.add_queue(queues)

@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Casualty List</title>
+    <link rel="icon" type="image/x-icon" href="../img/favicon.ico">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
     <!-- Bootstrap CSS -->
@@ -137,6 +138,9 @@
         </div>
 
         <script>
+            const volunteer_event_URL = 'http://localhost:5003/volunteer/event';
+            const volunteer_URL = 'http://localhost:5003/volunteer';
+
             const app = Vue.createApp({
                 data() {
                     return {
