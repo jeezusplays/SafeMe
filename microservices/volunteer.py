@@ -21,7 +21,7 @@ class Volunteer(db.Model):
     __tablename__ = 'volunteer'
 
     volunteerEventID = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    userID = db.Column(db.Integer, nullable=False)
+    userID = db.Column(db.Integer, primary_key=True, nullable=False)
     userName = db.Column(db.String(64), nullable=False)
     contact = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.TIMESTAMP, nullable=False)

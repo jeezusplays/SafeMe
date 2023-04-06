@@ -123,6 +123,7 @@
     const volunteer_event_URL = "http://localhost:5003/volunteer/event";
     const volunteer_URL = "http://localhost:5003/volunteer";
     const location_URL = "http://localhost:5001/location/all";
+    var master_table = [];
 
     const app = Vue.createApp({
       data() {
@@ -144,8 +145,8 @@
           this.inEditMode = !this.inEditMode;
         },
 
-        // fetches all volunteers from the database
         fetchVolunteers() {
+          // Get current disaster info from disasterID
           axios
             .get(disaster_URL)
             .then((response) => {
@@ -160,30 +161,59 @@
             .catch((error) => {
               console.log(error);
             });
-
+          
+          // Get volunteer event information from volunteer_event table
           axios
-            .get(volunteer_URL)
+            .get(volunteer_event_URL)
             .then((response) => {
               console.log(response.data);
-              this.volunteers = response.data.volunteers;
+              // Loop through volunteer events and check against disasterID
+              for (var i = 0; i < response.data.volunteerEvents.length; i++) {
+                if (response.data.volunteerEvents[i].disasterID == disasterID) {
+                  this.volunteers.push(response.data.volunteerEvents[i]);
+                }
+              }
               axios
-                .get(location_URL)
+                .get(volunteer_URL)
                 .then((response) => {
-                  console.log(response.data.data);
-                  location_data = response.data.data;
-                  // Loop through volunteers and check against location data with userID
+                  console.log("volunteer event length:", this.volunteers.length);
+                  console.log("volunteers length:", response.data.volunteers.length);
+                // Loop through this.volunteers and append volunteer information if volunteerEventID matches
                   for (var i = 0; i < this.volunteers.length; i++) {
-                    for (var j = 0; j < location_data.length; j++) {
+                    for (var j = 0; j < response.data.volunteers.length; j++) {
                       if (
-                        this.volunteers[i].userID == location_data[j].userID
+                        this.volunteers[i].volunteerEventID ==
+                        response.data.volunteers[j].volunteerEventID
                       ) {
-                        this.volunteers[i].country =
-                          location_data[j].country +
-                          ", " +
-                          location_data[j].city;
+                        console.log(this.volunteers[i].volunteerEventID) 
+                        this.volunteers[i].userName = response.data.volunteers[j].userName
+                        this.volunteers[i].userID = response.data.volunteers[j].userID
                       }
                     }
                   }
+                  // Get volunteer location information from location table
+                  axios
+                    .get(location_URL)
+                    .then((response) => {
+                      console.log(response.data.data);
+                      location_data = response.data.data;
+                      // Loop through volunteers and check against location data with userID
+                      for (var i = 0; i < this.volunteers.length; i++) {
+                        for (var j = 0; j < location_data.length; j++) {
+                          if (
+                            this.volunteers[i].userID == location_data[j].userID
+                          ) {
+                            this.volunteers[i].country =
+                              location_data[j].country +
+                              ", " +
+                              location_data[j].city;
+                          }
+                        }
+                      }
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
                 })
                 .catch((error) => {
                   console.log(error);
@@ -192,6 +222,7 @@
             .catch((error) => {
               console.log(error);
             });
+
         },
       },
       mounted() {
