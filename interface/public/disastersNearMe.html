@@ -300,14 +300,14 @@
                           }
                         }
                       }
-                      console.log(this.disaster_table)
+                      // console.log(this.disaster_table)
                       // Loop this.disaster_table and check if any of the disaster distance is within 10km
                       for (var y = 0; y < this.disaster_table.length; y++) {
-                        console.log(parseInt(this.disaster_table[y].distance))
+                        // console.log(parseInt(this.disaster_table[y].distance))
                         if (parseInt(this.disaster_table[y].distance) < 10000) {
                           // If there is a disaster within 10km, then set the status to pending
                           this.userStatus_level = "Not Okay";
-                          console.log(this.userStatus_level)
+                          // console.log(this.userStatus_level)
                           // Break out of the loop
                           break;
                         } else {
