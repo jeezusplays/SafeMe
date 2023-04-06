@@ -99,7 +99,7 @@
                                     onclick="location.href='casualtyList.html'">View Casualties</button>
                                 <button v-if="!disaster.hasVolunteerEvent" type="button" class="btn btn-link"
                                     @click="openVolunteerEvent(index)">Request Volunteers</button>
-                                <button v-else type="button" class="btn btn-link" @click="redirectVolunteerPage(index)">View Volunteers</button>
+                                <button v-else type="button" class="btn btn-link" @click="redirectVolunteerPage(index)">View {{disaster.disasterName}} Volunteers</button>
 
                             </div>
                         </td>
@@ -111,7 +111,8 @@
 
     <script>
         const disaster_URL = "http://localhost:5002/disaster"
-        const volunteerEvent_URL = "http://localhost:5003/volunteer/event/create"
+        const create_volunteerEvent_URL = "http://localhost:5003/volunteer/event/create"
+        const volunteerEvent_URL = "http://localhost:5003/volunteer/event"
 
         const app = Vue.createApp({
             data() {
@@ -179,15 +180,15 @@
             methods: {
                 //changes copy from reuqest volunteer to view volunteers when a volunteer event is open
                 openVolunteerEvent(index) {
-                    this.disaster_table[index].hasVolunteerEvent = true
                     // Post request using axios to create a volunteer event
-                    axios.post(volunteerEvent_URL, {
+                    axios.post(create_volunteerEvent_URL, {
                         disasterID: this.disaster_table[index].disasterID,
                         volunteerEventName: this.disaster_table[index].disasterName,
                         institute: "Red Cross",
                     })
                         .then(response => {
                             console.log(response)
+                            this.disaster_table[index].hasVolunteerEvent = true
                         })
                         .catch(error => {
                             console.log(error)
@@ -199,6 +200,20 @@
                     axios.get(disaster_URL)
                         .then(response => {
                             this.disaster_table = response.data.data
+                            // Loop through response.data.data and check if disasterID is in volunteer_event table
+                            for (let i = 0; i < response.data.data.length; i++) {
+                                axios.get(volunteerEvent_URL)
+                                    .then(response => {
+                                        for (let j = 0; j < response.data.volunteerEvents.length; j++) {
+                                            if (response.data.volunteerEvents[j].disasterID == this.disaster_table[i].disasterID) {
+                                                this.disaster_table[i].hasVolunteerEvent = true
+                                            }
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.log(error)
+                                    })
+                            }
                             console.log(this.disaster_table)
                         })
                         .catch(error => {

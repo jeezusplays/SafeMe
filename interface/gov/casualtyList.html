@@ -64,37 +64,40 @@
                         <h6>Status distribution: </h6>
                     </div>
 
-                    <!-- OKAY BADGE -->
+                    <!-- SAFE BADGE -->
                     <div class="p-3">
-                        <span class="badge bg-success translate-middle p-1 border border-light rounded-circle">
+                        <span class="badge text-bg-success">Safe - {{statusDistribution.numSafe}}%</span>
+                        <!-- <span class="badge bg-success translate-middle p-1 border border-light rounded-circle">
                             <span class="visually-hidden"></span>
                         </span>
-                        Okay - {{statusDistribution.numOkay}}%
+                        Okay - {{statusDistribution.numSafe}}% -->
                     </div>
 
-                    <!-- MILDLY INJURED BADGE -->
+                    <!-- INJURED BADGE -->
                     <div class="p-3">
-                        <span class="badge bg-warning translate-middle p-1 border border-light rounded-circle">
+                        <span class="badge text-bg-danger">Injured - {{statusDistribution.numSafe}}%</span>
+                        <!-- <span class="badge bg-warning translate-middle p-1 border border-light rounded-circle">
                             <span class="visually-hidden"></span>
                         </span>
-                        Mildly Injured - {{statusDistribution.numMildlyInjured}}%
+                        Mildly Injured - {{statusDistribution.numInjured}}% -->
                     </div>
 
                     <!-- PENDING BADGE -->
                     <div class="p-3">
-                        <span class="badge bg-secondary translate-middle p-1 border border-light rounded-circle">
+                        <span class="badge text-bg-secondary">Pending - {{statusDistribution.numPending}}%</span>
+                        <!-- <span class="badge bg-secondary translate-middle p-1 border border-light rounded-circle">
                             <span class="visually-hidden"></span>
                         </span>
-                        Pending - {{statusDistribution.numPending}}%
+                        Pending - {{statusDistribution.numPending}}% -->
                     </div>
 
                     <!-- UNRESPONSIVE/ SEVERELY INJURED BADGE -->
-                    <div class="p-3">
+                    <!-- <div class="p-3">
                         <span class="badge bg-danger translate-middle p-1 border border-light rounded-circle">
                             <span class="visually-hidden"></span>
                         </span>
-                        Severely Injured / Unresponsive - {{statusDistribution.numMildlyInjured}}%
-                    </div>
+                        Severely Injured / Unresponsive - {{statusDistribution.numInjured}}%
+                    </div> -->
                 </div>
 
                 <!-- DISASTER TABLE FOR CASUALTIES -->
@@ -170,31 +173,28 @@
                 computed: {
                     statusDistribution() {
                         var distributions = {
-                            numOkay: 0,
-                            numMildlyInjured: 0,
+                            numSafe: 0,
+                            numInjured: 0,
                             numPending: 0,
                             //others include severely injured and unresponsive
-                            numOthers: 0
+                            // numOthers: 0
                         }
 
                         let total = this.affected_users.length
 
                         for (affected of this.affected_users) {
-                            if (affected.status == 'Okay') {
-                                distributions.numOkay++
+                            if (affected.status == 'safe') {
+                                distributions.numSafe++
                             }
-
-                            else if (affected.status == 'Mildly Injured') {
-                                distributions.numMildlyInjured++
+                            else if (affected.status == 'injured') {
+                                distributions.numInjured++
                             }
-
-                            else if (affected.status == 'Pending') {
+                            else {
                                 distributions.numPending++
                             }
-
-                            else {
-                                distributions.numOthers++
-                            }
+                            // else {
+                            //     distributions.numOthers++
+                            // }
                         }
                         console.log(distributions)
 
@@ -224,8 +224,8 @@
 
                     //dynamically changes volunteer state on click
                     selectDisaster(index) {
-                        this.mockData[index].isSelected = true
-                        console.log(this.mockData[index].isSelected)
+                        this.affected_users[index].isSelected = true
+                        console.log(this.affected_users[index].isSelected)
                     },
 
                     //populates the affected users table using axios
@@ -239,9 +239,6 @@
                                 console.log(error)
                             })
                     },
-
-                    //computes the affected status distribution, returns an object
-
                 },
 
                 mounted() {
