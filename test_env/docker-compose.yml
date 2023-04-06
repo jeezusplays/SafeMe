@@ -18,7 +18,7 @@ services:
       - service_network
 
   user-db:
-    image: mysql:8.0.26
+    image: mysql:8.0.31
     command: --sql-mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
     ports:
       - "${USER_DB_HOST_PORT}:3306"
@@ -42,7 +42,7 @@ services:
       - service_network
 
   disaster-db:
-    image: mysql:8.0.26
+    image: mysql:8.0.31
     ports:
       - "${DISASTER_DB_HOST_PORT}:3306"
     volumes:
@@ -66,7 +66,7 @@ services:
       - service_network
 
   volunteerevent-db:
-    image: mysql:8.0.26
+    image: mysql:8.0.31
     ports:
       - "${VOLUNTEEREVENT_DB_HOST_PORT}:3306"
     volumes:

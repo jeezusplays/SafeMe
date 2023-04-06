@@ -63,7 +63,12 @@ class AffectedUser(db.Model):
         self.contact = contact
 
     def json(self):
-        return {"affectedUsersID": self.affectedUsersID, "disasterID": self.disasterID, "userID": self.userID, "userName": self.userName, "status": self.status, "contact": self.contact}
+        return {"affectedUsersID": self.affectedUsersID,
+                "disasterID": self.disasterID,
+                "userID": self.userID,
+                "userName": self.userName,
+                "status": self.status,
+                "contact": self.contact}
 
 # Create or add disaster (add disaster to disaster table)
 @app.route("/disaster/new", methods=['POST'])
@@ -92,11 +97,14 @@ def get_all_disaster():
 def create_affected_user():
     data = request.get_json()
     affected_user = AffectedUser(**data)
+    print(affected_user)
+    print(data)
     try:
         db.session.add(affected_user)
         db.session.commit()
-    except:
-        return jsonify({"code": 500, "data": {"message": "An error occurred adding the affected user."}}), 500
+    except Exception as e:
+        print(e)
+        return jsonify({"code": 500, "data": {"message": e,'a':affected_user.json(),'b':data}}), 500
 
     return jsonify({"code": 201, "data": affected_user.json()}), 201
 

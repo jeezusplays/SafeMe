@@ -126,7 +126,7 @@ def addAffectedUser(user, disasterId):
     print(f"Adding affected user {affectedUser}")
     
     try:
-        result = invoke_http(f'http://disaster:{DISASTER_HOST_PORT}/affecteduser', method='POST', json=json.dumps(affectedUser))
+        result = invoke_http(f'http://disaster:{DISASTER_HOST_PORT}/affecteduser', method='POST', json=affectedUser)
         print(result)
         if result.get("code",400) in range(200,300):
             return result

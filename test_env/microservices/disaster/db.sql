@@ -2,8 +2,8 @@ CREATE DATABASE IF NOT EXISTS safeme2;
 USE safeme2;
 
 -- Table: Affected Users
-DROP TABLE IF EXISTS affectedUsers;
-CREATE TABLE affectedUsers
+DROP TABLE IF EXISTS affectedusers;
+CREATE TABLE affectedusers
 (
     affectedUsersID int not null auto_increment,
     disasterID int not null,
@@ -15,7 +15,7 @@ CREATE TABLE affectedUsers
 );
 
 -- Insert 10 rows into the affectedUsers table, referencing disaster and user table
-INSERT INTO affectedUsers (affectedUsersID, disasterID, userID, userName, status, contact)
+INSERT INTO affectedusers (affectedUsersID, disasterID, userID, userName, status, contact)
 VALUES
 (1, 1, 1, 'John', 'safe', 8888888),
 (2, 1, 2, 'Jane', 'injured', 8888888),
