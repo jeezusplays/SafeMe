@@ -1,6 +1,6 @@
 // Datatables script
 $(document).ready(function () {
-    $('#example').DataTable({
+    $('#datatable').DataTable({
         // delay datatable loading until all data is loaded
         stateSave: true,
     });
