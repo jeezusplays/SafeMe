@@ -4,10 +4,14 @@ from amqp_helper import Rabbitmq
 from time import sleep
 from os import environ
 import json
+import servicehelper
 
 app = Flask(__name__)
 sock = Sock(app)
 SAFEME_WEBSOCKET_HOST_PORT = environ.get("SAFEME_WEBSOCKET_HOST_PORT")
+
+
+
 class MessageCentre:
     def __init__(self) -> None:
         self.messages = {
@@ -60,6 +64,9 @@ def ws(ws):
             print(e)
 
 if __name__ == '__main__':
+    print("Websocket microservice has started")
+    while not servicehelper.isServiceReady("createdisaster"):
+        sleep(1)
     rabbitmq = Rabbitmq()
     rabbitmq._setup()
     message_centre = MessageCentre()
@@ -68,6 +75,7 @@ if __name__ == '__main__':
     rabbitmq.subscribe('user_1', callback_user_alert)
     rabbitmq.subscribe('family_1', callback_user_alert)
     try:
+        servicehelper.serviceIsReady("websocket")
         app.run(host='0.0.0.0', port=SAFEME_WEBSOCKET_HOST_PORT)
     except:
         pass

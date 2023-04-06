@@ -8,6 +8,16 @@ volumes:
   kongadata:
   
 services:
+
+  servicehelper:
+    build: ./microservices/servicehelper
+    environment:
+      SERVICEHELPER_HOST_PORT: ${SERVICEHELPER_HOST_PORT}
+    ports:
+      - "${SERVICEHELPER_HOST_PORT}:${SERVICEHELPER_HOST_PORT}"
+    networks:
+      - service_network     
+
   user:
     build: ./microservices/user
     environment:
@@ -103,8 +113,10 @@ services:
     build: ./microservices/getalert
     environment:
       RABBITMQ_PORT: ${RABBITMQ_PORT}
+      SERVICEHELPER_HOST_PORT : ${SERVICEHELPER_HOST_PORT}
     depends_on:
       - rabbitmq
+      - servicehelper
     networks:
       - service_network
       
@@ -112,11 +124,12 @@ services:
     build: ./microservices/app_websocket
     environment:
       SAFEME_WEBSOCKET_HOST_PORT: ${SAFEME_WEBSOCKET_HOST_PORT}
+      SERVICEHELPER_HOST_PORT : ${SERVICEHELPER_HOST_PORT}
       RABBITMQ_PORT: ${RABBITMQ_PORT}
     ports:
       - "${SAFEME_WEBSOCKET_HOST_PORT}:${SAFEME_WEBSOCKET_HOST_PORT}"
     depends_on:
-      - rabbitmq
+      - servicehelper
     networks:
       - service_network     
     
@@ -126,8 +139,10 @@ services:
       USER_HOST_PORT: ${USER_HOST_PORT}
       DISASTER_HOST_PORT: ${DISASTER_HOST_PORT}
       RABBITMQ_PORT: ${RABBITMQ_PORT}
+      SERVICEHELPER_HOST_PORT : ${SERVICEHELPER_HOST_PORT}
     depends_on:
-      - rabbitmq
+      - servicehelper
+
     networks:
       - service_network
     restart: "always"
@@ -186,8 +201,6 @@ services:
       KONG_PG_PASSWORD: password
       KONG_PROXY_LISTEN: 0.0.0.0:8000
       KONG_ADMIN_LISTEN: 0.0.0.0:8001
-    volumes:
-      - ./apigateway/kong.yml:/usr/local/kong/declarative/kong.yml
     depends_on:
       - kong-migration
     ports:
@@ -214,3 +227,17 @@ services:
       - "1337:1337"
     volumes:
       - kongadata:/app/kongadata
+
+  apigateway-setup:
+    build: ./microservices/apigateway
+    restart: on-failure
+    environment:
+      KONG_ADMIN_PORT: ${KONG_ADMIN_PORT}
+      USER_HOST_PORT: ${USER_HOST_PORT}
+      DISASTER_HOST_PORT: ${DISASTER_HOST_PORT}
+      VOLUNTEEREVENT_HOST_PORT: ${VOLUNTEEREVENT_HOST_PORT}
+    depends_on:
+      - kong
+      - servicehelper
+    networks:
+      - service_network

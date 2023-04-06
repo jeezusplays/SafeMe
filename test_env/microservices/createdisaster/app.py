@@ -7,6 +7,7 @@ from datetime import datetime
 from os import environ
 
 import json
+import servicehelper
 
 USER_HOST_PORT = environ.get("USER_HOST_PORT")
 DISASTER_HOST_PORT = environ.get("DISASTER_HOST_PORT")
@@ -191,6 +192,11 @@ def main():
 
 # Execute this program if it is run as a main script
 if __name__ == "__main__":
+    print("getdisaster container is running...")
+    while not servicehelper.isServiceReady("getalert"):
+        sleep(1)
     main()
+    servicehelper.serviceIsReady("createdisaster")
+    
 
 

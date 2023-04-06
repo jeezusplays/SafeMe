@@ -7,7 +7,7 @@ from datetime import datetime
 
 import json
 import dateparser
-
+import servicehelper
 
 def get_alert():
     client = GDACSAPIReader()
@@ -55,7 +55,9 @@ def main():
     rabbitmq = Rabbitmq()
     rabbitmq._setup()
     print('------------- Get alerts running -------------')
+    servicehelper.serviceIsReady("getalert")
     while True:
+        sleep(5)
         try:
             alerts = get_alert()
             new_alerts = [alert for alert in alerts if alert not in alert_list]
@@ -65,7 +67,6 @@ def main():
                 rabbitmq.publish_message(json.dumps(new_alerts),'gdac.alert')
         except Exception as e:
             print(e)
-        sleep(5)
     
 if __name__ == "__main__":
     main()
