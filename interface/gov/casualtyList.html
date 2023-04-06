@@ -108,20 +108,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(casualty, index) in this.affected_users">
-                            <td>{{casualty.affectedUsersID}}</td>
-                            <td>{{casualty.userName}}</td>
-                            <!-- <td>{{casualty.lastUpdate}}</td> -->
+                        <tr v-for="(affected, index) in this.affected_users">
+                            <td>{{affected.affectedUsersID}}</td>
+                            <td>{{affected.userName}}</td>
+                            <!-- <td>{{affected.lastUpdate}}</td> -->
 
                             <!-- Checks for danger status and renders the colour status -->
-                            <td v-if="casualty.status == 'safe'">
-                                <span class="badge text-bg-success">{{casualty.status}}</span>
+                            <td v-if="affected.status == 'safe'">
+                                <span class="badge text-bg-success">{{affected.status}}</span>
                             </td>
-                            <td v-else-if="casualty.status == 'injured'">
-                                <span class="badge text-bg-danger">{{casualty.status}}</span>
+                            <td v-else-if="affected.status == 'injured'">
+                                <span class="badge text-bg-danger">{{affected.status}}</span>
                             </td>
-                            <td v-else="casualty.status == 'pending'">
-                                <span class="badge text-bg-secondary">{{casualty.status}}</span>
+                            <td v-else="affected.status == 'pending'">
+                                <span class="badge text-bg-secondary">{{affected.status}}</span>
                             </td>
                         </tr>
                     </tbody>
@@ -179,16 +179,16 @@
 
                         let total = this.affected_users.length
 
-                        for (casualty of this.affected_users) {
-                            if (casualty.status == 'Okay') {
+                        for (affected of this.affected_users) {
+                            if (affected.status == 'Okay') {
                                 distributions.numOkay++
                             }
 
-                            else if (casualty.status == 'Mildly Injured') {
+                            else if (affected.status == 'Mildly Injured') {
                                 distributions.numMildlyInjured++
                             }
 
-                            else if (casualty.status == 'Pending') {
+                            else if (affected.status == 'Pending') {
                                 distributions.numPending++
                             }
 
@@ -214,7 +214,7 @@
                         this.isCasualtyPage = false
                     },
 
-                    // renders casualty page
+                    // renders affected page
                     toCasualtyPage() {
                         this.isHome = false
                         this.isCasualtyPage = true
@@ -240,7 +240,7 @@
                             })
                     },
 
-                    //computes the casualty status distribution, returns an object
+                    //computes the affected status distribution, returns an object
 
                 },
 
