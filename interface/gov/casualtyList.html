@@ -112,15 +112,16 @@
                             <td>{{casualty.affectedUsersID}}</td>
                             <td>{{casualty.userName}}</td>
                             <!-- <td>{{casualty.lastUpdate}}</td> -->
+
                             <!-- Checks for danger status and renders the colour status -->
                             <td v-if="casualty.status == 'safe'">
                                 <span class="badge text-bg-success">{{casualty.status}}</span>
                             </td>
-                            <td v-else-if="casualty.status == 'pending'">
-                                <span class="badge text-bg-secondary">{{casualty.status}}</span>
-                            </td>
                             <td v-else-if="casualty.status == 'injured'">
                                 <span class="badge text-bg-danger">{{casualty.status}}</span>
+                            </td>
+                            <td v-else="casualty.status == 'pending'">
+                                <span class="badge text-bg-secondary">{{casualty.status}}</span>
                             </td>
                         </tr>
                     </tbody>
