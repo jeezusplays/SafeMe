@@ -149,9 +149,9 @@
                             userID: 'NIL',
                             name: 'NIL',
                             status: 'NIL',
-                            lastUpdate: 'NIL',
-                            email: 'NIL',
-                            lastKnownCity: 'NIL',
+                            contact: 'NIL',
+                            // lastUpdate: 'NIL',
+                            // lastKnownCity: 'NIL',
                         },
                     ],
                 }
@@ -196,24 +196,24 @@
 
             methods: {
                 // renders home page
-                toHome() {
-                    this.isHome = true
-                    this.isCasualtyPage = false
-                },
+                // toHome() {
+                //     this.isHome = true
+                //     this.isCasualtyPage = false
+                // },
 
                 // renders affected page
-                toCasualtyPage() {
-                    this.isHome = false
-                    this.isCasualtyPage = true
-                    // console.log(this.isHome)
-                    // console.log(this.isCasualtyPage)
-                },
+                // toCasualtyPage() {
+                //     this.isHome = false
+                //     this.isCasualtyPage = true
+                //     // console.log(this.isHome)
+                //     // console.log(this.isCasualtyPage)
+                // },
 
                 //dynamically changes volunteer state on click
-                selectDisaster(index) {
-                    this.affected_users[index].isSelected = true
-                    console.log(this.affected_users[index].isSelected)
-                },
+                // selectDisaster(index) {
+                //     this.affected_users[index].isSelected = true
+                //     console.log(this.affected_users[index].isSelected)
+                // },
 
                 //populates the affected users table using axios
                 populate_affected() {
