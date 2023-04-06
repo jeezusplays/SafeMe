@@ -99,8 +99,8 @@
                                     onclick="location.href='casualtyList.html'">View Casualties</button>
                                 <button v-if="!disaster.hasVolunteerEvent" type="button" class="btn btn-link"
                                     @click="openVolunteerEvent(index)">Request Volunteers</button>
-                                <button v-else type="button" class="btn btn-link"
-                                    onclick="location.href='volunteerGov.html'">View Volunteers</button>
+                                <button v-else type="button" class="btn btn-link" @click="redirectVolunteerPage(index)">View Volunteers</button>
+
                             </div>
                         </td>
                     </tr>
@@ -170,7 +170,8 @@
                         //     danger: 'Low Risk',
                         //     hasVolunteerEvent: false
                         // },
-                    ]
+                    ],
+                    temp_disaster_name: '',
 
                 }
             },
@@ -179,6 +180,7 @@
                 //changes copy from reuqest volunteer to view volunteers when a volunteer event is open
                 openVolunteerEvent(index) {
                     this.disaster_table[index].hasVolunteerEvent = true
+                    this.temp_disaster_name = this.disaster_table[index].disasterName
                 },
 
                 populate_disasters() {
@@ -192,6 +194,10 @@
                             console.log(error)
                         })
                     // Function to loop through this.disaster_table and fetch all disaster distance to user
+                },
+                redirectVolunteerPage(index) {
+                    // Redirects to the volunteer page with the disaster name
+                    window.location.href = "volunteerGov.html?disasterID=" + this.disaster_table[index].disasterID
                 }
             },
 
