@@ -172,7 +172,7 @@
                   // Loop through the disaster table and calculate the distance between the user and the disaster
                   axios.get(volunteer_URL)
                     .then(response => {
-                      volunteer_event_response = response.data
+                      volunteer_event_response = response.data.volunteerEvents
                       for (var i = 0; i < this.disaster_table.length; i++) {
                         console.log(this.disaster_table[i])
                         // Calculate the distance between the user and the disaster
@@ -184,8 +184,11 @@
                         // Set the isVolunteered to true first
                         this.disaster_table[i].isVolunteered = true;
                         // Loop through volunteer events and determine if there is a volunteer event for the disaster
+                        console.log(this.disaster_table[i].disasterID)
                         for (var j = 0; j < volunteer_event_response.length; j++) {
-                          if (this.disaster_table[i].disasterName == volunteer_event_response[j].disasterName) {
+                          if (this.disaster_table[i].disasterID == volunteer_event_response[j].disasterID) {
+                            console.log("ogrjeogpenrg;")
+                            console.log(volunteer_event_response[j].disasterID)
                             this.disaster_table[i].isVolunteered = false;
                           }
                         }
