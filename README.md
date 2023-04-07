@@ -90,6 +90,7 @@ To stop and remove all containers, networks, volumes, and images created by `up`
 
 ## Usage
 ### UI
+_Simple run down of each HTML page._
 <table>
    <tr>
       <td>User</td>
@@ -125,6 +126,7 @@ To stop and remove all containers, networks, volumes, and images created by `up`
 </table>
 
 ### Requests
+_Simple run down of each request._
 <table>
    <tr>
       <td>Request</td>
