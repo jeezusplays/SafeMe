@@ -128,14 +128,12 @@ To stop and remove all containers, networks, volumes, and images created by `up`
 <table>
    <tr>
       <td>Request</td>
-      <td>URL</td>
       <td>Method</td>
       <td>Description</td>
       <td>Link</td>
    </tr>
       <tr>
       <td>User</td>
-      <td>/user/family/<int:userID></td>
       <td>GET</td>
       <td>Get single user information</td>
       <td> <a href="http://localhost:5001/user/family/1">http://localhost:5001/user/family/1</a>
@@ -143,14 +141,12 @@ To stop and remove all containers, networks, volumes, and images created by `up`
    </tr>
       <tr>
       <td rowspan="2">Location</td>
-      <td>/location/all</td>
       <td>GET</td>
       <td>Get all user locations</td>
       <td> <a href="http://localhost:5001/location/all">http://localhost:5001/location/all</a>
       </td>
    </tr>
    <tr>
-      <td>/location/<int:userID></td>
       <td>GET</td>
       <td>Get user location</td>
       <td> <a href="http://localhost:5001/location/1">http://localhost:5001/location/1</a>
@@ -158,7 +154,6 @@ To stop and remove all containers, networks, volumes, and images created by `up`
    </tr>
    <tr>
       <td>Disaster</td>
-      <td>/disaster</td>
       <td>GET</td>
       <td>Get all disasters</td>
       <td>
@@ -167,7 +162,6 @@ To stop and remove all containers, networks, volumes, and images created by `up`
    </tr>
    <tr>
       <td>Volunteer</td>
-      <td>/volunteer</td>
       <td>GET</td>
       <td>Get all volunteers for a disaster </td>
       <td> <a href="http://localhost:5003/volunteer">http://localhost:5003/volunteer</a>
@@ -175,14 +169,12 @@ To stop and remove all containers, networks, volumes, and images created by `up`
    </tr>
    <tr>
       <td rowspan="2">Volunteer Event</td>
-      <td>/volunteer/event</td>
       <td>GET</td>
       <td>Get all volunteer events</td>
       <td> <a href="http://localhost:5003/volunteer/event">http://localhost:5003/volunteer/event</a>
       </td>
    </tr>
    <tr>
-      <td>/volunteer/event/create</td>
       <td>POST</td>
       <td>Create a volunteer event</td>
       <td> <a href="http://localhost:5003/volunteer/event/create">http://localhost:5003/volunteer/event/create</a>
@@ -190,7 +182,6 @@ To stop and remove all containers, networks, volumes, and images created by `up`
    </tr>
    <tr>
       <td>Affected</td>
-      <td>/affected</td>
       <td>GET</td>
       <td>Get all affected users/casualties</td>
       <td> <a href="http://localhost:5002/affected">http://localhost:5002/affected</a>
