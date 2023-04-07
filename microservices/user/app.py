@@ -94,22 +94,28 @@ def get_user(userID):
         return jsonify({"code": 404, "message": "User not found"}), 404
 
 # Add location (Add user's location information through userID to location table)
-@app.route("/location/", methods=['POST'])
+@app.route("/location", methods=['POST'])
 def add_location():
     data = request.get_json()
-    location = Location(data['locationID'], data['userID'], data['country'], data['city'], data['lat'], data['long'], data['timestamp'])
+    location = Location(data['userID'], data['country'], data['city'], data['lat'], data['long'], data['timestamp'])
     try:
         db.session.add(location)
         db.session.commit()
-    except:
+    except Exception as e:
+        logging.error(e)
         return jsonify({"code": 500, "data": {"message": "An error occurred while adding the location."}}), 500
     return jsonify({"code": 201, "data": location.json()}), 201
+
+@app.route("/location", methods=['OPTIONS'])
+def add_location_options():
+    return jsonify({"code": 200, "data": {"message": "pass"}}), 200
+
 
 # Get all users latest location today (Select last location where userID == userID)
 @app.route("/location/latest", methods=['GET'])
 def get_all_users_latest_location():
 
-    current_timestamp_date = (datetime.now()+timedelta(hours=8)).date()
+    current_timestamp_date = (datetime.now()-timedelta(hours=8)).date()
     user_loc = Location.query.filter(db.func.date(Location.timestamp) == current_timestamp_date)\
                          .order_by(Location.timestamp.desc())\
                          .group_by(Location.userID)\
