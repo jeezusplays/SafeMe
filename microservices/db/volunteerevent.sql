@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS safeme3;
-USE safeme3;
+CREATE DATABASE IF NOT EXISTS safeme_volunteer;
+USE safeme_volunteer;
 
 -- Table: Volunteer Event
 DROP TABLE IF EXISTS volunteerevent;

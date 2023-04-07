@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS safeme1;
-USE safeme1;
+CREATE DATABASE IF NOT EXISTS safeme_user;
+USE safeme_user;
 
 -- Table: User
 DROP TABLE IF EXISTS user;
