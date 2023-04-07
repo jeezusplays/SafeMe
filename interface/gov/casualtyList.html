@@ -21,6 +21,13 @@
     <script defer src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script defer src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script defer src="../script.js"></script>
+    <style>
+    /* Set the size of the div element that contains the map */
+      #map {
+        height: 400px; /* The height is 400 pixels */
+        width: 75%; /* The width is the width of the web page */
+      }
+    </style>
 </head>
 
 <body>
@@ -109,6 +116,7 @@
                             <th>User ID</th>
                             <th>Name</th>
                             <th>Time of Last Update</th>
+                            <th>Location</th>
                             <th>Status</th>
                             <th>Contact</th>
                         </tr>
@@ -117,7 +125,8 @@
                         <tr v-for="(affected, index) in this.affected_users">
                             <td>{{affected.affectedUsersID}}</td>
                             <td>{{affected.userName}}</td>
-                            <td>{{affected.lastUpdate}}</td>
+                            <td>{{affected.timestamp}}</td>
+                            <td>{{affected.location}}</td>
 
                             <!-- Checks for danger status and renders the colour status -->
                             <td v-if="affected.status == 'safe'">
@@ -136,6 +145,15 @@
                 </table>
             </div>
         </div>
+
+
+    </div>
+    <div class = "container">
+        <h3>Map of affected users</h3>
+        <p>Click on the user's name to view the user's status and location</p>
+        <!-- Center the div below -->
+        <div class="d-flex justify-content-center">
+            <div id="map"></div>
     </div>
 
     <script>
@@ -228,9 +246,17 @@
                                     for (var i = 0; i < this.affected_users.length; i++) {
                                         for (var j = 0; j < response.data.data.length; j++) {
                                             if (this.affected_users[i].userID == response.data.data[j].userID) {
-                                                this.affected_users[i].lastUpdate = 
+                                                this.affected_users[i].location = 
                                                 response.data.data[j].country + ", " + response.data.data[j].city +
                                                 " (" + response.data.data[j].lat + ", " + response.data.data[j].long + ")"
+                                                // Set timezone difference
+                                                const dt = new Date();
+                                                let diffTZ = dt.getTimezoneOffset();
+                                                const disasterTimestamp = response.data.data[j].timestamp;
+                                                // Given disasterTimestamp date format is (08 Aug 2021 11:00:00 GMT), apply difference in time zone to it
+                                                const disasterTimestampDate = new Date(disasterTimestamp);
+                                                disasterTimestampDate.setHours(disasterTimestampDate.getHours() + diffTZ);
+                                                this.affected_users[i].timestamp = disasterTimestampDate;
                                             }
                                         }
                                     }
@@ -253,10 +279,37 @@
         app.mount('#app')
     </script>
 
+    <script>
+
+    </script>
+
     <!-- Bootstrap Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
+        <script
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkTXpifODSjEW427LXq0TtoRqAfhV5wr0&callback=initMap"
+    ></script>
+    <script>
+        // Initialize and add the map
+        function initMap() {
+            // The location of SCIS at SMU
+            var scis = { lat: 1.297538, lng: 103.849558 };
+            // The map, centered at SCIS
+            var map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 14,
+                center: scis,
+            });
+            // The marker, positioned at SCIS, SMU by default
+            var iconBase = '../img/default-marker.png';
+            var marker = new google.maps.Marker({
+                position: scis,
+                map,
+                icon: iconBase
+            });
+        }
+    </script>
 </body>
 
 </html>
