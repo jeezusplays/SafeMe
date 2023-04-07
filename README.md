@@ -58,61 +58,32 @@ You will also need the following software installed in your machine.
 * [WAMP](https://www.wampserver.com/en/) / [MAMP](https://www.mamp.info/en/) / [XAMPP](https://www.apachefriends.org/index.html)
 * [MySQL](https://www.mysql.com/)
 
-<!-- To run this project locally on your machine, follow the following steps.
-* npm
-  ```sh
-  npm install -g npm
-  ``` -->
-### Installation
+### Installation and Implementation
 
-_Instructions on how to install this respository onto your local machine._
+_Instructions on how to install and run this respository onto your local machine._
 
 1. Clone the repo
    ```sh
    git clone https://github.com/samchung95/SafeMe
    ```
-<!-- 2. Install NPM packages
+2. Start WAMP, Docker, and MySQL
+
+3. Ensure that you have replaced **ALL** the `<dockerid>` in `docker-compose.yml` with your Docker ID.
+
+4. In a CMD Window, change directory to the repository and start the docker containers
    ```sh
-   npm install
+   docker-compose up
    ```
-3. Run vue
+5. Go to your localhost and test out the application!
    ```sh
-   npm run dev
+   http://localhost:8080/
+   ``` 
+
+To stop and remove all containers, networks, volumes, and images created by `up`
+   ```sh
+   docker-compose down
    ```
-4. Go to your local host
-   ```sh
-   http://localhost:8080 or https://localhost:8081
-   ``` -->
 
 ## Usage
 
-## Contributing
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b /newFeature`)
-3. Commit your Changes (`git commit -m 'Add some newFeature'`)
-4. Push to the Branch (`git push origin /newFeature`)
-5. Open a Pull Request
-
-## Contact
-Feel free to contact and connect!
-
-|| Name | Main Role | Github | LinkedIn |
-|-----------| ----------- | ----------- | ----------- | ----------- |
-|<img src="https://avatars.githubusercontent.com/u/68149788?v=4" width="100"></img>|Tan Zuyi Joey|Project Manager|[jeezusplays](https://github.com/jeezusplays)|[LinkedIn](https://linkedin.com/in/joey-tan-zuyi)|
-|<img src="https://avatars.githubusercontent.com/u/41113285?v=4" width="100"></img>|Samuel Chung|Software Engineer|[samchung95](https://github.com/samchung95)|[LinkedIn](https://www.linkedin.com/in/samuel-chung-339688154/)|
-|<img src="https://avatars.githubusercontent.com/u/111420736?v=4" width="100"></img>|Liow Hong Xiang|Software Engineer|[hx240](https://github.com/hx240)|[LinkedIn](https://www.linkedin.com/in/liowhongxiang/)|
-|<img src="https://avatars.githubusercontent.com/u/111410622?v=4" width="100"></img>|Anthony Ho|UX Designer|[anthonyckho](https://github.com/anthonyckho)|[LinkedIn](https://www.linkedin.com/in/anthony-ho-uxdesign/)|
-
-## Acknowledgements
-These are other fellow team members who contributed to this project!
-* [Tan Zuyi Joey](https://linkedin.com/in/joey-tan-zuyi)
-* [Samuel Chung](https://www.linkedin.com/in/samuel-chung-339688154/)
-* [Liow Hong Xiang](https://www.linkedin.com/in/liowhongxiang/)
-* [Anthony Ho](https://www.linkedin.com/in/anthony-ho-uxdesign/)
-* Aaron Wong
-* John Choong
