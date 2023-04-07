@@ -26,9 +26,12 @@ $(document).ready(function () {
                 // Call the function to create the map
                 initMap_2(lat, lng);
 
-            } else {
+            } 
+            else 
+            {
               console.log('No content found within parentheses');
             }
+
         });
     }, 500);
 });
