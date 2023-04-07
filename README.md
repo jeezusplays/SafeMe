@@ -89,5 +89,37 @@ To stop and remove all containers, networks, volumes, and images created by `up`
    ```
 
 ## Usage
-
-
+### UI
+<table>
+   <tr>
+      <td>User</td>
+      <td>Interface</td>
+      <td>Description</td>
+   </tr>
+   <tr>
+      <td rowspan="3">Government</td>
+      <td>countryDisaster.html</td>
+      <td>Real-time list of global disasters</td>
+   </tr>
+   <tr>
+      <td>volunteerGov.html</td>
+      <td>Create and manage volunteer event</td>
+   </tr>
+   <tr>
+      <td>casualtyList.html</td>
+      <td>View the list of affected users in a disaster area</td>
+   </tr>
+   <tr>
+      <td rowspan="3">Public User</td>
+      <td>disastersNearMe.html</td>
+      <td>Receive a danger notification when in the risk of being in danger and acknowledge safety status notification</td>
+   </tr>
+   <tr>
+      <td>myFamily.html</td>
+      <td>View family members safety through a status dashboard</td>
+   </tr>
+   <tr>
+      <td>volunteerPublic.html</td>
+      <td>Volunteer for volunteer event</td>
+   </tr>
+</table>
