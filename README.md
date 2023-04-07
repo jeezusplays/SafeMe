@@ -53,7 +53,7 @@ This section lists any APIs used to develop SafeMe.
 | APIs |  Description  | 
 |:-----:|:--------|
 | [![Kong API Gateway](https://img.shields.io/badge/Kong-003459.svg?style=for-the-badge&logo=Kong&logoColor=white)](https://docs.konghq.com/gateway/latest/)  | Middleware to hide the microservices' endpoints and route the client to services |
-| [![Google Maps API](https://img.shields.io/badge/Google%20Maps-4285F4.svg?style=for-the-badge&logo=Google-Maps&logoColor=white)](https://developers.google.com/maps) | Display location of users on Google Maps |
+| [![Google Maps API](https://img.shields.io/badge/Google%20Maps-4285F4.svg?style=for-the-badge&logo=Google-Maps&logoColor=white)](https://developers.google.com/maps) | Helps the government visualise location of affected casualties |
 | [GDACS API](https://www.gdacs.org/) | Retrieve disaster information from GDACS  | 
 
 
