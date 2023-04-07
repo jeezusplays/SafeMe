@@ -66,15 +66,15 @@ _Instructions on how to install and run this respository onto your local machine
    ```sh
    git clone https://github.com/samchung95/SafeMe
    ```
-2. Start WAMP, Docker, and MySQL
+2. Start WAMP and Docker
 
-3. Ensure that you have replaced **ALL** the `<dockerid>` in `docker-compose.yml` with your Docker ID.
+<!-- 3. Ensure that you have replaced **ALL** the `<dockerid>` in `docker-compose.yml` with your Docker ID. -->
 
-4. In a CMD Window, change directory to the repository and start the docker containers
+3. In a CMD Window, change directory to the repository and start the docker containers
    ```sh
    docker-compose up
    ```
-5. Go to your localhost and test out the application!
+4. Go to your localhost and test out the application!
    ```sh
    http://localhost:8080/
    ``` 
