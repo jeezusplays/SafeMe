@@ -90,7 +90,7 @@ To stop and remove all containers, networks, volumes, and images created by `up`
 
 ## Demo and Usage
 ### Demo
-A demo of the application can be found [here](https://youtu.be/1Z4Z4Z4Z4Z4).
+A demo of the application can be found [here](https://youtu.be/Weka3bW8NJw).
 ### UI
 _Simple run down of each HTML page._
 <table>
