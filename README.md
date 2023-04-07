@@ -63,26 +63,31 @@ You will also need the following software installed in your machine.
   ```sh
   npm install -g npm
   ``` -->
-### Installation
+### Installation and Implementation
 
-_Instructions on how to install this respository onto your local machine._
+_Instructions on how to install and run this respository onto your local machine._
 
 1. Clone the repo
    ```sh
    git clone https://github.com/samchung95/SafeMe
    ```
-<!-- 2. Install NPM packages
+2. Start WAMP, Docker, and MySQL
+
+3. Ensure that you have replaced **ALL** the `<dockerid>` in `docker-compose.yml` with your Docker ID.
+
+4. In a CMD Window, change directory to the repository and start the docker containers
    ```sh
-   npm install
+   docker-compose up
    ```
-3. Run vue
+5. Go to your localhost and test out the application!
    ```sh
-   npm run dev
+   http://localhost:8080/
+   ``` 
+
+To stop and remove all containers, networks, volumes, and images created by `up`
+   ```sh
+   docker-compose down
    ```
-4. Go to your local host
-   ```sh
-   http://localhost:8080 or https://localhost:8081
-   ``` -->
 
 ## Usage
 
