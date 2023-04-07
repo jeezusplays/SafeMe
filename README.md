@@ -15,14 +15,11 @@ For Government, they are able to:
 
 ### Assumptions
 The following functions are assumed to be completed:
-
-Public Users:
-* Create and join a family – *A group of people that can track each other in real-time*
-* Announce to family when no longer in risk of being in danger
-* Receive alerts of other family members when they are in the risk of being in danger
-
-Government:
-* Announce the list of safe individuals
+|User|Functions |
+|:--|:--|
+|Public Users|1. Create and join a family – *A group of people that can track each other in real-time*<br> 2. Announce to family when no longer in risk of being in danger<br> 3. Receive alerts of other family members when they are in the risk of being in danger|
+|Government| 1. Announce the list of safe individuals|
+| Both | 1. Registration and login |
 
 Other Assumptions:
 * A user can only be affected by 1 disaster at any given time
