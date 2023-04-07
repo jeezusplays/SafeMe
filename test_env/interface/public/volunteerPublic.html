@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Volunteer</title>
+  <link rel="icon" type="image/x-icon" href="../img/favicon.ico">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+  <!-- Datatables for table styling -->
+  <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+  <!-- Datatables JS scripts -->
+  <script defer src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  <script defer src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <script defer src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+  <script defer src="../script.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <!-- NAVBAR-->
+    <nav class="navbar navbar-light navbar-expand-lg bg-body-secondary" style="background-color: #e3f2fd;">
+      <div class="container-fluid">
+        <!-- Shows account type -->
+        <a class="navbar-brand" href="disastersNearMe.html">SafeMe (Public)</a>
+
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <!-- Navbar tabs for Public UI -->
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="disastersNearMe.html">Disasters Near Me</a>
+              <!-- <a v-else class="nav-link" aria-current="page" href="#">Disasters Near Me</a> -->
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="myFamily.html">My Family</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="volunteerPublic.html">Volunteer to Help</a>
+            </li>
+          </ul>
+
+          <button class="btn btn-outline-primary" onclick="location.href='../gov/countryDisasters.html'">Switch Account
+            Type</button>
+        </div>
+      </div>
+    </nav>
+
+
+    <!-- DISASTER TABLE -->
+    <div class="container my-5">
+      <table id="example" class="table table-striped my-auto" style="width:100%">
+        <thead>
+          <tr>
+            <th>Country/City</th>
+            <th>Disaster Name</th>
+            <th>Distance Away</th>
+            <th>Time of Incident</th>
+            <th>Danger Impact</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(disaster, index) in this.disaster_table">
+            <td>{{disaster.country}}</td>
+            <td>{{disaster.disasterName}}</td>
+            <td>{{disaster.distance}} km</td>
+            <td>{{disaster.disasterTimestamp}}</td>
+            <!-- Checks for danger status and renders the colour status -->
+            <td v-if="disaster.disasterSeverityLevel == 'green'">
+              <span class="badge text-bg-success">Low</span>
+            </td>
+            <td v-else-if="disaster.disasterSeverityLevel == 'amber'">
+              <span class="badge text-bg-warning">Medium</span>
+            </td>
+            <td v-else-if="disaster.disasterSeverityLevel == 'red'">
+              <span class="badge text-bg-danger">High</span>
+            </td>
+            <td v-else>
+              <span class="badge text-bg-secondary">None</span>
+            </td>
+            <td>
+              <button type="button" class="btn btn-link" :id="disaster.key1" :disabled="disaster.isVolunteered"
+                @click="volunteered(index)">Volunteer</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SUBMISSION TOAST -->
+    <div v-for="disaster in this.mockData" class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div :id="disaster.key2" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <strong class="me-auto">Volunteer registration was successful</strong>
+          <small>Just now</small>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          You have indicated your interest to volunteer!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Hardcoded userID for now
+    const userID = 1;
+    const disaster_URL = "http://localhost:5002/disaster";
+    const user_location_URL = "http://localhost:5001/location/" + userID;
+    const volunteer_URL = "http://localhost:5003/volunteer/event";
+
+    const app = Vue.createApp({
+      data() {
+        return {
+          disaster_table: [
+            {
+              danger: "-",
+              distance: 0.0
+            }
+          ],
+          status: "Unavailable",
+          user_lat: 0.0,
+          user_long: 0.0,
+        }
+      },
+
+      methods: {
+        //dynamically changes volunteer state on click
+        volunteered(index) {
+          this.disaster_table[index].isVolunteered = true
+        },
+        populate_disasters() {
+          // Get request using axios to fetch data from the disaster table
+          axios.get(disaster_URL)
+            .then(response => {
+              this.disaster_table = response.data.data
+              console.log(this.disaster_table)
+              // Get request using axios to fetch data from users
+              axios.get(user_location_URL)
+                .then(response => {
+                  user_location = response.data.data
+                  // Check if there is more than 1 user location entry
+                  if (user_location.length > 1) {
+                    // If there is more than 1 user location entry, then we need to find the most recent one
+                    // Sort the user location array by timestamp
+                    user_location.sort(function (a, b) {
+                      return new Date(b.timestamp) - new Date(a.timestamp);
+                    });
+                    // Set the user location to the most recent one
+                    user_location = user_location[0];
+                    this.user_lat = user_location.lat;
+                    this.user_long = user_location.long;
+                  } else {
+                    // If there is only 1 user location entry, then we can just set the user location to the first entry
+                    user_location = user_location[0];
+                    this.user_lat = user_location.lat;
+                    this.user_long = user_location.long;
+                  }
+                  // Loop through the disaster table and calculate the distance between the user and the disaster
+                  axios.get(volunteer_URL)
+                    .then(response => {
+                      volunteer_event_response = response.data
+                      for (var i = 0; i < this.disaster_table.length; i++) {
+                        console.log(this.disaster_table[i])
+                        // Calculate the distance between the user and the disaster
+                        var distance = this.calculate_distance(this.user_lat, this.user_long, this.disaster_table[i].lat, this.disaster_table[i].long);
+                        // Round the distance to 2 decimal places
+                        distance = distance.toFixed(2);
+                        // Set the distance in the disaster table
+                        this.disaster_table[i].distance = distance;
+                        // Set the isVolunteered to true first
+                        this.disaster_table[i].isVolunteered = true;
+                        // Loop through volunteer events and determine if there is a volunteer event for the disaster
+                        for (var j = 0; j < volunteer_event_response.length; j++) {
+                          if (this.disaster_table[i].disasterName == volunteer_event_response[j].disasterName) {
+                            this.disaster_table[i].isVolunteered = false;
+                          }
+                        }
+                      }
+                    })
+                    .catch(error => {
+                      console.log(error)
+                    })
+
+                })
+                .catch(error => {
+                  console.log(error)
+                })
+            })
+            .catch(error => {
+              console.log(error)
+            })
+        },
+        calculate_distance(lat1, lon1, lat2, lon2) {
+          // Calculate the distance between the user and the disaster
+          console.log(lat1, lon1, lat2, lon2)
+          var R = 6371; // Radius of the earth in km
+          var dLat = this.deg2rad(lat2 - lat1);  // deg2rad below
+          var dLon = this.deg2rad(lon2 - lon1);
+          var a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2)
+            ;
+          var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          var d = R * c; // Distance in km
+          return d;
+        },
+        deg2rad(deg) {
+          return deg * (Math.PI / 180)
+        }
+
+      },
+      mounted() {
+        this.populate_disasters();
+      }
+    })
+    app.mount('#app')
+  </script>
+
+  <!-- Bootstrap Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
