@@ -71,9 +71,17 @@ _Instructions on how to install and run this respository onto your local machine
    ```sh
    docker-compose up
    ```
-4. Go to your localhost and test out the application!
+4. Open interface `html` files and test out the application!
    ```sh
-   http://localhost:8080/
+   // Government Interface
+   countryDisaster.html
+   volunteerGov.html
+   casualtyList.html
+
+   // Public User Interface
+   disastersNearMe.html
+   myFamily.html
+   volunteerPublic.html
    ``` 
 
 To stop and remove all containers, networks, volumes, and images created by `up`
