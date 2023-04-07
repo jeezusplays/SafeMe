@@ -14,10 +14,12 @@ dist-ssr
 coverage
 *.local
 
-*/__pycache__
+/__pycache__/
 
 /cypress/videos/
 /cypress/screenshots/
+
+.env
 
 # Editor directories and files
 .vscode/*
@@ -29,4 +31,3 @@ coverage
 *.sln
 *.sw?
 *.pyc
-.env
