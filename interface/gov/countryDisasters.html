@@ -121,15 +121,24 @@
               </td>
               <td>
                 <div class="btn-group" role="group">
-                  <!-- <button type="button" class="btn btn-link"
-                                    onclick="location.href='casualtyList.html'">View Casualties</button> -->
+
                   <button
+                    v-if="!disaster.hasCasualtyEvent"
                     type="button"
                     class="btn btn-link"
                     @click="redirectCasualtyList(index)"
+                    disabled
                   >
                     View Casualties
                   </button>
+                  <button
+                  v-if="disaster.hasCasualtyEvent"
+                  type="button"
+                  class="btn btn-link"
+                  @click="redirectCasualtyList(index)"
+                >
+                  View Casualties
+                </button>
                   <button
                     v-if="!disaster.hasVolunteerEvent"
                     type="button"
@@ -159,6 +168,7 @@
       const create_volunteerEvent_URL =
         "http://localhost:5003/volunteer/event/create";
       const volunteerEvent_URL = "http://localhost:5003/volunteer/event";
+      const affected_users_URL = "http://localhost:5002/affected/";
 
       const app = Vue.createApp({
         data() {
@@ -171,6 +181,7 @@
                 disasterTimestamp: "NIL",
                 disasterSeverityLevel: "NIL",
                 hasVolunteerEvent: false,
+                hasCasualtyEvent: false,
               },
             ],
           };
@@ -200,6 +211,20 @@
               .get(disaster_URL)
               .then((response) => {
                 this.disaster_table = response.data.data;
+                // Loop through disaster_table and check if there are any affected users from axios.get(affected_users_URL)
+                for (let i = 0; i < this.disaster_table.length; i++) {
+                  const disaster = this.disaster_table[i];
+                  axios
+                    .get(affected_users_URL + disaster.disasterID)
+                    .then((response) => {
+                      if (response.data.data.length > 0) {
+                        this.disaster_table[i].hasCasualtyEvent = true;
+                      }
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                }
                 // Fetch all volunteer events using axios
                 return axios.get(volunteerEvent_URL);
               })
