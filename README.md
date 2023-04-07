@@ -90,17 +90,25 @@ _Instructions on how to install and run this respository onto your local machine
    ```sh
    git clone https://github.com/samchung95/SafeMe
    ```
-2. Start WAMP, Docker, and MySQL
+2. Start WAMP and Docker
 
-3. Ensure that you have replaced **ALL** the `<dockerid>` in `docker-compose.yml` with your Docker ID.
+<!-- 3. Ensure that you have replaced **ALL** the `<dockerid>` in `docker-compose.yml` with your Docker ID. -->
 
-4. In a CMD Window, change directory to the repository and start the docker containers
+3. In a CMD Window, change directory to the repository and start the docker containers
    ```sh
    docker-compose up
    ```
-5. Go to your localhost and test out the application!
+4. Open interface `html` files and test out the application!
    ```sh
-   http://localhost:8080/
+   // Government Interface
+   countryDisaster.html
+   volunteerGov.html
+   casualtyList.html
+
+   // Public User Interface
+   disastersNearMe.html
+   myFamily.html
+   volunteerPublic.html
    ``` 
 
 To stop and remove all containers, networks, volumes, and images created by `up`
@@ -109,6 +117,106 @@ To stop and remove all containers, networks, volumes, and images created by `up`
    ```
 
 ## Usage
+### UI
+_Simple run down of each HTML page._
+<table>
+   <tr>
+      <td>User</td>
+      <td>Interface</td>
+      <td>Description</td>
+   </tr>
+   <tr>
+      <td rowspan="3">Government</td>
+      <td>countryDisaster.html</td>
+      <td>Real-time list of global disasters</td>
+   </tr>
+   <tr>
+      <td>volunteerGov.html</td>
+      <td>Create and manage volunteer event</td>
+   </tr>
+   <tr>
+      <td>casualtyList.html</td>
+      <td>View the list of affected users in a disaster area</td>
+   </tr>
+   <tr>
+      <td rowspan="3">Public User</td>
+      <td>disastersNearMe.html</td>
+      <td>Receive a danger notification when in the risk of being in danger and acknowledge safety status notification</td>
+   </tr>
+   <tr>
+      <td>myFamily.html</td>
+      <td>View family members safety through a status dashboard</td>
+   </tr>
+   <tr>
+      <td>volunteerPublic.html</td>
+      <td>Volunteer for volunteer event</td>
+   </tr>
+</table>
+
+### Requests
+_Simple run down of each request._
+<table>
+   <tr>
+      <td>Request</td>
+      <td>Method</td>
+      <td>Description</td>
+      <td>Link</td>
+   </tr>
+      <tr>
+      <td>User</td>
+      <td>GET</td>
+      <td>Get single user information</td>
+      <td> <a href="http://localhost:5001/user/family/1">http://localhost:5001/user/family/1</a>
+      </td>
+   </tr>
+      <tr>
+      <td rowspan="2">Location</td>
+      <td>GET</td>
+      <td>Get all user locations</td>
+      <td> <a href="http://localhost:5001/location/all">http://localhost:5001/location/all</a>
+      </td>
+   </tr>
+   <tr>
+      <td>GET</td>
+      <td>Get user location</td>
+      <td> <a href="http://localhost:5001/location/1">http://localhost:5001/location/1</a>
+      </td>
+   </tr>
+   <tr>
+      <td>Disaster</td>
+      <td>GET</td>
+      <td>Get all disasters</td>
+      <td>
+       <a href="http://localhost:5002/disaster">http://localhost:5002/disaster</a>
+      </td>
+   </tr>
+   <tr>
+      <td>Volunteer</td>
+      <td>GET</td>
+      <td>Get all volunteers for a disaster </td>
+      <td> <a href="http://localhost:5003/volunteer">http://localhost:5003/volunteer</a>
+      </td>
+   </tr>
+   <tr>
+      <td rowspan="2">Volunteer Event</td>
+      <td>GET</td>
+      <td>Get all volunteer events</td>
+      <td> <a href="http://localhost:5003/volunteer/event">http://localhost:5003/volunteer/event</a>
+      </td>
+   </tr>
+   <tr>
+      <td>POST</td>
+      <td>Create a volunteer event</td>
+      <td> <a href="http://localhost:5003/volunteer/event/create">http://localhost:5003/volunteer/event/create</a>
+      </td>
+   </tr>
+   <tr>
+      <td>Affected</td>
+      <td>GET</td>
+      <td>Get all affected users/casualties</td>
+      <td> <a href="http://localhost:5002/affected">http://localhost:5002/affected</a>
+   </tr>
+</table>
 
 ## Contributing
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
