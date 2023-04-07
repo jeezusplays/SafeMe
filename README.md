@@ -15,14 +15,11 @@ For Government, they are able to:
 
 ### Assumptions
 The following functions are assumed to be completed:
-
-Public Users:
-* Create and join a family – *A group of people that can track each other in real-time*
-* Announce to family when no longer in risk of being in danger
-* Receive alerts of other family members when they are in the risk of being in danger
-
-Government:
-* Announce the list of safe individuals
+|User|Functions |
+|:--|:--|
+|Public Users|1. Create and join a family – *A group of people that can track each other in real-time*<br> 2. Announce to family when no longer in risk of being in danger<br> 3. Receive alerts of other family members when they are in the risk of being in danger|
+|Government| 1. Announce the list of safe individuals|
+| Both | 1. Registration and login |
 
 Other Assumptions:
 * A user can only be affected by 1 disaster at any given time
@@ -66,17 +63,25 @@ _Instructions on how to install and run this respository onto your local machine
    ```sh
    git clone https://github.com/samchung95/SafeMe
    ```
-2. Start WAMP, Docker, and MySQL
+2. Start WAMP and Docker
 
-3. Ensure that you have replaced **ALL** the `<dockerid>` in `docker-compose.yml` with your Docker ID.
+<!-- 3. Ensure that you have replaced **ALL** the `<dockerid>` in `docker-compose.yml` with your Docker ID. -->
 
-4. In a CMD Window, change directory to the repository and start the docker containers
+3. In a CMD Window, change directory to the repository and start the docker containers
    ```sh
    docker-compose up
    ```
-5. Go to your localhost and test out the application!
+4. Open interface `html` files and test out the application!
    ```sh
-   http://localhost:8080/
+   // Government Interface
+   countryDisaster.html
+   volunteerGov.html
+   casualtyList.html
+
+   // Public User Interface
+   disastersNearMe.html
+   myFamily.html
+   volunteerPublic.html
    ``` 
 
 To stop and remove all containers, networks, volumes, and images created by `up`
