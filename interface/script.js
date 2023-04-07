@@ -4,32 +4,41 @@ $(document).ready(function () {
         var table = $('#datatable').DataTable({
         });
 
-        $('#datatable tbody').on('click', 'tr', function () {
-            var data = table.row(this).data();
-            // alert('You clicked on ' + data[2] + "'s row");
+        if ($('#datatable1').length) {
+            var table1 = $('#datatable1').DataTable({
+            });
 
-            const str = data[3];
+            $('#datatable1 tbody').on('click', 'tr', function () {
+                var data = table1.row(this).data();
+                // alert('You clicked on ' + data[2] + "'s row");
+    
+                const str = data[3];
+    
+                // Use the match() method with a regular expression to extract the content within parentheses
+                const matches = str.match(/\((.*?)\)/);
+                
+                // Log the matches to the console
+                if (matches && matches.length === 2) {
+                    const content = matches[1];
+                    const lat = parseFloat(content.split(',')[0]);
+                    const lng = parseFloat(content.split(',')[1]);
+                    console.log(lat); // Output: '48.857, 2.352'
+                    console.log(lng); // Output: '48.857, 2.352'
+    
+                    // Destroy the map
+                    $('#map').empty();
+                    // Call the function to create the map
+                    initMap_2(lat, lng);
+    
+                } 
+                else 
+                {
+                  console.log('No content found within parentheses');
+                }
+    
+            });
+        }
 
-            // Use the match() method with a regular expression to extract the content within parentheses
-            const matches = str.match(/\((.*?)\)/);
-            
-            // Log the matches to the console
-            if (matches && matches.length === 2) {
-                const content = matches[1];
-                const lat = parseFloat(content.split(',')[0]);
-                const lng = parseFloat(content.split(',')[1]);
-                console.log(lat); // Output: '48.857, 2.352'
-                console.log(lng); // Output: '48.857, 2.352'
-
-                // Destroy the map
-                $('#map').empty();
-                // Call the function to create the map
-                initMap_2(lat, lng);
-
-            } else {
-              console.log('No content found within parentheses');
-            }
-        });
     }, 500);
 });
 

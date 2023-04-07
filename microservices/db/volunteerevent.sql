@@ -1,9 +1,9 @@
-CREATE DATABASE IF NOT EXISTS safeme3;
-USE safeme3;
+CREATE DATABASE IF NOT EXISTS safeme_volunteer;
+USE safeme_volunteer;
 
 -- Table: Volunteer Event
-DROP TABLE IF EXISTS volunteerEvent;
-CREATE TABLE volunteerEvent
+DROP TABLE IF EXISTS volunteerevent;
+CREATE TABLE volunteerevent
 (
     volunteerEventID int not null auto_increment,
     volunteerEventName varchar(60) not null,
@@ -14,7 +14,7 @@ CREATE TABLE volunteerEvent
 );
 
 -- Insert 10 rows into the volunteerEvent table
-INSERT INTO volunteerEvent (volunteerEventID, volunteerEventName, institute, disasterID)
+INSERT INTO volunteerevent (volunteerEventID, volunteerEventName, institute, disasterID)
 VALUES
   (1, 'Hurricane Relief 2021', 'Red Cross', 1),
   (2, 'Earthquake Relief 2021', 'UNICEF', 2),

@@ -15,14 +15,11 @@ For Government, they are able to:
 
 ### Assumptions
 The following functions are assumed to be completed:
-
-Public Users:
-* Create and join a family – *A group of people that can track each other in real-time*
-* Announce to family when no longer in risk of being in danger
-* Receive alerts of other family members when they are in the risk of being in danger
-
-Government:
-* Announce the list of safe individuals
+|User|Functions |
+|:--|:--|
+|Public Users|1. Create and join a family – *A group of people that can track each other in real-time*<br> 2. Announce to family when no longer in risk of being in danger<br> 3. Receive alerts of other family members when they are in the risk of being in danger|
+|Government| 1. Announce the list of safe individuals|
+| Both | 1. Registration and login |
 
 Other Assumptions:
 * A user can only be affected by 1 disaster at any given time
@@ -218,8 +215,70 @@ _Simple run down of each request._
    </tr>
 </table>
 
-## Contributing
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+### Requests
+_Simple run down of each request._
+<table>
+   <tr>
+      <td>Request</td>
+      <td>Method</td>
+      <td>Description</td>
+      <td>Link</td>
+   </tr>
+      <tr>
+      <td>User</td>
+      <td>GET</td>
+      <td>Get single user information</td>
+      <td> <a href="http://localhost:5001/user/family/1">http://localhost:5001/user/family/1</a>
+      </td>
+   </tr>
+      <tr>
+      <td rowspan="2">Location</td>
+      <td>GET</td>
+      <td>Get all user locations</td>
+      <td> <a href="http://localhost:5001/location/all">http://localhost:5001/location/all</a>
+      </td>
+   </tr>
+   <tr>
+      <td>GET</td>
+      <td>Get user location</td>
+      <td> <a href="http://localhost:5001/location/1">http://localhost:5001/location/1</a>
+      </td>
+   </tr>
+   <tr>
+      <td>Disaster</td>
+      <td>GET</td>
+      <td>Get all disasters</td>
+      <td>
+       <a href="http://localhost:5002/disaster">http://localhost:5002/disaster</a>
+      </td>
+   </tr>
+   <tr>
+      <td>Volunteer</td>
+      <td>GET</td>
+      <td>Get all volunteers for a disaster </td>
+      <td> <a href="http://localhost:5003/volunteer">http://localhost:5003/volunteer</a>
+      </td>
+   </tr>
+   <tr>
+      <td rowspan="2">Volunteer Event</td>
+      <td>GET</td>
+      <td>Get all volunteer events</td>
+      <td> <a href="http://localhost:5003/volunteer/event">http://localhost:5003/volunteer/event</a>
+      </td>
+   </tr>
+   <tr>
+      <td>POST</td>
+      <td>Create a volunteer event</td>
+      <td> <a href="http://localhost:5003/volunteer/event/create">http://localhost:5003/volunteer/event/create</a>
+      </td>
+   </tr>
+   <tr>
+      <td>Affected</td>
+      <td>GET</td>
+      <td>Get all affected users/casualties</td>
+      <td> <a href="http://localhost:5002/affected">http://localhost:5002/affected</a>
+   </tr>
+</table>
 
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
