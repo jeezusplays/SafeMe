@@ -155,9 +155,3 @@ for (let volunteer of volunteerPublicToasts) {
     }
 }
 
-//Show modal on load (for some reason if i put this at the top, it will cause other scripts to fail to run)
-const checkInModal = new bootstrap.Modal('#checkInModal')
-window.addEventListener('DOMContentLoaded', () => {
-    checkInModal.show()
-})
-

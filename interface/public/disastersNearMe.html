@@ -228,6 +228,9 @@
 
             <button type="submit">Submit</button>
           </form>
+          <button @click="sendWebSocketMessage()">
+            subscribe websocket
+          </button>
         </div>
       </div>
     </div>
@@ -384,14 +387,13 @@
               });
             // Function to loop through this.disaster_table and fetch all disaster distance to user
           },
-          parseAlert(webSocket){
-            message = {
-              message: "getUserAlert",
-              userID: this.userID,
-            }
-            console.log("sending websocket message");
-            console.log(JSON.stringify(message));
-            webSocket.send(JSON.stringify(message));
+          setModal(e){
+            d = JSON.parse(e.data)['data']
+            a = d[0]
+            console.log("Received message:", a);
+            this.alert.name = a.alert.name
+            const checkInModal = new bootstrap.Modal('#checkInModal')
+            checkInModal.show()
           },
           calculate_distance(lat1, lon1, lat2, lon2) {
             // Calculate the distance between the user and the disaster
@@ -413,27 +415,27 @@
           },
           sendWebSocketMessage() {
             var webSocket = new WebSocket("ws://localhost:9000/ws");
-            while (webSocket.readyState != 1){
-              console.log('waiting')
-            }
-            var intervalId = setInterval(this.parseAlert(webSocket), 5000);
+            message = {
+              "message": "getUserAlert",
+              "userID": this.userID,
+            };
+            localStorage.setItem('ws_user_alert', JSON.stringify(message));
 
-            var timeoutId = setTimeout(function () {
-              clearInterval(intervalId);
-              webSocket.close();
-            }, 120000);
-                        
+            var timeout = setTimeout(function (message) {
+              console.log("sending websocket message");
+              console.log(localStorage.getItem('ws_user_alert'));
+              webSocket.send(localStorage.getItem('ws_user_alert'));
+            }, 5000);
 
-            webSocket.onmessage = function (event) {
-              var data = JSON.parse(event.data);
-              console.log("Received message:", data["data"]);
-              // Call the callback function here
+            webSocket.onmessage = (event)=>{
+              this.setModal(event)
+              webSocket.close()
             };
           },
           submitForm() {
             this.form.lat = parseFloat(this.form.lat);
             this.form.long = parseFloat(this.form.long);
-
+            this.userID = this.form.userID
             const now = new Date();
             const isoString = now.toISOString();
             const dateTimeString = isoString
@@ -456,7 +458,6 @@
               )
               .then((response) => {
                 console.log(response);
-                this.sendWebSocketMessage();
                 // do something with response
               })
               .catch((error) => {

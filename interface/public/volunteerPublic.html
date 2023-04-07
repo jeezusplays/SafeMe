@@ -117,9 +117,9 @@
   <script>
     // Hardcoded userID for now
     const userID = 1;
-    const disaster_URL = "http://localhost:5002/disaster";
-    const user_location_URL = "http://localhost:5001/location/" + userID;
-    const volunteer_URL = "http://localhost:5003/volunteer/event";
+    const disaster_URL = "http://localhost:8000/api/disaster/disaster";
+    const user_location_URL = "http://localhost:8000/api/user/location/" + userID;
+    const volunteer_URL = "http://localhost:8000/api/volunteerevent/volunteer/event";
 
     const app = Vue.createApp({
       data() {
