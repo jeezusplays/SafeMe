@@ -1,211 +1,265 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Disasters in Country</title>
-    <link rel="icon" type="image/x-icon" href="../img/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="../img/favicon.ico" />
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
 
     <!-- Datatables for table styling -->
-    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"
+      rel="stylesheet"
+    />
 
     <!-- Datatables JS scripts -->
     <script defer src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script defer src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <script defer src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script
+      defer
+      src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"
+    ></script>
     <script defer src="../script.js"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="app">
+      <!-- NAVBAR-->
+      <nav
+        class="navbar navbar-light navbar-expand-lg bg-body-secondary"
+        style="background-color: #e3f2fd"
+      >
+        <div class="container-fluid">
+          <!-- Shows account type -->
+          <a class="navbar-brand" href="countryDisasters.html"
+            >SafeMe (Government)</a
+          >
 
-        <!-- NAVBAR-->
-        <nav class="navbar navbar-light navbar-expand-lg bg-body-secondary" style="background-color: #e3f2fd;">
-            <div class="container-fluid">
-                <!-- Shows account type -->
-                <a class="navbar-brand" href="countryDisasters.html">SafeMe (Government)</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
 
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-                    <!-- Navbar tabs for Gvmt UI -->
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
-                    <!-- Switches between account types -->
-                    <button class="btn btn-outline-primary"
-                        onclick="location.href='../public/disastersNearMe.html'">Switch Account Type</button>
-                </div>
-            </div>
-        </nav>
-
-
-        <div class="container my-5">
-
-            <!-- BREADCRUMBS -->
-            <div class="container my-4 mx-0">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item active" aria-current="page">Home</li>
-                    </ol>
-                </nav>
-            </div>
-
-            <!-- DISASTER TABLE FOR HOME -->
-            <table id="example" class="table table-striped my-auto" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Country/City</th>
-                        <th>Disaster Name</th>
-                        <!-- <th>Distance Away</th> -->
-                        <th>Time of Incident</th>
-                        <th>Impact Level</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(disaster, index) in this.disaster_table">
-                        <td>{{disaster.country}} / {{disaster.city}}</td>
-                        <td>{{disaster.disasterName}}</td>
-                        <!-- <td>{{disaster.distance}} km</td> -->
-                        <td>{{disaster.disasterTimestamp}}</td>
-                        <!-- Checks for danger status and renders the colour status -->
-                        <td v-if="disaster.disasterSeverityLevel == 'green'">
-                            <span class="badge text-bg-success">Low</span>
-                        </td>
-                        <td v-else-if="disaster.disasterSeverityLevel == 'amber'">
-                            <span class="badge text-bg-warning">Medium</span>
-                        </td>
-                        <td v-else-if="disaster.disasterSeverityLevel == 'red'">
-                            <span class="badge text-bg-danger">High</span>
-                        </td>
-                        <td v-else>
-                            <span class="badge text-bg-secondary">None</span>
-                        </td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-link"
-                                    onclick="location.href='casualtyList.html'">View Casualties</button>
-                                <button v-if="!disaster.hasVolunteerEvent" type="button" class="btn btn-link"
-                                    @click="openVolunteerEvent(index)">Request Volunteers</button>
-                                <button v-else type="button" class="btn btn-link"
-                                    onclick="location.href='volunteerGov.html'">View Volunteers</button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- Navbar tabs for Gvmt UI -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+            <!-- Switches between account types -->
+            <button
+              class="btn btn-outline-primary"
+              onclick="location.href='../public/disastersNearMe.html'"
+            >
+              Switch to Public (for demo purpose)
+            </button>
+          </div>
         </div>
+      </nav>
+
+      <div class="container my-5">
+        <!-- BREADCRUMBS -->
+        <div class="container my-4 mx-0">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item active" aria-current="page">Home</li>
+            </ol>
+          </nav>
+        </div>
+
+        <!-- DISASTER TABLE FOR HOME -->
+        <table
+          id="datatable"
+          class="table table-striped my-auto"
+          style="width: 100%"
+        >
+          <thead>
+            <tr>
+              <th>Country, City</th>
+              <th>Disaster Name</th>
+              <!-- <th>Distance Away</th> -->
+              <th>Time of Incident</th>
+              <th>Impact Level</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(disaster, index) in this.disaster_table">
+              <td>{{disaster.country}}, {{disaster.city}}</td>
+              <td>{{disaster.disasterName}}</td>
+              <!-- <td>{{disaster.distance}} km</td> -->
+              <td>{{disaster.disasterTimestamp}}</td>
+              <!-- Checks for danger status and renders the colour status -->
+              <td v-if="disaster.disasterSeverityLevel == 'green'">
+                <span class="badge text-bg-success">Low</span>
+              </td>
+              <td v-else-if="disaster.disasterSeverityLevel == 'amber'">
+                <span class="badge text-bg-warning">Medium</span>
+              </td>
+              <td v-else-if="disaster.disasterSeverityLevel == 'red'">
+                <span class="badge text-bg-danger">High</span>
+              </td>
+              <td v-else>
+                <span class="badge text-bg-secondary">None</span>
+              </td>
+              <td>
+                <div class="btn-group" role="group">
+                  <!-- <button type="button" class="btn btn-link"
+                                    onclick="location.href='casualtyList.html'">View Casualties</button> -->
+                  <button
+                    type="button"
+                    class="btn btn-link"
+                    @click="redirectCasualtyList(index)"
+                  >
+                    View Casualties
+                  </button>
+                  <button
+                    v-if="!disaster.hasVolunteerEvent"
+                    type="button"
+                    class="btn btn-link"
+                    @click="openVolunteerEvent(index)"
+                  >
+                    Request Volunteers
+                  </button>
+                  <button
+                    v-else
+                    type="button"
+                    class="btn btn-link"
+                    @click="redirectVolunteerPage(index)"
+                  >
+                    View {{disaster.disasterName}} Volunteers
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <script>
-        const disaster_URL = "http://localhost:5002/disaster"
+      const disaster_URL = "http://localhost:5002/disaster";
+      const create_volunteerEvent_URL =
+        "http://localhost:5003/volunteer/event/create";
+      const volunteerEvent_URL = "http://localhost:5003/volunteer/event";
 
-        const app = Vue.createApp({
-            data() {
-                return {
-                    disaster_table: [
-                        {
-                            country: 'NIL',
-                            city: 'NIL',
-                            disasterName: 'NIL',
-                            disasterTimestamp: 'NIL',
-                            disasterSeverityLevel: 'NIL',
-                            hasVolunteerEvent: false
-                        }
-                        // {
-                        //     key: '1',
-                        //     country: 'Turkey, Hatay',
-                        //     type: 'Earthquake',
-                        //     distance: 1,
-                        //     incidence: "Thu, 23 Feb 2023 20:20:21 GMT",
-                        //     danger: 'Low Risk',
-                        //     hasVolunteerEvent: true
-                        // },
+      const app = Vue.createApp({
+        data() {
+          return {
+            disaster_table: [
+              {
+                country: "NIL",
+                city: "NIL",
+                disasterName: "NIL",
+                disasterTimestamp: "NIL",
+                disasterSeverityLevel: "NIL",
+                hasVolunteerEvent: false,
+              },
+            ],
+          };
+        },
 
-                        // {
-                        //     key: '2',
-                        //     country: 'Turkey, Istanbul',
-                        //     type: 'Earthquake',
-                        //     distance: 15,
-                        //     incidence: "Thu, 23 Feb 2023 10:39:01 GMT",
-                        //     danger: 'High Risk',
-                        //     hasVolunteerEvent: true
-                        // },
-                        // {
-                        //     key: '3',
-                        //     country: 'Turkey, Izmur',
-                        //     type: 'Tsunami',
-                        //     distance: 20,
-                        //     incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                        //     danger: 'Moderate Risk',
-                        //     hasVolunteerEvent: false
-                        // },
-                        // {
-                        //     key: '4',
-                        //     country: 'Turkey, Trabzon',
-                        //     type: 'Fire',
-                        //     distance: 12,
-                        //     incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                        //     danger: 'Low Risk',
-                        //     hasVolunteerEvent: false
-                        // },
-                        // {
-                        //     key: '5',
-                        //     country: 'Turkey, Bursa',
-                        //     type: 'Fire',
-                        //     distance: 100,
-                        //     incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-                        //     danger: 'Low Risk',
-                        //     hasVolunteerEvent: false
-                        // },
-                    ]
+        methods: {
+          //changes copy from request volunteer to view volunteers when a volunteer event is open
+          openVolunteerEvent(index) {
+            // Post request using axios to create a volunteer event
+            axios
+              .post(create_volunteerEvent_URL, {
+                disasterID: this.disaster_table[index].disasterID,
+                volunteerEventName: this.disaster_table[index].disasterName,
+                institute: "Red Cross",
+              })
+              .then((response) => {
+                console.log(response);
+                this.disaster_table[index].hasVolunteerEvent = true;
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          },
 
+          populate_disasters() {
+            axios
+              .get(disaster_URL)
+              .then((response) => {
+                this.disaster_table = response.data.data;
+                // Fetch all volunteer events using axios
+                return axios.get(volunteerEvent_URL);
+              })
+              .then((response) => {
+                // Loop through volunteerEvents and update disaster_table accordingly
+                for (let j = 0; j < response.data.volunteerEvents.length; j++) {
+                  const volunteerEvent = response.data.volunteerEvents[j];
+                  const disasterIndex = this.disaster_table.findIndex(
+                    (disaster) =>
+                      disaster.disasterID === volunteerEvent.disasterID
+                  );
+                  if (disasterIndex !== -1) {
+                    this.disaster_table[disasterIndex].hasVolunteerEvent = true;
+                  }
                 }
-            },
+                const dt = new Date();
+                let diffTZ = dt.getTimezoneOffset();
 
-            methods: {
-                //changes copy from reuqest volunteer to view volunteers when a volunteer event is open
-                openVolunteerEvent(index) {
-                    this.disaster_table[index].hasVolunteerEvent = true
-                },
-
-                populate_disasters() {
-                    // Get request using axios to fetch data from the disaster table
-                    axios.get(disaster_URL)
-                        .then(response => {
-                            this.disaster_table = response.data.data
-                            console.log(this.disaster_table)
-                        })
-                        .catch(error => {
-                            console.log(error)
-                        })
-                    // Function to loop through this.disaster_table and fetch all disaster distance to user
+                // Loop through this.disaster_table and remove first 5 letters from disasterTimestamp
+                for (let i = 0; i < this.disaster_table.length; i++) {
+                    const disasterTimestamp = this.disaster_table[i].disasterTimestamp;
+                    // Given disasterTimestamp date format is (08 Aug 2021 11:00:00 GMT), apply difference in time zone to it
+                    const disasterTimestampDate = new Date(disasterTimestamp);
+                    disasterTimestampDate.setHours(disasterTimestampDate.getHours() + diffTZ);
+                    this.disaster_table[i].disasterTimestamp = disasterTimestampDate;
                 }
-            },
+                console.log(this.disaster_table);
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          },
 
-            mounted() {
-                this.populate_disasters();
-            }
-        })
-        app.mount('#app')
+          redirectCasualtyList(index) {
+            // Redirects to the casualty list page with the disaster name
+            window.location.href =
+              "casualtyList.html?disasterID=" +
+              this.disaster_table[index].disasterID;
+          },
+
+          redirectVolunteerPage(index) {
+            // Redirects to the volunteer page with the disaster name
+            window.location.href =
+              "volunteerGov.html?disasterID=" +
+              this.disaster_table[index].disasterID;
+          },
+        },
+
+        mounted() {
+          this.populate_disasters();
+        },
+      });
+      app.mount("#app");
     </script>
 
     <!-- Bootstrap Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
-</body>
-
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

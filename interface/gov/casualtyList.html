@@ -7,6 +7,7 @@
     <title>Casualty List</title>
     <link rel="icon" type="image/x-icon" href="../img/favicon.ico">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -20,17 +21,22 @@
     <script defer src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script defer src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script defer src="../script.js"></script>
+    <style>
+    /* Set the size of the div element that contains the map */
+      #map {
+        height: 400px; /* The height is 400 pixels */
+        width: 100%; /* The width is the width of the web page */
+      }
+    </style>
 </head>
 
 <body>
     <div id="app">
-
         <!-- NAVBAR-->
         <nav class="navbar navbar-light navbar-expand-lg bg-body-secondary" style="background-color: #e3f2fd;">
             <div class="container-fluid">
                 <!-- Shows account type -->
                 <a class="navbar-brand" href="countryDisasters.html">SafeMe (Government)</a>
-
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -39,12 +45,12 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
                     <!-- Navbar tabs for Gvmt UI -->
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
                     <!-- Switches between account types -->
                     <button class="btn btn-outline-primary"
-                        onclick="location.href='../public/disastersNearMe.html'">Switch Account Type</button>
+                        onclick="location.href='../public/disastersNearMe.html'">Switch to Public (for demo
+                        purpose)</button>
                 </div>
             </div>
         </nav>
@@ -67,204 +73,243 @@
                         <h6>Status distribution: </h6>
                     </div>
 
-                    <!-- OKAY BADGE -->
+                    <!-- SAFE BADGE -->
                     <div class="p-3">
-                        <span class="badge bg-success translate-middle p-1 border border-light rounded-circle">
+                        <span class="badge text-bg-success">Safe - {{statusDistribution.numSafe}}%</span>
+                        <!-- <span class="badge bg-success translate-middle p-1 border border-light rounded-circle">
                             <span class="visually-hidden"></span>
                         </span>
-                        Okay - {{statusDistribution.numOkay}}%
+                        Okay - {{statusDistribution.numSafe}}% -->
                     </div>
 
-                    <!-- MILDLY INJURED BADGE -->
+                    <!-- INJURED BADGE -->
                     <div class="p-3">
-                        <span class="badge bg-warning translate-middle p-1 border border-light rounded-circle">
+                        <span class="badge text-bg-danger">Injured - {{statusDistribution.numSafe}}%</span>
+                        <!-- <span class="badge bg-warning translate-middle p-1 border border-light rounded-circle">
                             <span class="visually-hidden"></span>
                         </span>
-                        Mildly Injured - {{statusDistribution.numMildlyInjured}}%
+                        Mildly Injured - {{statusDistribution.numInjured}}% -->
                     </div>
 
                     <!-- PENDING BADGE -->
                     <div class="p-3">
-                        <span class="badge bg-secondary translate-middle p-1 border border-light rounded-circle">
+                        <span class="badge text-bg-secondary">Pending - {{statusDistribution.numPending}}%</span>
+                        <!-- <span class="badge bg-secondary translate-middle p-1 border border-light rounded-circle">
                             <span class="visually-hidden"></span>
                         </span>
-                        Pending - {{statusDistribution.numPending}}%
+                        Pending - {{statusDistribution.numPending}}% -->
                     </div>
 
                     <!-- UNRESPONSIVE/ SEVERELY INJURED BADGE -->
-                    <div class="p-3">
+                    <!-- <div class="p-3">
                         <span class="badge bg-danger translate-middle p-1 border border-light rounded-circle">
                             <span class="visually-hidden"></span>
                         </span>
-                        Severely Injured / Unresponsive - {{statusDistribution.numMildlyInjured}}%
-
-                    </div>
+                        Severely Injured / Unresponsive - {{statusDistribution.numInjured}}%
+                    </div> -->
                 </div>
 
                 <!-- DISASTER TABLE FOR CASUALTIES -->
-                <table id="example" class="table table-striped my-auto" style="width:100%">
+                <table id="datatable" class="table table-striped my-auto" style="width:100%">
                     <thead>
                         <tr>
                             <th>User ID</th>
                             <th>Name</th>
                             <th>Time of Last Update</th>
+                            <th>Location</th>
                             <th>Status</th>
+                            <th>Contact</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(casualty, index) in this.casualties">
-                            <td>{{casualty.userID}}</td>
-                            <td>{{casualty.name}}</td>
-                            <td>{{casualty.lastUpdate}}</td>
+                        <tr v-for="(affected, index) in this.affected_users">
+                            <td>{{affected.affectedUsersID}}</td>
+                            <td>{{affected.userName}}</td>
+                            <td>{{affected.timestamp}}</td>
+                            <td>{{affected.location}}</td>
+
                             <!-- Checks for danger status and renders the colour status -->
-                            <td v-if="casualty.status == 'Okay'">
-                                <span class="badge text-bg-success">{{casualty.status}}</span>
+                            <td v-if="affected.status == 'safe'">
+                                <span class="badge text-bg-success text-capitalize">{{affected.status}}</span>
                             </td>
-                            <td v-else-if="casualty.status == 'Mildly Injured'">
-                                <span class="badge text-bg-warning">{{casualty.status}}</span>
+                            <td v-else-if="affected.status == 'injured'">
+                                <span class="badge text-bg-danger text-capitalize">{{affected.status}}</span>
                             </td>
-                            <td v-else-if="casualty.status == 'Pending'">
-                                <span class="badge text-bg-secondary">{{casualty.status}}</span>
-                            </td>
-                            <td v-else>
-                                <span class="badge text-bg-danger">{{casualty.status}}</span>
+                            <td v-else="affected.status == 'pending'">
+                                <span class="badge text-bg-secondary text-capitalize">{{affected.status}}</span>
                             </td>
 
+                            <td><a href="tel:{{affected.contact}}">{{affected.contact}}</a></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-
         </div>
 
-        <script>
-            const volunteer_event_URL = 'http://localhost:5003/volunteer/event';
-            const volunteer_URL = 'http://localhost:5003/volunteer';
 
-            const app = Vue.createApp({
-                data() {
-                    return {
-                        casualties: [
-                            {
-                                userID: '001',
-                                name: 'John',
-                                status: 'Pending',
-                                lastUpdate: 'Thu, 23 Feb 2023 20:20:21 GMT',
-                                email: 'joeytanbiz@gmail.com',
-                                lastKnownCity: 'Turkey, Hatay',
-                            },
+    </div>
+    <div class = "container mb-3">
+        <h3>Map of affected users</h3>
+        <p>Click on the user's name in the table above to view the user's status and location</p>
+        <!-- Center the div below -->
+        <div class="d-flex justify-content-center">
+            <div id="map"></div>
+    </div>
 
-                            {
-                                userID: '002',
-                                name: 'Jane',
-                                status: 'Mildly Injured',
-                                lastUpdate: 'Thu, 23 Feb 2023 20:20:21 GMT',
-                                email: 'hongxiangliow@gmail.com',
-                                lastKnownCity: 'Turkey, Hatay',
-                            },
+    <script>
+        const current_URL = window.location.href;
+        //extract disasterID from URL
+        const disasterID = current_URL.split("=")[1];
+        const affected_users_URL = 'http://localhost:5002/affected';
+        const user_URL = 'http://localhost:5001/location/all';
 
-                            {
-                                userID: '003',
-                                name: 'Bob',
-                                status: 'Severely Injured',
-                                lastUpdate: 'Thu, 23 Feb 2023 20:20:21 GMT',
-                                email: 'hx24000@gmail.com',
-                                lastKnownCity: 'Malaysia, Johor Bahru',
-                            },
-
-                            {
-                                userID: '004',
-                                name: 'Alice',
-                                status: 'Pending',
-                                lastUpdate: 'Thu, 23 Feb 2023 20:20:21 GMT',
-                                email: 'alice@aol.com',
-                                lastKnownCity: 'Malaysia, Johor Bahru',
-                            },
-
-                            {
-                                userID: '005',
-                                name: 'Michael',
-                                status: 'Okay',
-                                lastUpdate: 'Thu, 23 Feb 2023 20:20:21 GMT',
-                                email: 'michael@outlook.com',
-                                lastKnownCity: 'Singapore, Singapore',
-                            },
-                        ],
-                    }
-                },
-
-                computed: {
-                    statusDistribution() {
-                        var distributions = {
-                            numOkay: 0,
-                            numMildlyInjured: 0,
-                            numPending: 0,
-                            //others include severely injured and unresponsive
-                            numOthers: 0
-                        }
-
-                        let total = this.casualties.length
-
-                        for (casualty of this.casualties) {
-                            if (casualty.status == 'Okay') {
-                                distributions.numOkay++
-                            }
-
-                            else if (casualty.status == 'Mildly Injured') {
-                                distributions.numMildlyInjured++
-                            }
-
-                            else if (casualty.status == 'Pending') {
-                                distributions.numPending++
-                            }
-
-                            else {
-                                distributions.numOthers++
-                            }
-                        }
-                        console.log(distributions)
-
-                        for (const status in distributions) {
-                            var currNum = distributions[status]
-                            var distribution = Number((currNum / total * 100).toFixed(2))
-                            distributions[status] = distribution
-                        }
-                        return distributions
-                    }
-                },
-
-                method: {
-                    // renders home page
-                    toHome() {
-                        this.isHome = true
-                        this.isCasualtyPage = false
-                    },
-
-                    // renders casualty page
-                    toCasualtyPage() {
-                        this.isHome = false
-                        this.isCasualtyPage = true
-                        console.log(this.isHome)
-                        console.log(this.isCasualtyPage)
-                    },
-
-                    //dynamically changes volunteer state on click
-                    selectDisaster(index) {
-                        this.mockData[index].isSelected = true
-                        console.log(this.mockData[index].isSelected)
-                    },
-
-                    //computes the casualty status distribution, returns an object
-
+        const app = Vue.createApp({
+            data() {
+                return {
+                    affected_users: [],
                 }
-            })
-            app.mount('#app')
-        </script>
+            },
 
-        <!-- Bootstrap Bundle -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-            crossorigin="anonymous"></script>
+            computed: {
+                statusDistribution() {
+                    var distributions = {
+                        numSafe: 0,
+                        numInjured: 0,
+                        numPending: 0,
+                        //others include severely injured and unresponsive
+                        // numOthers: 0
+                    }
+
+                    let total = this.affected_users.length
+
+                    for (affected of this.affected_users) {
+                        if (affected.status == 'safe') {
+                            distributions.numSafe++
+                        }
+                        else if (affected.status == 'injured') {
+                            distributions.numInjured++
+                        }
+                        else {
+                            distributions.numPending++
+                        }
+                        // else {
+                        //     distributions.numOthers++
+                        // }
+                    }
+                    console.log(distributions)
+
+                    for (const status in distributions) {
+                        var currNum = distributions[status]
+                        var distribution = Number((currNum / total * 100).toFixed(2))
+                        distributions[status] = distribution
+                    }
+                    return distributions
+                }
+            },
+
+            methods: {
+                // renders home page
+                // toHome() {
+                //     this.isHome = true
+                //     this.isCasualtyPage = false
+                // },
+
+                // renders affected page
+                // toCasualtyPage() {
+                //     this.isHome = false
+                //     this.isCasualtyPage = true
+                //     // console.log(this.isHome)
+                //     // console.log(this.isCasualtyPage)
+                // },
+
+                //dynamically changes volunteer state on click
+                // selectDisaster(index) {
+                //     this.affected_users[index].isSelected = true
+                //     console.log(this.affected_users[index].isSelected)
+                // },
+
+                //populates the affected users table using axios
+                populate_affected() {
+                    axios.get(affected_users_URL)
+                        .then(response => {
+                            // Check if disasterID matches the disasterID in response.data.data objects
+                            // If it does, push the object into the affected_users array
+                            for (var i = 0; i < response.data.data.length; i++) {
+                                if (response.data.data[i].disasterID == disasterID) {
+                                    this.affected_users.push(response.data.data[i])
+                                }
+                            }
+                            // console.log("Affected " + this.affected_users)
+                            axios.get(user_URL)
+                                .then(response => {
+                                    // console.log(response.data.data)
+                                    for (var i = 0; i < this.affected_users.length; i++) {
+                                        for (var j = 0; j < response.data.data.length; j++) {
+                                            if (this.affected_users[i].userID == response.data.data[j].userID) {
+                                                this.affected_users[i].location = 
+                                                response.data.data[j].country + ", " + response.data.data[j].city +
+                                                " (" + response.data.data[j].lat + ", " + response.data.data[j].long + ")"
+                                                // Set timezone difference
+                                                const dt = new Date();
+                                                let diffTZ = dt.getTimezoneOffset();
+                                                const disasterTimestamp = response.data.data[j].timestamp;
+                                                // Given disasterTimestamp date format is (08 Aug 2021 11:00:00 GMT), apply difference in time zone to it
+                                                const disasterTimestampDate = new Date(disasterTimestamp);
+                                                disasterTimestampDate.setHours(disasterTimestampDate.getHours() + diffTZ);
+                                                this.affected_users[i].timestamp = disasterTimestampDate;
+                                            }
+                                        }
+                                    }
+                                    // console.log(this.affected_users)
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                })
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                },
+            },
+
+            mounted() {
+                this.populate_affected();
+            }
+        })
+        app.mount('#app')
+    </script>
+
+    <script>
+
+    </script>
+
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+        <script
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkTXpifODSjEW427LXq0TtoRqAfhV5wr0&callback=initMap"
+    ></script>
+    <script>
+        // Initialize and add the map
+        function initMap() {
+            // The location of SCIS at SMU
+            var scis = { lat: 1.297538, lng: 103.849558 };
+            // The map, centered at SCIS
+            var map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 14,
+                center: scis,
+            });
+            // The marker, positioned at SCIS, SMU by default
+            var iconBase = '../img/default-marker.png';
+            var marker = new google.maps.Marker({
+                position: scis,
+                map,
+                icon: iconBase
+            });
+        }
+    </script>
 </body>
 
 </html>

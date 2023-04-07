@@ -8,7 +8,7 @@
   <link rel="icon" type="image/x-icon" href="../img/favicon.ico">
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  
+
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
@@ -26,9 +26,8 @@
 
 <body>
   <div id="app">
-
     <!-- MODAL to check in on a disaster stricken user within 10km of disaster -->
-    <div v-if="this.userStatus_level != 'Okay'" class="modal" tabindex="-1" id="checkInModal">
+    <div v-if="this.userStatus_level != 'safe'" class="modal" tabindex="-1" id="checkInModal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -36,15 +35,16 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <p>Based on your location, it appears that you may be in proximity to a disaster. <b>What is your current status?</b></p>
+            <p>Based on your location, it appears that you may be in proximity to a disaster. <b>What is your current
+                status?</b></p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal"
-              id="liveToastBtn1">Okay</button>
+              id="liveToastBtn1">Safe</button>
             <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal"
-              id="liveToastBtn2">Slightly Injured</button>
-            <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal"
-              id="liveToastBtn3">Severely Injured</button>
+              id="liveToastBtn2">Injured</button>
+            <!-- <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal"
+              id="liveToastBtn3">Severely Injured</button> -->
           </div>
         </div>
       </div>
@@ -81,7 +81,6 @@
             <!-- Navbar tabs for Public UI -->
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="disastersNearMe.html">Disasters Near Me</a>
-              <!-- <a v-else class="nav-link" aria-current="page" href="#">Disasters Near Me</a> -->
             </li>
             <li class="nav-item">
               <a class="nav-link" href="myFamily.html">My Family</a>
@@ -91,21 +90,19 @@
             </li>
           </ul>
 
-          <!-- Navbar tabs for Gvmt UI -->
-          <!-- <ul v-else class="navbar-nav me-auto mb-2 mb-lg-0"></ul> -->
           <!-- Switches between account types -->
-          <button class="btn btn-outline-primary" onclick="location.href='../gov/countryDisasters.html'">Switch Account
-            Type</button>
+          <button class="btn btn-outline-primary" onclick="location.href='../gov/countryDisasters.html'">Switch to
+            Government (for demo purpose)</button>
         </div>
       </div>
     </nav>
 
     <!-- DISASTER TABLE -->
     <div class="container my-5">
-      <table id="example" class="table table-striped my-auto" style="width:100%">
+      <table id="datatable" class="table table-striped my-auto" style="width:100%">
         <thead>
           <tr>
-            <th>Country/City</th>
+            <th>Country, City</th>
             <th>Disaster Name</th>
             <th>Distance Away</th>
             <th>Time of Incident</th>
@@ -114,7 +111,7 @@
         </thead>
         <tbody>
           <tr v-for="disaster in this.disaster_table">
-            <td>{{disaster.country}}</td>
+            <td>{{disaster.country}}, {{disaster.city}}</td>
             <td>{{disaster.disasterName}}</td>
             <td>{{disaster.distance}} km</td>
             <td>{{disaster.disasterTimestamp}}</td>
@@ -135,11 +132,7 @@
         </tbody>
       </table>
     </div>
-
-
   </div>
-
-  <!-- Vue App -->
   <script>
 
     // Hardcoded userID for now
@@ -162,51 +155,6 @@
             'severelyInjured'
           ],
 
-          // Dummy data
-          // mockData: [
-          //   {
-          //     key: '1',
-          //     country: 'Chile',
-          //     type: 'Earthquake',
-          //     distance: 1,
-          //     incidence: "Thu, 23 Feb 2023 20:20:21 GMT",
-          //     danger: 'Low Risk',
-          //   },
-          //   {
-          //     key: '2',
-          //     country: 'Cuba',
-          //     type: 'Earthquake',
-          //     distance: 15,
-          //     incidence: "Thu, 23 Feb 2023 10:39:01 GMT",
-          //     danger: 'High Risk',
-          //   },
-          //   {
-          //     key: '3',
-          //     country: 'Turkey',
-          //     type: 'Tsunami',
-          //     distance: 20,
-          //     incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-          //     danger: 'Moderate Risk',
-          //   },
-          //   {
-          //     key: '4',
-          //     country: 'Korea',
-          //     type: 'Fire',
-          //     distance: 12,
-          //     incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-          //     danger: 'Low Risk',
-          //   },
-          //   {
-          //     key: '5',
-          //     country: 'Korea',
-          //     type: 'Fire',
-          //     distance: 100,
-          //     incidence: "Thu, 23 Feb 2023 00:54:02 GMT",
-          //     danger: 'Pending',
-          //   },
-          // ],
-          // here goes data doo doo
-
           disaster_table: [
             {
               danger: "-",
@@ -218,22 +166,6 @@
           user_long: 0.0,
           userStatus_level: "Not Okay"
         }
-      },
-
-      computed: {
-        // Checks the distance between user and nearest disaster
-        distanceFromNearestDisaster() {
-          //assuming calculations from microservice will return an integer here. For now make this number above 10 to see how modal will not appear
-          return 4
-        },
-
-        // Computes user status depending on distance form disaster (modal is triggered at 10 and below)
-        userStatus() {
-          if (this.distanceFromNearestDisaster <= this.dangerThreshold) {
-            return 'Pending'
-          }
-          return 'Okay'
-        },
       },
 
       methods: {
@@ -348,10 +280,8 @@
         deg2rad(deg) {
           return deg * (Math.PI / 180)
         }
-
-
-
       },
+      
       mounted() {
         this.populate_disasters();
         // Set delay for checkInModal to show
