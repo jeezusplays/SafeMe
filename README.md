@@ -58,11 +58,6 @@ You will also need the following software installed in your machine.
 * [WAMP](https://www.wampserver.com/en/) / [MAMP](https://www.mamp.info/en/) / [XAMPP](https://www.apachefriends.org/index.html)
 * [MySQL](https://www.mysql.com/)
 
-<!-- To run this project locally on your machine, follow the following steps.
-* npm
-  ```sh
-  npm install -g npm
-  ``` -->
 ### Installation and Implementation
 
 _Instructions on how to install and run this respository onto your local machine._
