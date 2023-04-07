@@ -2,26 +2,24 @@
 $(document).ready(function () {
     setTimeout(() => {
         $('#datatable').DataTable({
-            // delay datatable loading until all data is loaded
-            stateSave: true,
         });
     }, 500);
 });
-
+  
 //Adds event listener to  buttons in 'Disasters Near Me' modal to trigger toasts
 const statusToasts = [
     {
         buttonID: 'liveToastBtn1',
-        toastID: 'okay'
+        toastID: 'safe'
     },
     {
         buttonID: 'liveToastBtn2',
-        toastID: 'mildlyInjured'
+        toastID: 'injured'
     },
-    {
-        buttonID: 'liveToastBtn3',
-        toastID: 'severelyInjured'
-    },
+    // {
+    //     buttonID: 'liveToastBtn3',
+    //     toastID: 'severelyInjured'
+    // },
 ]
 for (let status of statusToasts){
     const toastTrigger = document.getElementById(status.buttonID)

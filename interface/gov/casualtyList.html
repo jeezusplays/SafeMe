@@ -108,7 +108,7 @@
                         <tr>
                             <th>User ID</th>
                             <th>Name</th>
-                            <!-- <th>Time of Last Update</th> -->
+                            <th>Time of Last Update</th>
                             <th>Status</th>
                             <th>Contact</th>
                         </tr>
@@ -117,17 +117,17 @@
                         <tr v-for="(affected, index) in this.affected_users">
                             <td>{{affected.affectedUsersID}}</td>
                             <td>{{affected.userName}}</td>
-                            <!-- <td>{{affected.lastUpdate}}</td> -->
+                            <td>{{affected.lastUpdate}}</td>
 
                             <!-- Checks for danger status and renders the colour status -->
                             <td v-if="affected.status == 'safe'">
-                                <span class="badge text-bg-success">{{affected.status}}</span>
+                                <span class="badge text-bg-success text-capitalize">{{affected.status}}</span>
                             </td>
                             <td v-else-if="affected.status == 'injured'">
-                                <span class="badge text-bg-danger">{{affected.status}}</span>
+                                <span class="badge text-bg-danger text-capitalize">{{affected.status}}</span>
                             </td>
                             <td v-else="affected.status == 'pending'">
-                                <span class="badge text-bg-secondary">{{affected.status}}</span>
+                                <span class="badge text-bg-secondary text-capitalize">{{affected.status}}</span>
                             </td>
 
                             <td><a href="tel:{{affected.contact}}">{{affected.contact}}</a></td>
@@ -139,21 +139,16 @@
     </div>
 
     <script>
+        const current_URL = window.location.href;
+        //extract disasterID from URL
+        const disasterID = current_URL.split("=")[1];
         const affected_users_URL = 'http://localhost:5002/affected';
+        const user_URL = 'http://localhost:5001/location/all';
 
         const app = Vue.createApp({
             data() {
                 return {
-                    affected_users: [
-                        {
-                            userID: 'NIL',
-                            name: 'NIL',
-                            status: 'NIL',
-                            contact: 'NIL',
-                            // lastUpdate: 'NIL',
-                            // lastKnownCity: 'NIL',
-                        },
-                    ],
+                    affected_users: [],
                 }
             },
 
@@ -219,8 +214,31 @@
                 populate_affected() {
                     axios.get(affected_users_URL)
                         .then(response => {
-                            this.affected_users = response.data.data
+                            // Check if disasterID matches the disasterID in response.data.data objects
+                            // If it does, push the object into the affected_users array
+                            for (var i = 0; i < response.data.data.length; i++) {
+                                if (response.data.data[i].disasterID == disasterID) {
+                                    this.affected_users.push(response.data.data[i])
+                                }
+                            }
                             // console.log("Affected " + this.affected_users)
+                            axios.get(user_URL)
+                                .then(response => {
+                                    // console.log(response.data.data)
+                                    for (var i = 0; i < this.affected_users.length; i++) {
+                                        for (var j = 0; j < response.data.data.length; j++) {
+                                            if (this.affected_users[i].userID == response.data.data[j].userID) {
+                                                this.affected_users[i].lastUpdate = 
+                                                response.data.data[j].country + ", " + response.data.data[j].city +
+                                                " (" + response.data.data[j].lat + ", " + response.data.data[j].long + ")"
+                                            }
+                                        }
+                                    }
+                                    // console.log(this.affected_users)
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                })
                         })
                         .catch(error => {
                             console.log(error)
