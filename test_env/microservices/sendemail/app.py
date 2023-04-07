@@ -22,6 +22,7 @@ import json
 
 EMAIL = os.environ.get("EMAIL")
 EMAIL_PASSWORD =  os.environ.get("EMAIL_PASSWORD")
+USER_HOST_PORT=  os.getenv("USER_HOST_PORT")
 
 def send_email(subject, message, to_addr, from_addr=EMAIL, password=EMAIL_PASSWORD, smtp_server='smtp.gmail.com', smtp_port=587):
     # Create message container - the correct MIME type is multipart/alternative.
@@ -61,7 +62,7 @@ def send_email(subject, message, to_addr, from_addr=EMAIL, password=EMAIL_PASSWO
 def getUsersByFamily(familyID):
 
     try:
-        result = invoke_http(f"http://localhost:5001/user/family/{str(familyID)}","GET")
+        result = invoke_http(f"http://user:{USER_HOST_PORT}/user/family/{str(familyID)}","GET")
         code = result['code']
 
         if code in range(200,300):
@@ -75,36 +76,40 @@ def getUsersByFamily(familyID):
 
     return []
 
-def send_email_callback(ch, method, properties, body):
+def alert_callback(ch, method, properties, body):
     routing_key = method.routing_key
     familyID = routing_key.split('.')[1]
 
     users = getUsersByFamily(familyID)
-
-    data = json.dumps(body)
+    print(users)
+    print(body)
+    data = json.loads(body)
 
     alert_data = data['alert']
     alert_name = alert_data['name']
     alert_country = alert_data['country']
 
     affected_userID = data['userID']
-    affected_userData = [user for user in users if user['data']['userID']==affected_userID][0]
-    affected_userData_name = affected_userData['name']
+    _l = [user for user in users['data'] if user['userID']==affected_userID]
+    affected_userData = _l[0]
+    affected_userData_name = affected_userData['userName']
 
-    for user in users:
-        user_data = user['data']
+    for user in users['data']:
+        user_data = user
         userID = user_data['userID']
 
         if userID != affected_userID:
+            print(user_data['email'])
             email = user_data['email']
             subject = f"{affected_userData_name} has been affected by {alert_name}"
             message = f"{affected_userData_name} has been affected by {alert_name} at {alert_country}"
 
-            send_email(
-                subject,
-                message,
-                email
-            )
+            if int(userID) <5:
+                send_email(
+                    subject,
+                    message,
+                    email
+                )
 
         
 
@@ -113,11 +118,46 @@ def send_email_callback(ch, method, properties, body):
 
     pass
 
+def status_callback(ch, method, properties, body):
+    routing_key = method.routing_key
+    familyID = routing_key.split('.')[1]
+
+    users = getUsersByFamily(familyID)
+    print(users)
+    print(body)
+    data = json.loads(body)
+
+
+    affected_userID = data['userID']
+    status = data["status"]
+    _l = [user for user in users['data'] if user['userID']==affected_userID]
+    affected_userData = _l[0]
+    affected_userData_name = affected_userData['userName']
+
+    for user in users['data']:
+        user_data = user
+        userID = user_data['userID']
+
+        if userID != affected_userID:
+            print(user_data['email'])
+            email = user_data['email']
+            subject = f"{affected_userData_name} is {status}"
+            message = f"{affected_userData_name} is {status}"
+
+            if userID < 5:
+                send_email(
+                    subject,
+                    message,
+                    email
+                )
+
 def main():
     rabbitmq = Rabbitmq()
-    rabbitmq.subscribe('family_all',send_email_callback)
+    rabbitmq.subscribe('family_all_alert',alert_callback)
+    rabbitmq.subscribe('family_all_status',status_callback)
 
 if __name__ == "__main__":
+    print("sendemail service is running...")
     while not isServiceReady("user"):
         sleep(1)
     main()

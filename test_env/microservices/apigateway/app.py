@@ -9,6 +9,8 @@ KONG_ADMIN_PORT = environ.get("KONG_ADMIN_PORT")
 USER_HOST_PORT = environ.get("USER_HOST_PORT")
 DISASTER_HOST_PORT = environ.get("DISASTER_HOST_PORT")
 VOLUNTEEREVENT_HOST_PORT = environ.get("VOLUNTEEREVENT_HOST_PORT")
+UPDATEUSERSTATUS_HOST_PORT = environ.get("UPDATEUSERSTATUS_HOST_PORT")
+SIGNUPVOLUNTEER_HOST_PORT = environ.get("SIGNUPVOLUNTEER_HOST_PORT")
 
 KONG_ADMIN_URL = f'http://kong:{KONG_ADMIN_PORT}'
 print(KONG_ADMIN_URL)
@@ -70,5 +72,11 @@ if __name__ == '__main__':
     create_service_and_route('volunteerevent',
                              f'http://volunteerevent:{VOLUNTEEREVENT_HOST_PORT}',
                              '/api/volunteerevent')
+    create_service_and_route('updateuserstatus',
+                             f'http://updateuserstatus:{UPDATEUSERSTATUS_HOST_PORT}',
+                             '/api')
+    create_service_and_route('signupvolunteer',
+                             f'http://signupvolunteer:{SIGNUPVOLUNTEER_HOST_PORT}',
+                             '/api/signupvolunteer')
     
     print("Done")

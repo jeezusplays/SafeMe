@@ -6,6 +6,9 @@ import json
 from invokes import invoke_http
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from datetime import datetime
+from servicehelper import serviceIsReady, isServiceReady
+from time import sleep
 
 '''
 AMQP Setup required for sending volunteer data, not operational yet until AMQP is fully configured
@@ -15,15 +18,17 @@ AMQP Setup required for sending volunteer data, not operational yet until AMQP i
 app = Flask(__name__)
 CORS(app)
 
+PORT = os.environ.get("SIGNUPVOLUNTEER_HOST_PORT")
+USER_HOST_PORT = os.environ.get("USER_HOST_PORT")
+VOLUNTEEREVENT_HOST_PORT = os.environ.get("VOLUNTEEREVENT_HOST_PORT")
+
+################################################ MOVED TO APIGATEWAY ######################################################
 # Get all volunteer event data
 # (For UI)
 # [GET] /volunteer/event
 # Return all volunteer event data from calling volunteer event microservice volunteer.py with invokes.py to parse json data
-@app.route("/volunteer/event", methods=['GET'])
-def get_all_volunteer_event():
-    print("Getting all volunteer event data...")
-    response = invoke_http("http://localhost:5003/volunteer/event", method='GET')
-    return response
+################################################ MOVED TO APIGATEWAY ######################################################
+
 
 # UI > (Api gateway) [POST] /volunteer/signup/ > (signupvolunteer) [POST] /volunteer/event/adduser/
 # Get user status
@@ -36,15 +41,30 @@ def add_volunteer():
     if request.is_json:
         try:
             data = request.get_json()
+
+            userID = data.get('userID')
+            volunteerEventID = data.get('volunteerEventID')
+            
+            if userID is None:
+                return {'code': 400, 'data': {'msg':'Error no userID sent'}}, 400
+
             print("Getting user data...")
             print("----- Invoking user microservice to get user data -----")
-            user_response_result = invoke_http("http://localhost:5001/user/" + str(data['userID']), method='GET')
+            user_URL = f"http://user:{USER_HOST_PORT}/user/{str(userID)}"
+            user_response_result = invoke_http(user_URL, method='GET')
             print("Result from user microservice:", user_response_result, "\n")
 
-            if user_response_result['code'] == 200:
-                print("Received volunteer data:", data)
+            if user_response_result['code'] in range(200,300):
+                print("Received user data:", user_response_result['data'])
+                data = user_response_result['data']
+                data = {
+                    "userID":userID,
+                    "userName":data['userName'],
+                    "contact":data['contact'],
+                    "volunteerEventID":volunteerEventID
+                }
                 print("----- Invoking volunteer microservice to add volunteer data -----")
-                volunteer_URL = "http://localhost:5003/volunteer/event/adduser"
+                volunteer_URL = f"http://volunteerevent:{VOLUNTEEREVENT_HOST_PORT}/volunteer/event/adduser"
                 volunteer_response_result = invoke_http(volunteer_URL, method='POST', json=data)
                 print("Result from volunteer microservice:", volunteer_response_result, "\n")
                 return volunteer_response_result
@@ -70,6 +90,9 @@ def add_volunteer():
 
 # Execute this program if it is run as a main script
 if __name__ == "__main__":
+    print("signupvolunteer container is running...")
+    while isServiceReady("user"):
+        sleep(1)
     print("This is flask " + os.path.basename(__file__) + " for querying user status...")
-    app.run(host="0.0.0.0", port=5300, debug=True)
+    app.run(host="0.0.0.0", port=PORT, debug=True)
 

@@ -1,11 +1,15 @@
 # Flask application that query database
 # Flask application to query db
-import os
-from os import environ
 
+from os import environ
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from datetime import datetime
+
+import logging
+
+
 
 DB_NAME = environ.get("VOLUNTEEREVENT_DB_NAME")
 PORT = environ.get("VOLUNTEEREVENT_HOST_PORT")
@@ -22,13 +26,18 @@ CORS(app)
 class Volunteer(db.Model):
     __tablename__ = 'volunteer'
 
-    volunteerEventID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    volunteerEventID = db.Column(db.Integer, nullable=False)
     userID = db.Column(db.Integer, nullable=False)
     userName = db.Column(db.String(64), nullable=False)
     contact = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.TIMESTAMP, nullable=False)
 
-    def __init__(self, userID, userName, contact, timestamp):
+    __table_args__ = (
+        db.PrimaryKeyConstraint('volunteerEventID', 'userID', name='volunteerID'),
+    )
+
+    def __init__(self,volunteerEventID, userID, userName, contact, timestamp):
+        self.volunteerEventID = volunteerEventID
         self.userID = userID
         self.userName = userName
         self.contact = contact
@@ -40,7 +49,7 @@ class Volunteer(db.Model):
 # Volunteer event class with volunteerEventID, volunteerEventName, institute, disasterID with no ORM
 class VolunteerEvent(db.Model):
     __tablename__ = 'volunteerevent'
-
+    
     volunteerEventID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     volunteerEventName = db.Column(db.String(64), nullable=False)
     institute = db.Column(db.String(64), nullable=False)
@@ -71,12 +80,15 @@ def create_volunteer_event():
 @app.route("/volunteer/event/adduser", methods=['POST'])
 def add_volunteer():
     data = request.get_json()
+    data["timestamp"]=datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+
     volunteer = Volunteer(**data)
     try:
         db.session.add(volunteer)
         db.session.commit()
-    except:
-        return jsonify({"message": "An error occurred adding the volunteer."}), 500
+    except Exception as e:
+        logging.error(e)
+        return jsonify({"message": "An error occurred adding the volunteer.", "error": e}), 500
 
     return jsonify(volunteer.json()), 201
 

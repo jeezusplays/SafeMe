@@ -21,7 +21,7 @@ VALUES
   (1, 'John', 1, 30, 'United States', 'joeytanbiz@gmail.com', 8888888),
   (2, 'Jane', 1, 25, 'Indonesia', 'hongxiangliow@gmail.com', 8888888),
   (3, 'Bob', 1, 35, 'India', 'hx24000@gmail.com', 8888888),
-  (4, 'Alice', 1, 28, 'China', 'alice@aol.com', 8888888),
+  (4, 'Alice', 1, 28, 'China', 'samuelchung95@gmail.com', 8888888),
   (5, 'Michael', 1, 42, 'Philippines', 'michael@outlook.com', 8888888),
   (6, 'Maria', 1, 31, 'Colombia', 'maria@gmail.com', 8888888),
   (7, 'Juan', 1, 37, 'Mexico', 'juan@yahoo.com', 8888888),

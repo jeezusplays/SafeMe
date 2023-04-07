@@ -47,10 +47,11 @@ def createDisasterWithUsers(alerts):
 
                     msgs.append(json.dumps({
                         "affectedUsersID":affectedUsersID,
-                        "alert":alert
+                        "alert":alert,
+                        "userID":user["userID"]
                     }))
                     routing_keys.append(f'user.{user["userID"]}.alert')
-                    family_routing_keys.append(f'family.{user["familyID"]}.status')
+                    family_routing_keys.append(f'family.{user["familyID"]}.alert')
                 
                 rabbitmq.publish_fanout_message_multi(msgs,routing_keys)
                 rabbitmq.publish_fanout_message_multi(msgs,family_routing_keys)

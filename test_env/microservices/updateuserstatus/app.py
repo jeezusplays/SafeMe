@@ -7,7 +7,8 @@ from amqp_helper import Rabbitmq
 from invokes import invoke_http
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-
+from servicehelper import isServiceReady, serviceIsReady
+from time import sleep
 '''
 AMQP Setup required for sending volunteer data, not operational yet until AMQP is fully configured
 #import #{amqp_setup}
@@ -16,10 +17,12 @@ AMQP Setup required for sending volunteer data, not operational yet until AMQP i
 app = Flask(__name__)
 CORS(app)
 
+PORT = os.environ.get("UPDATEUSERSTATUS_HOST_PORT")
+DISASTER_HOST_PORT = os.environ.get("DISASTER_HOST_PORT")
 # Update user status in disaster db through invoking disaster.py microservice
 # Send status to disaster microservice disaster.py
 # [POST] /user/status
-@app.route("/user/status", methods=['POST'])
+@app.route("/respond/user/status", methods=['POST'])
 def send_user_status():
     """
     # Placeholder AMQP code before AMQP is fully configured
@@ -48,15 +51,16 @@ def send_user_status():
 
             # Update user status in disaster db
             print("----- Invoking disaster microservice to update user status: -----")
-            disaster_URL = "http://localhost:5002/disaster/update/user/" + str(affectedUsersID)
+            disaster_URL = f"http://disaster:{DISASTER_HOST_PORT}/disaster/update/user/{str(affectedUsersID)}"
             result = invoke_http(disaster_URL, method = "PUT", json=user_status)
-            print("Result: ", result)
+            print("Updateuser result: ", result)
             
             code = result['code']
             if code in range(200,300):
                 routing_key = f"family.{familyID}.status"
+                data = result['data']
                 rabbitmq = Rabbitmq()
-                rabbitmq.publish_message(msg=json.dumps(user_status),key=routing_key)
+                rabbitmq.publish_message(msg=json.dumps(data),key=routing_key)
             
             return jsonify(result), 200
         except Exception as e:
@@ -81,6 +85,12 @@ def send_user_status():
 
 # Execute this program if it is run as a main script
 if __name__ == "__main__":
+    print("updateuserstatus container is running...")
+
+    while not isServiceReady('disaster'):
+        sleep(1)
+
     print("This is flask " + os.path.basename(__file__) + " for querying user status...")
-    app.run(host="0.0.0.0", port=5100, debug=True)
+    serviceIsReady("updateuserstatus")
+    app.run(host="0.0.0.0", port=PORT)
 

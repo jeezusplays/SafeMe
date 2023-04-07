@@ -130,9 +130,33 @@ services:
       EMAIL: ${EMAIL}
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
       SERVICEHELPER_HOST_PORT : ${SERVICEHELPER_HOST_PORT}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      USER_HOST_PORT: ${USER_HOST_PORT}
     networks:
       - service_network  
-      
+
+  updateuserstatus:
+    build: ./microservices/updateuserstatus
+    restart: on-failure
+    environment:
+      SERVICEHELPER_HOST_PORT : ${SERVICEHELPER_HOST_PORT}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      DISASTER_HOST_PORT: ${DISASTER_HOST_PORT}
+      UPDATEUSERSTATUS_HOST_PORT: ${UPDATEUSERSTATUS_HOST_PORT}
+    networks:
+      - service_network  
+  signupvolunteer:
+    build: ./microservices/signupvolunteer
+    restart: on-failure
+    environment:
+      SERVICEHELPER_HOST_PORT: ${SERVICEHELPER_HOST_PORT}
+      SIGNUPVOLUNTEER_HOST_PORT: ${SIGNUPVOLUNTEER_HOST_PORT}
+      USER_HOST_PORT: ${USER_HOST_PORT}
+      VOLUNTEEREVENT_HOST_PORT: ${VOLUNTEEREVENT_HOST_PORT}
+    networks:
+      - service_network  
+
+
   #######################################
   # Postgres: The database used by Kong
   #######################################
@@ -222,6 +246,9 @@ services:
       USER_HOST_PORT: ${USER_HOST_PORT}
       DISASTER_HOST_PORT: ${DISASTER_HOST_PORT}
       VOLUNTEEREVENT_HOST_PORT: ${VOLUNTEEREVENT_HOST_PORT}
+      UPDATEUSERSTATUS_HOST_PORT: ${UPDATEUSERSTATUS_HOST_PORT}
+      SIGNUPVOLUNTEER_HOST_PORT: ${SIGNUPVOLUNTEER_HOST_PORT}
     networks:
       - service_network
+
 
