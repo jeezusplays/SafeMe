@@ -9,6 +9,7 @@ from flask_cors import CORS
 from time import sleep
 from servicehelper import serviceIsReady
 
+import logging
 
 DB_NAME = environ.get("DISASTER_DB_NAME")
 PORT = environ.get("DISASTER_HOST_PORT")
@@ -150,6 +151,7 @@ def dbReady():
     try:
         disaster = Disaster.query.all()
     except Exception as e:
+        logging.error(e)
         return False
     if disaster:
         return True

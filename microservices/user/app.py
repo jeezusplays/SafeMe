@@ -11,6 +11,7 @@ from servicehelper import serviceIsReady
 
 from datetime import date, timedelta,datetime
 import json
+import logging
 
 DB_NAME = environ.get("USER_DB_NAME")
 PORT = environ.get("USER_HOST_PORT")
@@ -166,6 +167,7 @@ def dbReady():
     try:
         users = User.query.all()
     except Exception as e:
+        logging.error(e)
         return False
     if users:
         return True
