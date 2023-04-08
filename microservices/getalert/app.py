@@ -51,7 +51,7 @@ def get_alert():
     return events
 
 def main():
-    while servicehelper.isServiceReady("createdisaster"):
+    while not servicehelper.isServiceReady("start"):
         sleep(1)
     alert_list = []
     rabbitmq = Rabbitmq()

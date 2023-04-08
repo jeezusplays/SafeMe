@@ -1,299 +1,485 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Disasters Near Me</title>
+    <link rel="icon" type="image/x-icon" href="../img/favicon.ico" />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Disasters Near Me</title>
-  <link rel="icon" type="image/x-icon" href="../img/favicon.ico">
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <!-- Datatables for table styling -->
+    <link
+      href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"
+      rel="stylesheet"
+    />
 
-  <!-- Datatables for table styling -->
-  <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <!-- Datatables JS scripts -->
+    <script defer src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script
+      defer
+      src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"
+    ></script>
+    <script defer src="../script.js"></script>
+  </head>
 
-  <!-- Datatables JS scripts -->
-  <script defer src="https://code.jquery.com/jquery-3.5.1.js"></script>
-  <script defer src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-  <script defer src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-  <script defer src="../script.js"></script>
-
-</head>
-
-<body>
-  <div id="app">
-    <!-- MODAL to check in on a disaster stricken user within 10km of disaster -->
-    <div v-if="this.userStatus_level != 'safe'" class="modal" tabindex="-1" id="checkInModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Please report your safety</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <p>Based on your location, it appears that you may be in proximity to a disaster. <b>What is your current
-                status?</b></p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal"
-              id="liveToastBtn1">Safe</button>
-            <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal"
-              id="liveToastBtn2">Injured</button>
-            <!-- <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal"
+  <body>
+    <div id="app">
+      <!-- MODAL to check in on a disaster stricken user within 10km of disaster -->
+      <div
+        v-if="this.userStatus_level != 'safe'"
+        class="modal"
+        tabindex="-1"
+        id="checkInModal"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Please report your safety</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <p>
+                Based on your location, it appears that you may be caught in
+                {{alert.name}}.
+                <b>What is your current status?</b>
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-outline-primary acknowledgeButton"
+                data-bs-dismiss="modal"
+                id="liveToastBtn1"
+              >
+                Safe
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-primary acknowledgeButton"
+                data-bs-dismiss="modal"
+                id="liveToastBtn2"
+              >
+                Injured
+              </button>
+              <!-- <button type="button" class="btn btn-outline-primary acknowledgeButton" data-bs-dismiss="modal"
               id="liveToastBtn3">Severely Injured</button> -->
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- SUBMISSION TOAST -->
-    <div v-for="status in statusArr" class="toast-container position-fixed bottom-0 end-0 p-3">
-      <div :id=status class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-          <strong class="me-auto">Your response has been recorded</strong>
-          <small>Just now</small>
-          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      <!-- SUBMISSION TOAST -->
+      <div
+        v-for="status in statusArr"
+        class="toast-container position-fixed bottom-0 end-0 p-3"
+      >
+        <div
+          :id="status"
+          class="toast"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <div class="toast-header">
+            <strong class="me-auto">Your response has been recorded</strong>
+            <small>Just now</small>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="toast"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="toast-body">
+            We have informed the government and your family on your status!
+          </div>
         </div>
-        <div class="toast-body">
-          We have informed the government and your family on your status!
+      </div>
+
+      <!-- NAVBAR-->
+      <nav
+        class="navbar navbar-light navbar-expand-lg bg-body-secondary"
+        style="background-color: #e3f2fd"
+      >
+        <div class="container-fluid">
+          <!-- Shows account type -->
+          <a class="navbar-brand" href="disastersNearMe.html"
+            >SafeMe (Public)</a
+          >
+
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <!-- Navbar tabs for Public UI -->
+              <li class="nav-item">
+                <a
+                  class="nav-link active"
+                  aria-current="page"
+                  href="disastersNearMe.html"
+                  >Disasters Near Me</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="myFamily.html">My Family</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="volunteerPublic.html"
+                  >Volunteer to Help</a
+                >
+              </li>
+            </ul>
+
+            <!-- Switches between account types -->
+            <button
+              class="btn btn-outline-primary"
+              onclick="location.href='../gov/countryDisasters.html'"
+            >
+              Switch to Government (for demo purpose)
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- DISASTER TABLE -->
+      <div class="container my-5">
+        <table
+          id="datatable"
+          class="table table-striped my-auto"
+          style="width: 100%"
+        >
+          <thead>
+            <tr>
+              <th>Country, City</th>
+              <th>Disaster Name</th>
+              <th>Distance Away</th>
+              <th>Time of Incident</th>
+              <th>Impact Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="disaster in this.disaster_table">
+              <td>{{disaster.country}}, {{disaster.city}}</td>
+              <td>{{disaster.disasterName}}</td>
+              <td>{{disaster.distance}} km</td>
+              <td>{{disaster.disasterTimestamp}}</td>
+              <!-- Checks for danger status and renders the colour status -->
+              <td v-if="disaster.disasterSeverityLevel == 'green'">
+                <span class="badge text-bg-success">Low</span>
+              </td>
+              <td v-else-if="disaster.disasterSeverityLevel == 'amber'">
+                <span class="badge text-bg-warning">Medium</span>
+              </td>
+              <td v-else-if="disaster.disasterSeverityLevel == 'red'">
+                <span class="badge text-bg-danger">High</span>
+              </td>
+              <td v-else>
+                <span class="badge text-bg-secondary">None</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <br />
+        <br />
+        <div>
+          <form @submit.prevent="submitForm">
+            <label for="userID">User ID:</label>
+            <input type="number" id="userID" v-model="form.userID" /><br />
+
+            <label for="lat">Latitude:</label>
+            <input type="text" id="lat" v-model="form.lat" /><br />
+
+            <label for="long">Longitude:</label>
+            <input type="text" id="long" v-model="form.long" /><br />
+
+            <label for="country">Country:</label>
+            <input type="text" id="country" v-model="form.country" /><br />
+
+            <label for="city">City:</label>
+            <input type="text" id="city" v-model="form.city" /><br />
+
+            <button type="submit">Submit</button>
+          </form>
+          <button @click="sendWebSocketMessage()">
+            subscribe websocket
+          </button>
         </div>
       </div>
     </div>
+    <script>
+      // Hardcoded userID for now
+      const userID = 1;
+      const disaster_URL = "http://localhost:8000/api/disaster/disaster";
+      const user_location_URL =
+        "http://localhost:8000/api/user/location/" + userID;
+      const volunteer_URL =
+        "http://localhost:8000/api/volunteerevent/volunteer/event";
 
-    <!-- NAVBAR-->
-    <nav class="navbar navbar-light navbar-expand-lg bg-body-secondary" style="background-color: #e3f2fd;">
-      <div class="container-fluid">
-        <!-- Shows account type -->
-        <a class="navbar-brand" href="disastersNearMe.html">SafeMe (Public)</a>
-
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <!-- Navbar tabs for Public UI -->
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="disastersNearMe.html">Disasters Near Me</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="myFamily.html">My Family</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="volunteerPublic.html">Volunteer to Help</a>
-            </li>
-          </ul>
-
-          <!-- Switches between account types -->
-          <button class="btn btn-outline-primary" onclick="location.href='../gov/countryDisasters.html'">Switch to
-            Government (for demo purpose)</button>
-        </div>
-      </div>
-    </nav>
-
-    <!-- DISASTER TABLE -->
-    <div class="container my-5">
-      <table id="datatable" class="table table-striped my-auto" style="width:100%">
-        <thead>
-          <tr>
-            <th>Country, City</th>
-            <th>Disaster Name</th>
-            <th>Distance Away</th>
-            <th>Time of Incident</th>
-            <th>Impact Level</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="disaster in this.disaster_table">
-            <td>{{disaster.country}}, {{disaster.city}}</td>
-            <td>{{disaster.disasterName}}</td>
-            <td>{{disaster.distance}} km</td>
-            <td>{{disaster.disasterTimestamp}}</td>
-            <!-- Checks for danger status and renders the colour status -->
-            <td v-if="disaster.disasterSeverityLevel == 'green'">
-              <span class="badge text-bg-success">Low</span>
-            </td>
-            <td v-else-if="disaster.disasterSeverityLevel == 'amber'">
-              <span class="badge text-bg-warning">Medium</span>
-            </td>
-            <td v-else-if="disaster.disasterSeverityLevel == 'red'">
-              <span class="badge text-bg-danger">High</span>
-            </td>
-            <td v-else>
-              <span class="badge text-bg-secondary">None</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <script>
-
-    // Hardcoded userID for now
-    const userID = 1;
-    const disaster_URL = "http://localhost:5002/disaster";
-    const user_location_URL = "http://localhost:5001/location/" + userID;
-    const volunteer_URL = "http://localhost:5003/volunteer/event";
-
-    const app = Vue.createApp({
-      data() {
-        return {
-          header: 'Disasters Near Me',
-          // Danger threshold
-          dangerThreshold: 10,
-
-          //Available statuses for dynamic toasts
-          statusArr: [
-            'okay',
-            'mildlyInjured',
-            'severelyInjured'
-          ],
-
-          disaster_table: [
-            {
-              danger: "-",
-              distance: 0.0
-            }
-          ],
-          status: "Unavailable",
-          user_lat: 0.0,
-          user_long: 0.0,
-          userStatus_level: "Not Okay"
-        }
-      },
-
-      methods: {
-        // status
-        getStatus(status) {
-          return status
+      const app = Vue.createApp({
+        data() {
+          return {
+            header: "Disasters Near Me",
+            // Danger threshold
+            dangerThreshold: 10,
+            form: {
+              userID: "",
+              lat: "",
+              long: "",
+              country: "",
+              city: "",
+              timestamp: "",
+            },
+            //Available statuses for dynamic toasts
+            statusArr: ["okay", "mildlyInjured", "severelyInjured"],
+            userID: 1,
+            disaster_table: [
+              {
+                danger: "-",
+                distance: 0.0,
+              },
+            ],
+            status: "Unavailable",
+            user_lat: 0.0,
+            user_long: 0.0,
+            userStatus_level: "Not Okay",
+            alert: {
+              name: "Nil",
+            },
+          };
         },
 
-        // showToast(btnID, toastID){
-        //   var toastTrigger = document.getElementById(btnID)
-        //   var toastLiveExample = document.getElementById(toastID)
-        //   if (toastTrigger) {
-        //       toastTrigger.addEventListener('click', () => {
-        //       // const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-        //       var toastBootstrap = new bootstrap.Toast(toastLiveExample)
-        //       toastBootstrap.show()
-        //       })
-        //   }
-        // },
+        methods: {
+          // status
+          getStatus(status) {
+            return status;
+          },
 
-        populate_disasters() {
-          // Get request using axios to fetch data from the disaster table
-          axios.get(disaster_URL)
-            .then(response => {
-              this.disaster_table = response.data.data
-              // Get request using axios to fetch data from users
-              axios.get(user_location_URL)
-                .then(response => {
-                  user_location = response.data.data
-                  // Check if there is more than 1 user location entry
-                  if (user_location.length > 1) {
-                    // If there is more than 1 user location entry, then we need to find the most recent one
-                    // Sort the user location array by timestamp
-                    user_location.sort(function (a, b) {
-                      return new Date(b.timestamp) - new Date(a.timestamp);
-                    });
-                    // Set the user location to the most recent one
-                    user_location = user_location[0];
-                    this.user_lat = user_location.lat;
-                    this.user_long = user_location.long;
-                  } else {
-                    // If there is only 1 user location entry, then we can just set the user location to the first entry
-                    user_location = user_location[0];
-                    this.user_lat = user_location.lat;
-                    this.user_long = user_location.long;
-                  }
-                  // Loop through the disaster table and calculate the distance between the user and the disaster
-                  axios.get(volunteer_URL)
-                    .then(response => {
-                      volunteer_event_response = response.data.volunteerEvents
-                      for (var i = 0; i < this.disaster_table.length; i++) {
-                        // Calculate the distance between the user and the disaster
-                        var distance = this.calculate_distance(this.user_lat, this.user_long, this.disaster_table[i].lat, this.disaster_table[i].long);
-                        // Round the distance to 2 decimal places
-                        distance = distance.toFixed(2);
-                        // Set the distance in the disaster table
-                        this.disaster_table[i].distance = distance;
-                        // Set the isVolunteered to true first
-                        this.disaster_table[i].isVolunteered = true;
-                        // Loop through volunteer events and determine if there is a volunteer event for the disaster
-                        for (var j = 0; j < volunteer_event_response.length; j++) {
-                          if (this.disaster_table[i].disasterID == volunteer_event_response[j].disasterID) {
-                            this.disaster_table[i].isVolunteered = false;
+          // showToast(btnID, toastID){
+          //   var toastTrigger = document.getElementById(btnID)
+          //   var toastLiveExample = document.getElementById(toastID)
+          //   if (toastTrigger) {
+          //       toastTrigger.addEventListener('click', () => {
+          //       // const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+          //       var toastBootstrap = new bootstrap.Toast(toastLiveExample)
+          //       toastBootstrap.show()
+          //       })
+          //   }
+          // },
+
+          populate_disasters() {
+            // Get request using axios to fetch data from the disaster table
+            axios
+              .get(disaster_URL)
+              .then((response) => {
+                this.disaster_table = response.data.data;
+                // Get request using axios to fetch data from users
+                axios
+                  .get(user_location_URL)
+                  .then((response) => {
+                    user_location = response.data.data;
+                    // Check if there is more than 1 user location entry
+                    if (user_location.length > 1) {
+                      // If there is more than 1 user location entry, then we need to find the most recent one
+                      // Sort the user location array by timestamp
+                      user_location.sort(function (a, b) {
+                        return new Date(b.timestamp) - new Date(a.timestamp);
+                      });
+                      // Set the user location to the most recent one
+                      user_location = user_location[0];
+                      this.user_lat = user_location.lat;
+                      this.user_long = user_location.long;
+                    } else {
+                      // If there is only 1 user location entry, then we can just set the user location to the first entry
+                      user_location = user_location[0];
+                      this.user_lat = user_location.lat;
+                      this.user_long = user_location.long;
+                    }
+                    // Loop through the disaster table and calculate the distance between the user and the disaster
+                    axios
+                      .get(volunteer_URL)
+                      .then((response) => {
+                        volunteer_event_response =
+                          response.data.volunteerEvents;
+                        for (var i = 0; i < this.disaster_table.length; i++) {
+                          // Calculate the distance between the user and the disaster
+                          var distance = this.calculate_distance(
+                            this.user_lat,
+                            this.user_long,
+                            this.disaster_table[i].lat,
+                            this.disaster_table[i].long
+                          );
+                          // Round the distance to 2 decimal places
+                          distance = distance.toFixed(2);
+                          // Set the distance in the disaster table
+                          this.disaster_table[i].distance = distance;
+                          // Set the isVolunteered to true first
+                          this.disaster_table[i].isVolunteered = true;
+                          // Loop through volunteer events and determine if there is a volunteer event for the disaster
+                          for (
+                            var j = 0;
+                            j < volunteer_event_response.length;
+                            j++
+                          ) {
+                            if (
+                              this.disaster_table[i].disasterID ==
+                              volunteer_event_response[j].disasterID
+                            ) {
+                              this.disaster_table[i].isVolunteered = false;
+                            }
                           }
                         }
-                      }
-                      // console.log(this.disaster_table)
-                      // Loop this.disaster_table and check if any of the disaster distance is within 10km
-                      for (var y = 0; y < this.disaster_table.length; y++) {
-                        // console.log(parseInt(this.disaster_table[y].distance))
-                        if (parseInt(this.disaster_table[y].distance) < 10000) {
-                          // If there is a disaster within 10km, then set the status to pending
-                          this.userStatus_level = "Not Okay";
-                          // console.log(this.userStatus_level)
-                          // Break out of the loop
-                          break;
-                        } else {
-                          // If there is no disaster within 10km, then set the status to okay
-                          this.status = "Okay";
+                        // console.log(this.disaster_table)
+                        // Loop this.disaster_table and check if any of the disaster distance is within 10km
+                        for (var y = 0; y < this.disaster_table.length; y++) {
+                          // console.log(parseInt(this.disaster_table[y].distance))
+                          if (
+                            parseInt(this.disaster_table[y].distance) < 10000
+                          ) {
+                            // If there is a disaster within 10km, then set the status to pending
+                            this.userStatus_level = "Not Okay";
+                            // console.log(this.userStatus_level)
+                            // Break out of the loop
+                            break;
+                          } else {
+                            // If there is no disaster within 10km, then set the status to okay
+                            this.status = "Okay";
+                          }
                         }
-                      }
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+            // Function to loop through this.disaster_table and fetch all disaster distance to user
+          },
+          setModal(e){
+            d = JSON.parse(e.data)['data']
+            a = d[0]
+            console.log("Received message:", a);
+            this.alert.name = a.alert.name
+            const checkInModal = new bootstrap.Modal('#checkInModal')
+            checkInModal.show()
+          },
+          calculate_distance(lat1, lon1, lat2, lon2) {
+            // Calculate the distance between the user and the disaster
+            var R = 6371; // Radius of the earth in km
+            var dLat = this.deg2rad(lat2 - lat1); // deg2rad below
+            var dLon = this.deg2rad(lon2 - lon1);
+            var a =
+              Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(this.deg2rad(lat1)) *
+                Math.cos(this.deg2rad(lat2)) *
+                Math.sin(dLon / 2) *
+                Math.sin(dLon / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var d = R * c; // Distance in km
+            return d;
+          },
+          deg2rad(deg) {
+            return deg * (Math.PI / 180);
+          },
+          sendWebSocketMessage() {
+            var webSocket = new WebSocket("ws://localhost:9000/ws");
+            message = {
+              "message": "getUserAlert",
+              "userID": this.userID,
+            };
+            localStorage.setItem('ws_user_alert', JSON.stringify(message));
 
-                    })
-                    .catch(error => {
-                      console.log(error)
-                    })
+            var timeout = setTimeout(function (message) {
+              console.log("sending websocket message");
+              console.log(localStorage.getItem('ws_user_alert'));
+              webSocket.send(localStorage.getItem('ws_user_alert'));
+            }, 5000);
 
-                })
-                .catch(error => {
-                  console.log(error)
-                })
-            })
-            .catch(error => {
-              console.log(error)
-            })
-          // Function to loop through this.disaster_table and fetch all disaster distance to user
+            webSocket.onmessage = (event)=>{
+              this.setModal(event)
+              webSocket.close()
+            };
+          },
+          submitForm() {
+            this.form.lat = parseFloat(this.form.lat);
+            this.form.long = parseFloat(this.form.long);
+            this.userID = this.form.userID
+            const now = new Date();
+            const isoString = now.toISOString();
+            const dateTimeString = isoString
+              .replace("T", " ")
+              .replace(/\.\d+Z$/, "");
+            this.form.timestamp = dateTimeString;
+
+            console.log(JSON.stringify(this.form));
+
+            axios
+              .post(
+                "http://localhost:8000/api/user/location",
+                JSON.stringify(this.form),
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  mode: "no-cors",
+                }
+              )
+              .then((response) => {
+                console.log(response);
+                // do something with response
+              })
+              .catch((error) => {
+                console.error(error);
+                // handle error
+              });
+          },
         },
-        calculate_distance(lat1, lon1, lat2, lon2) {
-          // Calculate the distance between the user and the disaster
-          var R = 6371; // Radius of the earth in km
-          var dLat = this.deg2rad(lat2 - lat1);  // deg2rad below
-          var dLon = this.deg2rad(lon2 - lon1);
-          var a =
-            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2)
-            ;
-          var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-          var d = R * c; // Distance in km
-          return d;
+
+        mounted() {
+          this.populate_disasters();
+          // Set delay for checkInModal to show
         },
-        deg2rad(deg) {
-          return deg * (Math.PI / 180)
-        }
-      },
-      
-      mounted() {
-        this.populate_disasters();
-        // Set delay for checkInModal to show
-      }
-    })
-    app.mount('#app')
-  </script>
+      });
+      app.mount("#app");
+    </script>
 
-  <!-- Bootstrap Bundle -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-    crossorigin="anonymous"></script>
-</body>
-
+    <!-- Bootstrap Bundle -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

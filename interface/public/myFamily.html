@@ -54,6 +54,9 @@
 
         <!-- CARD Group -->
         <div class="container-fluid">
+            <button @click="sendWebSocketMessage()">
+                start websocket
+            </button>
             <div class="row justify-content-center">
                 <div v-for="(member, index) in this.family">
                     <h2 v-if="member.face == 'Inactive'">Please reload page or activate User + Disaster microservices
@@ -122,9 +125,9 @@
     </div>
 
     <script>
-        const user_URL = "http://localhost:5001/user/family/1";
-        const location_URL = "http://localhost:5001/location/all";
-        const affected_users_URL = "http://localhost:5002/affected";
+        const user_URL = "http://localhost:8000/api/user/user/family/1";
+        const location_URL = "http://localhost:8000/api/user/location/all";
+        const affected_users_URL = "http://localhost:8000/api/disaster/affected";
 
         const app = Vue.createApp({
             data() {
@@ -223,6 +226,7 @@
                 isDisabled(index) {
                     return this.isReportedArr[index]
                 },
+                
                 //get family photo
                 // getPhoto(member){
                 //     return member.photo
@@ -235,6 +239,30 @@
                 //         this.isDisabled(index)
                 //     }
                 // }
+                settleFamily(e){
+                    d = JSON.parse(e.data)['data']
+                    a = d[0]
+                    console.log("Received message:", a);
+                },
+                sendWebSocketMessage() {
+                    var webSocket = new WebSocket("ws://localhost:9000/ws");
+                    message = {
+                    "message": "getFamilyAlert",
+                    "familyID": 1,
+                    };
+                    localStorage.setItem('ws_family_alert', JSON.stringify(message));
+
+                    var timeout = setTimeout(function (message) {
+                    console.log("sending websocket message");
+                    console.log(localStorage.getItem('ws_family_alert'));
+                    webSocket.send(localStorage.getItem('ws_family_alert'));
+                    }, 5000);
+
+                    webSocket.onmessage = (event)=>{
+                        this.settleFamily(event)
+                        webSocket.close()
+                    };
+                }
             },
             mounted() {
                 // on Vue instance created, load the user list

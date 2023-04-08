@@ -49,7 +49,7 @@ CREATE TABLE location
 INSERT INTO location (userID, country, city, lat, `long`, `timestamp`)
 VALUES
   -- DUMMY DATA, USE FIRST ENTRY TO FAKE NEAR INCIDENT --
-  (1, 'United States', 'New York', -75.324, 4.892, '2023-04-07'),
+  (1, 'United States', 'New York', 121.422, 23.194, '2023-04-07'),
   (2, 'Indonesia', 'Jakarta', -6.215, 106.845, '2021-01-02'),
   (3, 'India', 'Mumbai', 19.076, 72.878, '2021-01-03'),
   (4, 'China', 'Beijing', 39.904, 116.407, '2021-01-04'),

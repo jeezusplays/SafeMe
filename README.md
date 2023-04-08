@@ -113,7 +113,9 @@ To stop and remove all containers, networks, volumes, and images created by `up`
    docker-compose down
    ```
 
-## Usage
+## Demo and Usage
+### Demo
+A demo of the application can be found [here](https://youtu.be/Weka3bW8NJw).
 ### UI
 _Simple run down of each HTML page._
 <table>
