@@ -68,7 +68,7 @@ You will also need the following software installed in your machine.
 
 [![MySQL](https://img.shields.io/badge/MySQL-4479A1.svg?style=for-the-badge&logo=MySQL&logoColor=white)](https://www.mysql.com/)
 
-<!-- ![Postman](https://img.shields.io/badge/Postman-FF6C37.svg?style=for-the-badge&logo=Postman&logoColor=white) *(for testing)* -->
+![Postman](https://img.shields.io/badge/Postman-FF6C37.svg?style=for-the-badge&logo=Postman&logoColor=white) *(for testing)*
 
 [![Python](https://img.shields.io/badge/Python-3776AB.svg?style=for-the-badge&logo=Python&logoColor=white)](https://www.python.org/)
 
@@ -76,7 +76,7 @@ You will also need the following software installed in your machine.
 
 Others: 
 * [WAMP](https://www.wampserver.com/en/) / [MAMP](https://www.mamp.info/en/) / [XAMPP](https://www.apachefriends.org/index.html)
-* [Alerts Websocket: flask_sock](https://flask-sock.readthedocs.io/en/latest/) *(websocket used to disseminate notifications and alerts to users, allowing for 2-way communication between the client and the server)*
+* [Websocket: flask_sock](https://flask-sock.readthedocs.io/en/latest/) *(websocket used to disseminate notifications and alerts to users, allowing for 2-way communication between the client and the server)*
 
 
 ### Installation and Implementation
