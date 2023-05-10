@@ -85,7 +85,7 @@ _Instructions on how to install and run this respository onto your local machine
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/samchung95/SafeMe
+   git clone https://github.com/jeezusplays/SafeMe
    ```
 2. Start WAMP and Docker
 
